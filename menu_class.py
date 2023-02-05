@@ -1,4 +1,5 @@
 import pygame
+from warrior_character import Warrior
 
 
 class Menu:
@@ -7,7 +8,7 @@ class Menu:
     pygame.mixer.music.play()
     pygame.mixer.music.set_volume(0.1)
 
-    buttons_x, buttons_y = 1920 / 2 - 200, 1080 / 2 - 150
+    buttons_x, buttons_y = 1920 / 2 - 200, 1080 / 1.01 - 150
     menu_image = pygame.image.load('images/menu/make_character.jpg')
 
     button_play = pygame.image.load('images/menu/play.png')
@@ -27,16 +28,16 @@ class Menu:
 
     def __init__(self, ):
         self.main_menu = True
+        self.warrior = Warrior()
 
     def menu(self, ):
         while self.main_menu:
             self.screen.blit(self.menu_image, (0, 0))
             self.screen.blit(self.button_play, self.button_play_rect)
             # self.screen.blit(self.button_quit, self.button_quit_rect)
-            self.screen.blit(self.platform, (100, 600))
+            self.screen.blit(self.platform, (70, 600))
             self.screen.blit(self.platform, (750, 600))
             self.screen.blit(self.platform, (1400, 600))
-            pygame.draw.rect(self.screen, (255, 0, 0), self.button_play_rect, 1)
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
@@ -45,9 +46,10 @@ class Menu:
                     mouse_pos = pygame.mouse.get_pos()
                     if self.button_play_rect.collidepoint(mouse_pos):
                         self.main_menu = False
-                        # self.screen.blit(self.menu_image, (0, 0))
                     # elif self.button_quit_rect.collidepoint(mouse_pos):
                     #     quit()
+            self.screen.blit(self.warrior.idle_animation(), (120, 240))
+
             pygame.display.flip()
 
 
