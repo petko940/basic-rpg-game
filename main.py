@@ -12,7 +12,6 @@ game_running = True
 
 while game_running:
     menu.menu()
-    menu.podmenu1()
 
     pygame.display.flip()
 
