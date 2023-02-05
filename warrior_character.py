@@ -19,6 +19,8 @@ class Warrior:
 
 test = Warrior()
 
+##########################
+"""TO TEST ANIMATIONS"""
 WIDTH, HEIGHT = (1920, 1080)
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
@@ -33,3 +35,5 @@ while run:
     screen.blit(test.idle_animation(), (300, 300))
 
     pygame.display.flip()
+##########################
+"""TO TEST ANIMATIONS"""
