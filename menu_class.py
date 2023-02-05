@@ -13,18 +13,21 @@ class Menu:
     pygame.mixer.music.play()
     pygame.mixer.music.set_volume(0.1)
 
-    buttons_x, buttons_y = 1920 / 2 - 200, 1080 / 1.01 - 150
+    buttons_x, buttons_y = 1920 / 2 - 200, 1080 / 1.01 - 210
     menu_image = pygame.image.load('images/menu/make_character.jpg')
 
     button_play = pygame.image.load('images/menu/play.png')
-    button_play_rect = None
-    # button_play_rect.x = buttons_x
-    # button_play_rect.y = buttons_y
+    is_ready_to_start = False
+    button_play_rect = button_play.get_rect()
+    button_play_rect.x = buttons_x
+    button_play_rect.y = buttons_y
+
+    fake_start = pygame.image.load('images/menu/fake_start.png')
 
     button_quit = pygame.image.load('images/menu/exit.png')
     button_quit_rect = button_quit.get_rect()
     button_quit_rect.x = buttons_x
-    button_quit_rect.y = buttons_y + 100
+    button_quit_rect.y = buttons_y + 123
 
     platform = pygame.image.load('images/menu/platform.png')
 
@@ -43,7 +46,6 @@ class Menu:
 
     selected = {"warrior": False, "mage": False, }
 
-
     index = 0
     see_arrow = arrow[int(index) % len(arrow)]
 
@@ -60,8 +62,10 @@ class Menu:
             self.screen.blit(self.platform, (70, 600))
             self.screen.blit(self.platform, (750, 600))
             self.screen.blit(self.platform, (1400, 600))
-            # pygame.draw.rect(self.screen,(255,0,0),self.button_play_rect,1)
-            # pygame.draw.rect(self.screen,(255,0,0),self.button_quit_rect)
+
+            if not self.is_ready_to_start:
+                self.screen.blit(self.fake_start, self.button_play_rect)
+
             self.screen.blit(self.warrior.idle_animation(), (self.heroes_x_y[0][0], self.heroes_x_y[0][1]))
             self.screen.blit(self.mage.idle_animation(), (self.heroes_x_y[1][0], self.heroes_x_y[1][1]))
 
@@ -71,11 +75,14 @@ class Menu:
                         quit()
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_pos = pygame.mouse.get_pos()
-                    if self.button_play_rect.collidepoint(mouse_pos):
-                        self.main_menu = False
-                    elif self.warrior_rect.collidepoint(mouse_pos):
+                    if self.is_ready_to_start:
+                        if self.button_play_rect.collidepoint(mouse_pos):
+                            self.main_menu = False
+
+                    if self.warrior_rect.collidepoint(mouse_pos):
                         self.selected['warrior'] = True
                         self.selected['mage'] = False
+
                     elif self.mage_rect.collidepoint(mouse_pos):
                         self.selected['warrior'] = False
                         self.selected['mage'] = True
@@ -87,12 +94,10 @@ class Menu:
             for value in self.selected.values():
                 self.index += 0.13
                 if value:
-                    button_play_rect = self.button_play.get_rect()
-                    button_play_rect.x = self.buttons_x
-                    button_play_rect.y = self.buttons_y
                     see_arrow = self.arrow[int(self.index) % len(self.arrow)]
                     self.screen.blit(see_arrow, (self.arrow_pos[i][0], self.arrow_pos[i][1]))
 
+                    self.is_ready_to_start = True
                     self.screen.blit(self.button_play, self.button_play_rect)
 
                 i += 1
