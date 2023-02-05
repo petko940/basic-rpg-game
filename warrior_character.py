@@ -6,6 +6,7 @@ die_images = [pygame.image.load(f'images/war/die/({i}).png') for i in range(1, 1
 walk_images_right = [pygame.image.load(f'images/war/walk/({i}).png') for i in range(1, 11)]
 
 
+
 class Warrior:
     __IDLE_SPEED = 0.16
 

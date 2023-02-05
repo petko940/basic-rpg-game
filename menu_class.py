@@ -53,5 +53,6 @@ class Menu:
             pygame.display.flip()
 
 
+
 menu = Menu()
 menu.menu()
