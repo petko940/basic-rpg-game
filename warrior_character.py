@@ -6,12 +6,12 @@ die_images = [pygame.image.load(f'images/war/die/({i}).png') for i in range(1, 1
 walk_images_right = [pygame.image.load(f'images/war/walk/({i}).png') for i in range(1, 11)]
 
 
-
 class Warrior:
     __IDLE_SPEED = 0.16
 
     def __init__(self):
         self.index = 0
+        self.is_selected = False
 
     def idle_animation(self):
         self.index += self.__IDLE_SPEED
