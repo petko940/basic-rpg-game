@@ -22,7 +22,6 @@ class Menu:
 
     platform = pygame.image.load('images/menu/platform.png')
 
-
     WIDTH, HEIGHT = (1920, 1080)
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
@@ -37,6 +36,7 @@ class Menu:
             self.screen.blit(self.platform, (100, 600))
             self.screen.blit(self.platform, (750, 600))
             self.screen.blit(self.platform, (1400, 600))
+            pygame.draw.rect(self.screen, (255, 0, 0), self.button_play_rect, 1)
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
@@ -45,9 +45,9 @@ class Menu:
                     mouse_pos = pygame.mouse.get_pos()
                     if self.button_play_rect.collidepoint(mouse_pos):
                         self.main_menu = False
-                        self.screen.blit(self.menu_image, (0, 0))
-                    elif self.button_quit_rect.collidepoint(mouse_pos):
-                        quit()
+                        # self.screen.blit(self.menu_image, (0, 0))
+                    # elif self.button_quit_rect.collidepoint(mouse_pos):
+                    #     quit()
             pygame.display.flip()
 
 
