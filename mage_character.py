@@ -1,9 +1,9 @@
 import pygame
 
-idle_images = [pygame.image.load(f'images/mag/idle/({i}).png') for i in range(1, 11)]
-attack_images = [pygame.image.load(f'images/mag/attack/({i}).png') for i in range(1, 11)]
-die_images = [pygame.image.load(f'images/mag/die/({i}).png') for i in range(1, 11)]
-walk_images_right = [pygame.image.load(f'images/mag/walk/({i}).png') for i in range(1, 11)]
+idle_images = [pygame.image.load(f'images/mage/idle/({i}).png') for i in range(1, 11)]
+attack_images = [pygame.image.load(f'images/mage/attack/({i}).png') for i in range(1, 11)]
+die_images = [pygame.image.load(f'images/mage/die/({i}).png') for i in range(1, 11)]
+walk_images_right = [pygame.image.load(f'images/mage/walk/({i}).png') for i in range(1, 11)]
 
 
 class Mage:

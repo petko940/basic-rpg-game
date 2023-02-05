@@ -6,6 +6,7 @@ from warrior_character import Warrior
 
 class Menu:
     arrow = [pygame.image.load(f'images/menu/arrow/({i}).png') for i in range(1, 9)]
+    arrow_pos = ((225, 80), (900, 80))
 
     pygame.mixer.init()
     pygame.mixer.music.load("images/menu/music.mp3")
@@ -16,9 +17,9 @@ class Menu:
     menu_image = pygame.image.load('images/menu/make_character.jpg')
 
     button_play = pygame.image.load('images/menu/play.png')
-    button_play_rect = button_play.get_rect()
-    button_play_rect.x = buttons_x
-    button_play_rect.y = buttons_y
+    button_play_rect = None
+    # button_play_rect.x = buttons_x
+    # button_play_rect.y = buttons_y
 
     button_quit = pygame.image.load('images/menu/exit.png')
     button_quit_rect = button_quit.get_rect()
@@ -41,18 +42,15 @@ class Menu:
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
     selected = {"warrior": False, "mage": False, }
-    arrow_pos = [(225, 80),(900,80)]
+
 
     index = 0
+    see_arrow = arrow[int(index) % len(arrow)]
 
     def __init__(self, ):
         self.main_menu = True
         self.warrior = Warrior()
         self.mage = Mage()
-
-    @property
-    def get_character_objects(self):
-        return {'warrior': self.warrior}
 
     def menu(self, ):
         while self.main_menu:
@@ -62,7 +60,8 @@ class Menu:
             self.screen.blit(self.platform, (70, 600))
             self.screen.blit(self.platform, (750, 600))
             self.screen.blit(self.platform, (1400, 600))
-
+            # pygame.draw.rect(self.screen,(255,0,0),self.button_play_rect,1)
+            # pygame.draw.rect(self.screen,(255,0,0),self.button_quit_rect)
             self.screen.blit(self.warrior.idle_animation(), (self.heroes_x_y[0][0], self.heroes_x_y[0][1]))
             self.screen.blit(self.mage.idle_animation(), (self.heroes_x_y[1][0], self.heroes_x_y[1][1]))
 
@@ -84,16 +83,20 @@ class Menu:
                     elif self.button_quit_rect.collidepoint(mouse_pos):
                         quit()
 
-            print(self.selected)
-            if any(x for x in self.selected.values()):
-                self.screen.blit(self.button_play, self.button_play_rect)
+            i = 0
+            for value in self.selected.values():
+                self.index += 0.13
+                if value:
+                    button_play_rect = self.button_play.get_rect()
+                    button_play_rect.x = self.buttons_x
+                    button_play_rect.y = self.buttons_y
+                    see_arrow = self.arrow[int(self.index) % len(self.arrow)]
+                    self.screen.blit(see_arrow, (self.arrow_pos[i][0], self.arrow_pos[i][1]))
 
-                self.index += 0.3
-                see_arrow = self.arrow[int(self.index) % len(self.arrow)]
-                if self.selected["warrior"]:
-                    self.screen.blit(see_arrow, (self.arrow_pos[0][0], self.arrow_pos[0][1]))
-                elif self.selected['mage']:
-                    self.screen.blit(see_arrow, (self.arrow_pos[1][0], self.arrow_pos[1][1]))
+                    self.screen.blit(self.button_play, self.button_play_rect)
+
+                i += 1
+
             pygame.display.flip()
 
 
