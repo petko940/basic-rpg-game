@@ -12,7 +12,6 @@ class Mage:
 
     def __init__(self):
         self.index = 0
-        self.is_selected = False
 
     def idle_animation(self):
         self.index += self.__IDLE_SPEED
