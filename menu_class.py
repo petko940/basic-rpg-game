@@ -13,7 +13,7 @@ class Menu:
     pygame.mixer.music.play()
     pygame.mixer.music.set_volume(0.1)
 
-    buttons_x, buttons_y = 1920 / 2 - 200, 1080 / 1.01 - 210
+    buttons_x, buttons_y = 1920 / 2 - 100, 1080 / 1.01 - 210
     menu_image = pygame.image.load('images/menu/make_character.jpg')
 
     button_play = pygame.image.load('images/menu/play.png')
@@ -44,10 +44,13 @@ class Menu:
     WIDTH, HEIGHT = (1920, 1080)
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
-    selected = {"warrior": False, "mage": False, }
+    selected = {"Warrior": False, "Mage": False, }
 
     index = 0
     see_arrow = arrow[int(index) % len(arrow)]
+
+    chosen_hero = ""
+    class_names = ["Warrior", "Mage"]
 
     def __init__(self, ):
         self.main_menu = True
@@ -76,22 +79,31 @@ class Menu:
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_pos = pygame.mouse.get_pos()
                     if self.is_ready_to_start:
+                        chosen_hero = self.chosen_hero
+                        start = eval(chosen_hero)
+                        end = start()
                         if self.button_play_rect.collidepoint(mouse_pos):
+                            for _ in range(300):
+                                self.screen.blit(self.menu_image, (0, 0))
+                                self.screen.blit(end.jump_animation(), (650, 200))
+                                pygame.display.update()
                             self.main_menu = False
 
                     if self.warrior_rect.collidepoint(mouse_pos):
-                        self.selected['warrior'] = True
-                        self.selected['mage'] = False
+                        self.selected['Warrior'] = True
+                        self.selected['Mage'] = False
+                        self.button_play_rect.x = 150
 
                     elif self.mage_rect.collidepoint(mouse_pos):
-                        self.selected['warrior'] = False
-                        self.selected['mage'] = True
+                        self.selected['Warrior'] = False
+                        self.selected['Mage'] = True
+                        self.button_play_rect.x = self.buttons_x
 
                     elif self.button_quit_rect.collidepoint(mouse_pos):
                         quit()
 
             i = 0
-            for value in self.selected.values():
+            for key, value in self.selected.items():
                 self.index += 0.13
                 if value:
                     see_arrow = self.arrow[int(self.index) % len(self.arrow)]
@@ -100,8 +112,9 @@ class Menu:
                     self.is_ready_to_start = True
                     self.screen.blit(self.button_play, self.button_play_rect)
 
-                i += 1
+                    self.chosen_hero = key
 
+                i += 1
             pygame.display.flip()
 
 
