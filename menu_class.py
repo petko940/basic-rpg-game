@@ -3,16 +3,16 @@ import pygame
 from mage_character import Mage
 from warrior_character import Warrior
 from hunter_character import Hunter
+from music import music
+
+pygame.mixer.init()
 
 
 class Menu:
     arrow = [pygame.image.load(f'images/menu/arrow/({i}).png') for i in range(1, 9)]
     arrow_pos = ((225, 80), (900, 80), (790 + 720, 80))
 
-    pygame.mixer.init()
-    pygame.mixer.music.load("images/menu/music.mp3")
-    pygame.mixer.music.play()
-    pygame.mixer.music.set_volume(0.1)
+    music('images/menu/music.mp3')
 
     buttons_x, buttons_y = 1920 / 2 - 100, 1080 / 1.01 - 210
     menu_image = pygame.image.load('images/menu/make_character.jpg')
@@ -92,11 +92,11 @@ class Menu:
                         end = start()
                         if self.button_play_rect.collidepoint(mouse_pos):
                             self.main_menu = False
+                            music('images/maps/map1/map1.mp3')
                             for i in range(510):
                                 self.screen.blit(self.menu_image, (0, 0))
                                 self.screen.blit(end.jump_animation(), (650, 200))
                                 pygame.draw.rect(self.screen, (50, (255 - i // 2), 0), self.menu_image_rect, i)
-
                                 pygame.display.flip()
 
                     if self.warrior_rect.collidepoint(mouse_pos):
