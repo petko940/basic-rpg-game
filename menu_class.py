@@ -92,7 +92,7 @@ class Menu:
                         end = start()
                         if self.button_play_rect.collidepoint(mouse_pos):
                             self.main_menu = False
-                            music('images/maps/map1/map1.mp3')
+                            music('images/maps/map1/map1_song.mp3')
                             for i in range(510):
                                 self.screen.blit(self.menu_image, (0, 0))
                                 self.screen.blit(end.jump_animation(), (650, 200))
