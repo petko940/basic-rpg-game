@@ -35,7 +35,7 @@ class Menu:
 
     heroes_x_y = [(120, 240), (790, 240), (790 + 630, 240)]
 
-    warrior_rect = Warrior().idle_animation().get_rect()
+    warrior_rect = Warrior().idle_animation("left").get_rect()
     warrior_rect.x = heroes_x_y[0][0]
     warrior_rect.y = heroes_x_y[0][1]
 
@@ -76,7 +76,7 @@ class Menu:
             if not self.is_ready_to_start:
                 self.screen.blit(self.fake_start, self.button_play_rect)
 
-            self.screen.blit(self.warrior.idle_animation(), (self.heroes_x_y[0][0], self.heroes_x_y[0][1]))
+            self.screen.blit(self.warrior.idle_animation("right"), (self.heroes_x_y[0][0], self.heroes_x_y[0][1]))
             self.screen.blit(self.mage.idle_animation(), (self.heroes_x_y[1][0], self.heroes_x_y[1][1]))
             self.screen.blit(self.hunter.idle_animation(), (self.heroes_x_y[2][0], self.heroes_x_y[2][1]))
 
