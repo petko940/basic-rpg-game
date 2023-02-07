@@ -1,5 +1,4 @@
 import pygame
-from Scripts.bottle import py
 
 idle_images_right = [pygame.image.load(f'images/war/idle/({i}).png') for i in range(1, 11)]
 idle_images_left = [pygame.transform.flip(idle_images_right[i], True, False) for i in range(10)]
