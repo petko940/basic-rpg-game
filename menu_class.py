@@ -96,7 +96,7 @@ class Menu:
                             for i in range(510):
                                 self.screen.blit(self.menu_image, (0, 0))
                                 self.screen.blit(end.jump_animation(), (650, 200))
-                                pygame.draw.rect(self.screen, (50, (255 - i // 2), 0), self.menu_image_rect, i)
+                                pygame.draw.rect(self.screen, (50, (255 - i // 2), 0), self.menu_image_rect, int(i * 1.1))
                                 pygame.display.flip()
 
                     if self.warrior_rect.collidepoint(mouse_pos):
@@ -137,5 +137,5 @@ class Menu:
             pygame.display.flip()
 
 
-menu = Menu()
-menu.menu()
+# menu = Menu()
+# menu.menu()

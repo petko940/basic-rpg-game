@@ -17,6 +17,10 @@ while game_running:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 game_running = False
+            elif event.key == pygame.K_d:
+                pass
+                # TO DO walk right
+                # char.walking = True
 
     pygame.draw.rect(screen, (255, 0, 0), a)
     pygame.display.flip()
