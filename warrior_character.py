@@ -2,6 +2,7 @@ import pygame
 
 idle_images_right = [pygame.image.load(f'images/war/idle/({i}).png') for i in range(1, 11)]
 idle_images_left = [pygame.transform.flip(idle_images_right[i], True, False) for i in range(10)]
+# idle_mask_right = [pygame.mask.from_surface(x) for x in idle_images_right]
 
 attack_images_right = [pygame.image.load(f'images/war/attack/({i}).png') for i in range(1, 11)]
 attack_images_left = [pygame.transform.flip(attack_images_right[i], True, False) for i in range(10)]
@@ -19,6 +20,7 @@ class Warrior:
 
     def __init__(self):
         self.index = 0
+        self.idle_mask_right = [pygame.mask.from_surface(x) for x in idle_images_right]
 
     def idle_animation(self, direction):
         self.index += self.__IDLE_SPEED
