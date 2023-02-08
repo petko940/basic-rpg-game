@@ -40,6 +40,8 @@ while game_running:
 
     elif pygame.key.get_pressed()[pygame.K_d]:
         screen.blit(current_hero.walk_images("right"), actions.walk())
+        if actions.check_for_traverse():
+            map_controller.traverse_image()
 
     elif pygame.key.get_pressed()[pygame.K_SPACE]:
         screen.blit(current_hero.attack_animation("right"), actions.attack())
