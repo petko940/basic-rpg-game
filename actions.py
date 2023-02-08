@@ -19,3 +19,8 @@ class Actions:
     def attack(self):
         y = self.y - 100
         return self.x, y
+
+    def check_for_traverse(self):
+        if self.x >= 1750:
+            self.x = 10
+            return True
