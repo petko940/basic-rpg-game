@@ -55,7 +55,6 @@ class Menu:
     index = 0
     see_arrow = arrow[int(index) % len(arrow)]
 
-    chosen_hero = ""
     class_names = ["Warrior", "Mage", "Hunter"]
 
     def __init__(self, ):
@@ -63,6 +62,11 @@ class Menu:
         self.warrior = Warrior()
         self.mage = Mage()
         self.hunter = Hunter()
+        self.chosen_hero = 'a'
+
+    @property
+    def get_current_hero(self):
+        return {"Warrior": self.warrior, "Mage": self.mage, "Hunter": self.hunter}
 
     def menu(self, ):
         while self.main_menu:
@@ -87,17 +91,8 @@ class Menu:
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_pos = pygame.mouse.get_pos()
                     if self.is_ready_to_start:
-                        chosen_hero = self.chosen_hero
-                        start = eval(chosen_hero)
-                        end = start()
-                        if self.button_play_rect.collidepoint(mouse_pos):
-                            self.main_menu = False
-                            music('images/maps/map1/map1_song.mp3')
-                            for i in range(510):
-                                self.screen.blit(self.menu_image, (0, 0))
-                                self.screen.blit(end.jump_animation(), (650, 200))
-                                pygame.draw.rect(self.screen, (50, (255 - i // 2), 0), self.menu_image_rect, int(i * 1.1))
-                                pygame.display.flip()
+                        self.main_menu = False
+                        # self.before_game_start()
 
                     if self.warrior_rect.collidepoint(mouse_pos):
                         self.selected['Warrior'] = True
@@ -130,11 +125,22 @@ class Menu:
                     self.is_ready_to_start = True
                     self.screen.blit(self.button_play, self.button_play_rect)
 
-                    self.chosen_hero = key
+                    self.chosen_hero = self.get_current_hero[key]
 
                 i += 1
 
             pygame.display.flip()
+
+    def before_game_start(self):
+        mouse_pos = pygame.mouse.get_pos()
+        chosen_hero = self.chosen_hero
+        if self.button_play_rect.collidepoint(mouse_pos):
+            music('images/maps/map1/map1_song.mp3')
+            for i in range(510):
+                self.screen.blit(self.menu_image, (0, 0))
+                self.screen.blit(chosen_hero.jump_animation(), (650, 200))
+                pygame.draw.rect(self.screen, (50, (255 - i // 2), 0), self.menu_image_rect, int(i * 1.1))
+                pygame.display.flip()
 
 
 # menu = Menu()

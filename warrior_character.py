@@ -3,7 +3,9 @@ import pygame
 idle_images_right = [pygame.image.load(f'images/war/idle/({i}).png') for i in range(1, 11)]
 idle_images_left = [pygame.transform.flip(idle_images_right[i], True, False) for i in range(10)]
 
-attack_images = [pygame.image.load(f'images/war/attack/({i}).png') for i in range(1, 11)]
+attack_images_right = [pygame.image.load(f'images/war/attack/({i}).png') for i in range(1, 11)]
+attack_images_left = [pygame.transform.flip(attack_images_right[i], True, False) for i in range(10)]
+
 die_images = [pygame.image.load(f'images/war/die/({i}).png') for i in range(1, 11)]
 
 walk_images_right = [pygame.image.load(f'images/war/walk/({i}).png') for i in range(1, 11)]
@@ -30,10 +32,15 @@ class Warrior:
             return walk_images_right[int(self.index) % len(walk_images_right)]
         return walk_images_left[int(self.index) % len(walk_images_left)]
 
+    def attack_animation(self,direction ):
+        self.index += 0.1
+        if direction == "right":
+            return attack_images_right[int(self.index) % len(attack_images_right)]
+        return attack_images_left[int(self.index) % len(attack_images_left)]
+
     def jump_animation(self):
         self.index += 0.1
         return jump_images[int(self.index) % len(jump_images)]
-
 #
 # test = Warrior()
 #
