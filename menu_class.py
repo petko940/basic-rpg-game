@@ -10,7 +10,7 @@ pygame.mixer.init()
 
 class Menu:
     arrow = [pygame.image.load(f'images/menu/arrow/({i}).png') for i in range(1, 9)]
-    arrow_pos = ((225, 80), (900, 80), (790 + 720, 80))
+    arrow_pos = ((225, 80), (900, 80), (790 + 740, 80))
 
     music('images/menu/music.mp3')
 
