@@ -1,4 +1,5 @@
 import pygame
+import time
 
 from mage_character import Mage
 from warrior_character import Warrior
@@ -9,6 +10,9 @@ pygame.mixer.init()
 
 
 class Menu:
+    last_click_time = 0
+    click_threshold = 0.2
+
     arrow = [pygame.image.load(f'images/menu/arrow/({i}).png') for i in range(1, 9)]
     arrow_pos = ((225, 80), (900, 80), (790 + 740, 80))
 
@@ -19,7 +23,6 @@ class Menu:
     menu_image_rect = menu_image.get_rect()
 
     button_play = pygame.image.load('images/menu/play.png')
-    is_ready_to_start = False
     button_play_rect = button_play.get_rect()
     button_play_rect.x = buttons_x
     button_play_rect.y = buttons_y
@@ -57,6 +60,8 @@ class Menu:
 
     class_names = ["Warrior", "Mage", "Hunter"]
 
+    is_ready_to_start = False
+
     def __init__(self, ):
         self.main_menu = True
         self.warrior = Warrior()
@@ -70,20 +75,6 @@ class Menu:
 
     def menu(self, ):
         while self.main_menu:
-            self.screen.blit(self.menu_image, (0, 0))
-
-            self.screen.blit(self.button_quit, self.button_quit_rect)
-            self.screen.blit(self.platform, (70, 600))
-            self.screen.blit(self.platform, (750, 600))
-            self.screen.blit(self.platform, (1400, 600))
-
-            if not self.is_ready_to_start:
-                self.screen.blit(self.fake_start, self.button_play_rect)
-
-            self.screen.blit(self.warrior.idle_animation("right"), (self.heroes_x_y[0][0], self.heroes_x_y[0][1]))
-            self.screen.blit(self.mage.idle_animation(), (self.heroes_x_y[1][0], self.heroes_x_y[1][1]))
-            self.screen.blit(self.hunter.idle_animation(), (self.heroes_x_y[2][0], self.heroes_x_y[2][1]))
-
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
@@ -92,19 +83,14 @@ class Menu:
                     mouse_pos = pygame.mouse.get_pos()
                     if self.is_ready_to_start:
                         self.main_menu = False
-                        # self.before_game_start()
+                        self.before_game_start()
 
                     if self.warrior_rect.collidepoint(mouse_pos):
                         self.selected['Warrior'] = True
                         self.selected['Mage'] = False
                         self.selected['Hunter'] = False
                         self.button_play_rect.x = 150
-                    # pos = self.warrior.idle_mask_right[0]
-                    # if self.warrior.idle_mask_right.get_at((0, 0)) == 1:
-                    #     print("The pixel is opaque.")
-                    # if pos.overlap(pygame.mask.Mask((0, 0)), (mouse_pos[0], mouse_pos[1])):
-                    #     print(123)
-                    #     self.button_play_rect.x = self.buttons_x
+
                     elif self.mage_rect.collidepoint(mouse_pos):
                         self.selected['Warrior'] = False
                         self.selected['Mage'] = True
@@ -120,6 +106,21 @@ class Menu:
                     elif self.button_quit_rect.collidepoint(mouse_pos):
                         quit()
 
+            if not self.main_menu:
+                break
+            self.screen.blit(self.menu_image, (0, 0))
+
+            self.screen.blit(self.button_quit, self.button_quit_rect)
+            self.screen.blit(self.platform, (70, 600))
+            self.screen.blit(self.platform, (750, 600))
+            self.screen.blit(self.platform, (1400, 600))
+
+            if not self.is_ready_to_start:
+                self.screen.blit(self.fake_start, self.button_play_rect)
+
+            self.screen.blit(self.warrior.idle_animation("right"), (self.heroes_x_y[0][0], self.heroes_x_y[0][1]))
+            self.screen.blit(self.mage.idle_animation(), (self.heroes_x_y[1][0], self.heroes_x_y[1][1]))
+            self.screen.blit(self.hunter.idle_animation(), (self.heroes_x_y[2][0], self.heroes_x_y[2][1]))
             i = 0
             for key, value in self.selected.items():
                 self.index += 0.13
@@ -145,8 +146,7 @@ class Menu:
                 self.screen.blit(self.menu_image, (0, 0))
                 self.screen.blit(chosen_hero.jump_animation(), (650, 200))
                 pygame.draw.rect(self.screen, (50, (255 - i // 2), 0), self.menu_image_rect, int(i * 1.1))
-                pygame.display.flip()
-
+                pygame.display.update()
 
 menu = Menu()
 menu.menu()
