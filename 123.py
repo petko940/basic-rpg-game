@@ -1,45 +1,22 @@
 import pygame
 
-# Initialize Pygame
+# initialize pygame
 pygame.init()
-WIDTH, HEIGHT = (1920, 1080)
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-# Load the sprite images
-images = [pygame.image.load(f"images/({i}).png").convert_alpha() for i in range(1,9)]
 
-# Define the sprite class
-class Sprite:
-    def __init__(self, images):
-        self.images = images
-        self.index = 0
+# load an image
+image1 = pygame.image.load("images/war/idle/(1).png")
+image2 = pygame.image.load("images/war/idle/(2).png")
 
-    def update(self):
-        self.index = int(self.index + 1) % len(self.images)
-        print(self.index)
-    def image(self):
-        return self.images[self.index]
+# create a mask from the image
+mask1 = pygame.mask.from_surface(image1)
+mask2 = pygame.mask.from_surface(image2)
+print(image1.get_rect())
+print(image2.get_rect())
+# check if the two masks overlap
+offset = (10, 20)
+overlap = mask1.overlap(mask2, offset)
 
-# Create an instance of the sprite class
-sprite = Sprite(images)
-
-speed = 1
-# Start the game loop
-running = True
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-    # Clear the screen
-    screen.fill((255, 255, 255))
-
-    # Update the sprite
-    sprite.update()
-
-    # Draw the sprite on the screen
-    screen.blit(sprite.image(), (500, 500))
-
-    # Update the display
-    pygame.display.update()
-
-# Quit Pygame
-pygame.quit()
+if overlap:
+    print("The two masks overlap!")
+else:
+    print("The two masks do not overlap.")

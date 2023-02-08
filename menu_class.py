@@ -62,7 +62,7 @@ class Menu:
         self.warrior = Warrior()
         self.mage = Mage()
         self.hunter = Hunter()
-        self.chosen_hero = 'a'
+        self.chosen_hero = ''
 
     @property
     def get_current_hero(self):
@@ -94,12 +94,17 @@ class Menu:
                         self.main_menu = False
                         # self.before_game_start()
 
-                    if self.warrior_rect.collidepoint(mouse_pos):
-                        self.selected['Warrior'] = True
-                        self.selected['Mage'] = False
-                        self.selected['Hunter'] = False
-                        self.button_play_rect.x = 150
-
+                    # if self.warrior_rect.collidepoint(mouse_pos):
+                    #     self.selected['Warrior'] = True
+                    #     self.selected['Mage'] = False
+                    #     self.selected['Hunter'] = False
+                    #     self.button_play_rect.x = 150
+                    pos = self.warrior.idle_mask_right[0]
+                    if self.warrior.idle_mask_right.get_at((0, 0)) == 1:
+                        print("The pixel is opaque.")
+                    if pos.overlap(pygame.mask.Mask((0, 0)), (mouse_pos[0], mouse_pos[1])):
+                        print(123)
+                        self.button_play_rect.x = self.buttons_x
                     elif self.mage_rect.collidepoint(mouse_pos):
                         self.selected['Warrior'] = False
                         self.selected['Mage'] = True
@@ -143,5 +148,5 @@ class Menu:
                 pygame.display.flip()
 
 
-# menu = Menu()
-# menu.menu()
+menu = Menu()
+menu.menu()
