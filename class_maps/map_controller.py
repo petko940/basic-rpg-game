@@ -20,3 +20,6 @@ class MapController:
 
     def show_current_map(self):
         return self.maps[self.current_map].get_current_image()
+
+    def traverse_image(self):
+        self.maps[self.current_map].next_image()
