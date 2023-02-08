@@ -29,7 +29,7 @@ first_hero = Hero("Dark Wizard", "fireballs", True)
 third_hero = Hero("Still no name", "warrior", False)
 
 default_dictionary = {
-    "Map": "", # it must be something like Map.set_index(0),
+    "Map": "",  # map-controller.current-map
     "Hunter": Hero("Hunter", "Long range"),
     "Mage": Hero("Mage", "Fireballs"),
     "Warrior": Hero("Warrior", "Mad Axe")
