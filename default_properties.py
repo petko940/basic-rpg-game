@@ -1,9 +1,8 @@
 import pickle
-from test_class import Mage
 from class_maps.map_controller import MapController
-# from hunter_character import Hunter
-# from mage_character import Mage
-# from warrior_character import Warrior
+from hunter_character import Hunter
+from mage_character import Mage
+from warrior_character import Warrior
 
 
 def load_data():
@@ -18,40 +17,29 @@ def load_data():
 
 def save_on_close(program_data: dict, map_data: MapController, current_hero: object):
     program_data["Map"].current_map = map_data.current_map
+    # No idea if any of this is needed in order to work with the third argument:
+    # program_data["Mage"].index = mage.index
+    # program_data["Hunter"].index = hunter.index
+    # program_data["Warrior"].index = warrior.index
 
     with open('savegame', 'wb') as data:
         pickle.dump(program_data, data)
 
 
-# default properties for the heroes
-class Hero:
-    def __init__(self, name: str, power: str, is_selected=False):
-        self.name = name
-        self.power = power
-        self.is_selected = is_selected
-
-    def get_name(self):
-        return self.name
-
-    def set_selected(self):
-        self.is_selected = True
-        return self.is_selected
-
-
-hero = Hero("Superman", "super strength", True)
-first_hero = Hero("Dark Wizard", "fireballs", True)
-third_hero = Hero("Still no name", "warrior", False)
-
 default_dictionary = {
     "Map": MapController(),
-    "Hunter": Hero,
+    "Hunter": Hunter(),
     "Mage": Mage(),
-    "Warrior": Mage
+    "Warrior": Warrior()
 }
-
+mage = Mage()
+map = MapController()
 test = load_data()
-print(test)
-save_on_close(default_dictionary, default_dictionary["Map"], default_dictionary["Hunter"])
 
-print(test["Mage"].index)
-print(test["Map"].current_map)
+save_on_close(default_dictionary, map, mage)
+print("##################################################")
+# print(f"from hunger_character this is the index of the Hunter: {test['Hunter'].index}")
+print(f"from mage_character this is the index of the Mage: {test['Mage'].index}")
+# print(f"from hunger_character this is the index of the Warrior: {test['Warrior'].index}")
+print(f"from map_controller this is the index of the current map: {test['Map'].current_map}")
+print("##################################################")

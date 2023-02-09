@@ -20,7 +20,7 @@ class Warrior:
 
     def __init__(self):
         self.index = 0
-        self.idle_mask_right = [pygame.mask.from_surface(x) for x in idle_images_right]
+        #self.idle_mask_right = [pygame.mask.from_surface(x) for x in idle_images_right]
 
     def idle_animation(self, direction):
         self.index += self.__IDLE_SPEED
