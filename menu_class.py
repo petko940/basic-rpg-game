@@ -1,5 +1,4 @@
 import pygame
-import time
 
 from mage_character import Mage
 from warrior_character import Warrior
@@ -10,9 +9,6 @@ pygame.mixer.init()
 
 
 class Menu:
-    last_click_time = 0
-    click_threshold = 0.2
-
     arrow = [pygame.image.load(f'images/menu/arrow/({i}).png') for i in range(1, 9)]
     arrow_pos = ((225, 80), (900, 80), (790 + 740, 80))
 
@@ -81,9 +77,6 @@ class Menu:
                         quit()
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_pos = pygame.mouse.get_pos()
-                    if self.is_ready_to_start:
-                        self.main_menu = False
-                        self.before_game_start()
 
                     if self.warrior_rect.collidepoint(mouse_pos):
                         self.selected['Warrior'] = True
@@ -105,6 +98,10 @@ class Menu:
 
                     elif self.button_quit_rect.collidepoint(mouse_pos):
                         quit()
+
+                    elif self.button_play_rect.collidepoint(mouse_pos):
+                        self.main_menu = False
+                        self.before_game_start()
 
             if not self.main_menu:
                 break
@@ -148,5 +145,5 @@ class Menu:
                 pygame.draw.rect(self.screen, (50, (255 - i // 2), 0), self.menu_image_rect, int(i * 1.1))
                 pygame.display.update()
 
-menu = Menu()
-menu.menu()
+# menu = Menu()
+# menu.menu()
