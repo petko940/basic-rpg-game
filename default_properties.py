@@ -1,9 +1,9 @@
-import pygame
 import pickle
+from test_class import Mage
 from class_maps.map_controller import MapController
-from hunter_character import Hunter
-from mage_character import Mage
-from warrior_character import Warrior
+# from hunter_character import Hunter
+# from mage_character import Mage
+# from warrior_character import Warrior
 
 
 def load_data():
@@ -44,12 +44,14 @@ third_hero = Hero("Still no name", "warrior", False)
 
 default_dictionary = {
     "Map": MapController(),
-    "Hunter": Hunter(),
+    "Hunter": Hero,
     "Mage": Mage(),
-    "Warrior": Warrior()
+    "Warrior": Mage
 }
 
 test = load_data()
-# todo  get info from object or fix EOFError
 print(test)
 save_on_close(default_dictionary, default_dictionary["Map"], default_dictionary["Hunter"])
+
+print(test["Mage"].index)
+print(test["Map"].current_map)
