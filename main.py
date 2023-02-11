@@ -7,24 +7,35 @@ from actions import Actions
 
 pygame.init()
 
+
+def loading_game_screen(window, current_map: MapController, hero_actions: Actions, rect_of_background: pygame.Rect):
+    for i in range(510, 0, -1):
+        window.blit(current_map.show_current_map(), (0, 0))
+        window.blit(current_hero.idle_animation('right'), hero_actions.idle())
+        pygame.draw.rect(window, (50, (255 - i // 2), 0), rect_of_background, int(i * 1.1))
+        pygame.display.update()
+
+
 WIDTH, HEIGHT = (1366, 768)
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
+screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.FULLSCREEN)
 resize = 1.4
+
 map_controller = MapController()
-map_controller.create_map([pygame.transform.scale(pygame.image.load(f'images/maps/map1/({i}).png'),(1920/resize,1080/resize)) for i in range(1, 5 + 1)], "Forest")
+map_controller.create_map([pygame.transform.scale(pygame.image.load(f'images/maps/map1/({i}).png'), (1920/resize, 1080/ resize)) for i in range(1, 5 + 1)], "Forest")
 
 menu = Menu()
-game_running = True
-
 actions = Actions()
 
 menu.menu()
 current_hero = menu.chosen_hero
 
 background_rect = map_controller.show_current_map().get_rect()
-is_right = True
-before_start = True
 
+loading_game_screen(screen, map_controller, actions, background_rect)
+
+
+is_right = True
+game_running = True
 while game_running:
 
     for event in pygame.event.get():
@@ -35,14 +46,6 @@ while game_running:
             #     screen.blit(warrior.walk_images("right"),warrior.idle_animation("right").get_rect())
             # TO DO walk right
             # char.walking = True
-
-    if before_start:
-        for i in range(510, 0, -1):
-            screen.blit(map_controller.show_current_map(), (0, 0))
-            screen.blit(current_hero.idle_animation('right'), actions.idle())
-            pygame.draw.rect(screen, (50, (255 - i // 2), 0), background_rect, int(i * 1.1))
-            pygame.display.flip()
-        before_start = False
 
     screen.blit(map_controller.show_current_map(), (0, 0))
 
