@@ -1,8 +1,8 @@
 import pygame
 
-from mage_character import Mage
-from warrior_character import Warrior
-from hunter_character import Hunter
+from characters.mage_character import Mage
+from characters.warrior_character import Warrior
+from characters.hunter_character import Hunter
 from music import music
 
 pygame.mixer.init()
@@ -38,15 +38,18 @@ class Menu:
     heroes_x_y = [(120 / resized, 240 / resized), (790 / resized, 240 / resized),
                   ((790 + 630) / resized, 240 / resized)]
 
-    warrior_rect = Warrior().idle_animation("right").get_rect()
+    war_surface = pygame.Surface((580, 520))   # hardcoded
+    warrior_rect = war_surface.get_rect()
     warrior_rect.x = heroes_x_y[0][0]
     warrior_rect.y = heroes_x_y[0][1]
 
-    mage_rect = Mage().idle_animation('right').get_rect()
+    mage_surface = pygame.Surface((580, 520))   # hardcoded
+    mage_rect = mage_surface.get_rect()
     mage_rect.x = heroes_x_y[1][0]
     mage_rect.y = heroes_x_y[1][1]
 
-    hunter_rect = Hunter().idle_animation().get_rect()
+    hunter_surface = pygame.Surface((580, 520))  # hardcoded
+    hunter_rect = hunter_surface.get_rect()
     hunter_rect.x = heroes_x_y[2][0]
     hunter_rect.y = heroes_x_y[2][1]
 
@@ -63,14 +66,14 @@ class Menu:
 
     def __init__(self, ):
         self.main_menu = True
-        self.warrior = Warrior()
+        # self.warrior = Warrior()
         self.mage = Mage()
         self.hunter = Hunter()
         self.chosen_hero = ''
 
     @property
     def get_current_hero(self):
-        return {"Warrior": self.warrior, "Mage": self.mage, "Hunter": self.hunter}
+        return "Warrior", "Mage", "Hunter"
 
     def menu(self, ):
         while self.main_menu:
@@ -118,9 +121,9 @@ class Menu:
             if not self.is_ready_to_start:
                 self.screen.blit(self.fake_start, self.button_play_rect)
 
-            self.screen.blit(self.warrior.idle_animation("right"), (self.heroes_x_y[0][0], self.heroes_x_y[0][1]))
-            self.screen.blit(self.mage.idle_animation('right'), (self.heroes_x_y[1][0], self.heroes_x_y[1][1]))
-            self.screen.blit(self.hunter.idle_animation(), (self.heroes_x_y[2][0], self.heroes_x_y[2][1]))
+            # self.screen.blit(self.warrior.idle_animation("right"), (self.heroes_x_y[0][0], self.heroes_x_y[0][1]))
+            # self.screen.blit(self.mage.idle_animation('right'), (self.heroes_x_y[1][0], self.heroes_x_y[1][1]))
+            # self.screen.blit(self.hunter.idle_animation(), (self.heroes_x_y[2][0], self.heroes_x_y[2][1]))
             i = 0
             for key, value in self.selected.items():
                 self.index += 0.13
