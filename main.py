@@ -36,13 +36,13 @@ while game_running:
             # TO DO walk right
             # char.walking = True
 
-    if before_start:
-        for i in range(510, 0, -1):
-            screen.blit(map_controller.show_current_map(), (0, 0))
-            screen.blit(current_hero.idle_animation('right'), actions.idle())
-            pygame.draw.rect(screen, (50, (255 - i // 2), 0), background_rect, int(i * 1.1))
-            pygame.display.flip()
-        before_start = False
+    # if before_start:
+    #     for i in range(510, 0, -1):
+    #         screen.blit(map_controller.show_current_map(), (0, 0))
+    #         screen.blit(current_hero.idle_animation('right'), actions.idle())
+    #         pygame.draw.rect(screen, (50, (255 - i // 2), 0), background_rect, int(i * 1.1))
+    #         pygame.display.flip()
+    #     before_start = False
 
     screen.blit(map_controller.show_current_map(), (0, 0))
 

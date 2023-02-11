@@ -20,7 +20,7 @@ class Warrior:
 
     def __init__(self):
         self.index = 0
-        #self.idle_mask_right = [pygame.mask.from_surface(x) for x in idle_images_right]
+        # self.idle_mask_right = [pygame.mask.from_surface(x) for x in idle_images_right]
 
     def idle_animation(self, direction):
         self.index += self.__IDLE_SPEED
@@ -34,7 +34,7 @@ class Warrior:
             return walk_images_right[int(self.index) % len(walk_images_right)]
         return walk_images_left[int(self.index) % len(walk_images_left)]
 
-    def attack_animation(self,direction ):
+    def attack_animation(self, direction):
         self.index += 0.1
         if direction == "right":
             return attack_images_right[int(self.index) % len(attack_images_right)]
@@ -43,7 +43,6 @@ class Warrior:
     def jump_animation(self):
         self.index += 0.1
         return jump_images[int(self.index) % len(jump_images)]
-#
 # test = Warrior()
 #
 # WIDTH, HEIGHT = (1920, 1080)
@@ -60,12 +59,12 @@ class Warrior:
 #                     screen.blit(test.walk_images("left"), (650, 200))
 #                     pygame.display.flip()
 #         pygame.display.flip()
-        # keys = pygame.key.get_pressed()
-        # if keys[pygame.K_RIGHT]:
-        #     screen.blit(test.walk_images("right"), (300, 300))
-        #     pygame.display.flip()
-        # # elif event.key == pygame.K_a:
-        # #     screen.blit(test.walk_images("left"), (300, 300))
-        # #     pygame.display.flip()
+# keys = pygame.key.get_pressed()
+# if keys[pygame.K_RIGHT]:
+#     screen.blit(test.walk_images("right"), (300, 300))
+#     pygame.display.flip()
+# # elif event.key == pygame.K_a:
+# #     screen.blit(test.walk_images("left"), (300, 300))
+# #     pygame.display.flip()
 
-    # pygame.display.flip()
+# pygame.display.flip()
