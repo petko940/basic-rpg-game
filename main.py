@@ -7,11 +7,11 @@ from actions import Actions
 
 pygame.init()
 
-WIDTH, HEIGHT = (1920, 1080)
+WIDTH, HEIGHT = (1366, 768)
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-
+resize = 1.4
 map_controller = MapController()
-map_controller.create_map([pygame.image.load(f'images/maps/map1/({i}).png') for i in range(1, 5 + 1)], "Forest")
+map_controller.create_map([pygame.transform.scale(pygame.image.load(f'images/maps/map1/({i}).png'),(1920/resize,1080/resize)) for i in range(1, 5 + 1)], "Forest")
 
 menu = Menu()
 game_running = True
@@ -36,13 +36,13 @@ while game_running:
             # TO DO walk right
             # char.walking = True
 
-    # if before_start:
-    #     for i in range(510, 0, -1):
-    #         screen.blit(map_controller.show_current_map(), (0, 0))
-    #         screen.blit(current_hero.idle_animation('right'), actions.idle())
-    #         pygame.draw.rect(screen, (50, (255 - i // 2), 0), background_rect, int(i * 1.1))
-    #         pygame.display.flip()
-    #     before_start = False
+    if before_start:
+        for i in range(510, 0, -1):
+            screen.blit(map_controller.show_current_map(), (0, 0))
+            screen.blit(current_hero.idle_animation('right'), actions.idle())
+            pygame.draw.rect(screen, (50, (255 - i // 2), 0), background_rect, int(i * 1.1))
+            pygame.display.flip()
+        before_start = False
 
     screen.blit(map_controller.show_current_map(), (0, 0))
 
@@ -64,6 +64,7 @@ while game_running:
         screen.blit(current_hero.attack_animation("right"), actions.attack())
 
     else:
+        print(current_hero.idle_animation('right').get_rect())
         if is_right:
             screen.blit(current_hero.idle_animation('right'), actions.idle())
         else:

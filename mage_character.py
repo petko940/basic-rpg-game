@@ -1,5 +1,7 @@
 import pygame
 
+from hero import Hero
+
 idle_images_right = [pygame.image.load(f'images/mage/idle/({i}).png') for i in range(1, 11)]
 idle_images_left = [pygame.transform.flip(idle_images_right[i], True, False) for i in range(10)]
 
@@ -14,13 +16,15 @@ walk_images_left = [pygame.transform.flip(walk_images_right[i], True, False) for
 jump_images = [pygame.image.load(f'images/mage/jump/({i}).png') for i in range(1, 11)]
 
 
-class Mage:
+class Mage(Hero):
     __IDLE_SPEED = 0.16
 
-    def __init__(self):
+    def __init__(self, x=-30, y=300):
         self.index = 0
+        self.x = x
+        self.y = y
 
-    def idle_animation(self,direction):
+    def idle_animation(self, direction):
         self.index += self.__IDLE_SPEED
         if direction == 'right':
             return idle_images_right[int(self.index) % len(idle_images_right)]

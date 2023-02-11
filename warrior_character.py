@@ -1,18 +1,27 @@
 import pygame
 
-idle_images_right = [pygame.image.load(f'images/war/idle/({i}).png') for i in range(1, 11)]
-idle_images_left = [pygame.transform.flip(idle_images_right[i], True, False) for i in range(10)]
-# idle_mask_right = [pygame.mask.from_surface(x) for x in idle_images_right]
+resized = 1920 / 1368
 
-attack_images_right = [pygame.image.load(f'images/war/attack/({i}).png') for i in range(1, 11)]
+idle_images_right = [
+    pygame.transform.scale(pygame.image.load(f'images/war/idle/({i}).png'), (580 / resized, 520 / resized)) for i in
+    range(1, 11)]
+idle_images_left = [pygame.transform.flip(idle_images_right[i], True, False) for i in range(10)]
+
+attack_images_right = [
+    pygame.transform.scale(pygame.image.load(f'images/war/attack/({i}).png'), (647 / resized, 633 / resized)) for i in
+    range(1, 11)]
 attack_images_left = [pygame.transform.flip(attack_images_right[i], True, False) for i in range(10)]
 
-die_images = [pygame.image.load(f'images/war/die/({i}).png') for i in range(1, 11)]
+die_images = [pygame.transform.scale(pygame.image.load(f'images/war/die/({i}).png'), (668 / resized, 540 / resized)) for
+              i in range(1, 11)]  # vuzmojma greshka pri scale
 
-walk_images_right = [pygame.image.load(f'images/war/walk/({i}).png') for i in range(1, 11)]
+walk_images_right = [
+    pygame.transform.scale(pygame.image.load(f'images/war/walk/({i}).png'), (610 / resized, 555 / resized)) for i in
+    range(1, 11)]
 walk_images_left = [pygame.transform.flip(walk_images_right[i], True, False) for i in range(10)]
 
-jump_images = [pygame.image.load(f'images/war/jump/({i}).png') for i in range(1, 11)]
+jump_images = [pygame.transform.scale(pygame.image.load(f'images/war/jump/({i}).png'), (703 / resized, 678 / resized))
+               for i in range(1, 11)]
 
 
 class Warrior:
