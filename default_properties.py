@@ -1,8 +1,8 @@
 import pickle
 from class_maps.map_controller import MapController
-from hunter_character import Hunter
-from mage_character import Mage
-from warrior_character import Warrior
+from characters.hunter_character import Hunter
+from characters.mage_character import Mage
+from characters.warrior_character import Warrior
 
 
 def load_data():
@@ -23,7 +23,7 @@ def save_on_close(program_data: dict, map_data: MapController, current_hero: (Ma
 
 
 default_dictionary = {
-    "Map": MapController(),
+    "Map": MapController(),      # must fix this dict Tamer
     "Hunter": Hunter(),
     "Mage": Mage(),
     "Warrior": Warrior()
