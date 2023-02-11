@@ -1,7 +1,5 @@
 from characters.hero import Hero
 
-resized = 1.4
-
 
 class Warrior(Hero):
 
