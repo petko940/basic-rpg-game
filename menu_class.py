@@ -104,7 +104,7 @@ class Menu:
 
                     elif self.button_play_rect.collidepoint(mouse_pos):
                         self.main_menu = False
-                        self.before_game_start()
+                        # self.before_game_start()
 
             if not self.main_menu:
                 break

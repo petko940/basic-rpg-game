@@ -17,7 +17,7 @@ def loading_game_screen(window, current_map: MapController, hero_actions: Action
 
 
 WIDTH, HEIGHT = (1366, 768)
-screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.FULLSCREEN)
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
 resize = 1.4
 
 map_controller = MapController()
@@ -37,6 +37,7 @@ loading_game_screen(screen, map_controller, actions, background_rect)
 is_right = True
 game_running = True
 while game_running:
+    pygame.time.Clock().tick(100)
 
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
