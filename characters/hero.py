@@ -2,7 +2,7 @@ from pygame import transform
 
 
 class Hero:
-    __IDLE_SPEED = 0.16
+    __IDLE_SPEED = 0.25
     __ATK_SPEED = 0.2
 
     def __init__(self, x: int, y: int, attack_images: list, die_images: list, idle_images: list,
