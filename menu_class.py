@@ -143,6 +143,7 @@ class Menu:
             # screen.blit(self.platform, (70 / resized, 600 / resized))
             # screen.blit(self.platform, (750 / resized, 600 / resized))
             # screen.blit(self.platform, (1400 / resized, 600 / resized))
+
             if not self.is_ready_to_start:
                 screen.blit(self.fake_start, self.button_play_rect)
 
