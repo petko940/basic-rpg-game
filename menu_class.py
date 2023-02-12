@@ -124,17 +124,15 @@ class Menu:
                     elif self.button_quit_rect.collidepoint(mouse_pos):
                         quit()
 
-                    elif self.button_play_rect.collidepoint(mouse_pos):
+                    elif self.button_play_rect.collidepoint(mouse_pos)\
+                            and any(value for value in self.selected.values() if value):
                         self.main_menu = False
-                        # self.before_game_start()
+                        self.before_game_start()
 
             if self.is_full_screen:
                 screen.blit(self.button_windowed, self.button_windowed_rect)
             else:
                 screen.blit(self.button_full_screen, self.button_full_screen_rect)
-
-            if not self.main_menu:
-                break
 
             screen.blit(self.new_platform, (70 / resized, 600 / resized))
             screen.blit(self.new_platform, (755 / resized, 600 / resized))
