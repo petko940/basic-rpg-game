@@ -53,15 +53,21 @@ class HeroController:
 
     @staticmethod
     def load_mage_images():
-        attack_images = [transform.scale(image.load(f'characters/mage/attack/({i}).png'),()) for i in range(1, 8)]
+        attack_images = [
+            transform.scale(image.load(f'characters/mage/attack/({i}).png'), (466 / resized, 561 / resized)) for i in
+            range(1, 8)]
 
-        die_images = [transform.scale(image.load(f'characters/mage/die/({i}).png'),())  for i in range(1, 10)]
+        die_images = [transform.scale(image.load(f'characters/mage/die/({i}).png'), (671 / resized, 550 / resized)) for
+                      i in range(1, 10)]
 
-        idle_images = [transform.scale(image.load(f'characters/mage/idle/({i}).png'),())  for i in range(1, 11)]
+        idle_images = [transform.scale(image.load(f'characters/mage/idle/({i}).png'), (466 / resized, 535 / resized))
+                       for i in range(1, 11)]
 
-        jump_images = [transform.scale(image.load(f'characters/mage/jump/({i}).png'),())  for i in range(1, 11)]
+        jump_images = [transform.scale(image.load(f'characters/mage/jump/({i}).png'), (478 / resized, 675 / resized))
+                       for i in range(1, 11)]
 
-        walk_images = [transform.scale(image.load(f'characters/mage/walk/({i}).png'),())  for i in range(1, 11)]
+        walk_images = [transform.scale(image.load(f'characters/mage/walk/({i}).png'), (467 / resized, 561 / resized))
+                       for i in range(1, 11)]
 
         return attack_images, die_images, idle_images, jump_images, walk_images
 
@@ -71,7 +77,8 @@ class HeroController:
 
         die_images = [image.load(f'characters/hunt/die/({i}).png') for i in range(1, 11)]
 
-        idle_images = [image.load(f'characters/hunt/idle/({i}).png') for i in range(1, 11)]
+        idle_images = [transform.scale(image.load(f'characters/hunt/idle/({i}).png'), (483 / resized, 550 / resized))
+                       for i in range(1, 11)]
 
         jump_images = [image.load(f'characters/hunt/jump/({i}).png') for i in range(1, 11)]
 
