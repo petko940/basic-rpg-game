@@ -29,7 +29,7 @@ class Menu:
     button_quit = pygame.transform.scale(pygame.image.load('images/menu/exit.png'), (270 / resized, 100 / resized))
     button_quit_rect = button_quit.get_rect()
     button_quit_rect.x = buttons_x
-    button_quit_rect.y = buttons_y + 70
+    button_quit_rect.y = buttons_y + 80
 
     is_full_screen = False
 
@@ -38,16 +38,16 @@ class Menu:
 
     button_full_screen_rect = button_full_screen.get_rect()
     button_full_screen_rect.x = buttons_x + 400
-    button_full_screen_rect.y = buttons_y + 70
+    button_full_screen_rect.y = buttons_y - 600
 
     button_windowed = pygame.transform.scale(pygame.image.load('images/menu/windowed_button.png'),
                                              (500 / resized, 100 / resized))
     button_windowed_rect = button_windowed.get_rect()
     button_windowed_rect.x = buttons_x + 400
-    button_windowed_rect.y = buttons_y + 70
+    button_windowed_rect.y = buttons_y - 600
 
     platform = pygame.transform.scale(pygame.image.load('images/menu/platform.png'), (500 / resized, 320 / resized))
-
+    new_platform = pygame.transform.scale(pygame.image.load('images/menu/new_platform.png'), (500 / resized, 430 ))
     heroes_x_y = [(120 / resized, 240 / resized), (790 / resized, 240 / resized),
                   ((790 + 630) / resized, 240 / resized)]
 
@@ -135,11 +135,14 @@ class Menu:
 
             if not self.main_menu:
                 break
-            screen.blit(self.button_quit, self.button_quit_rect)
-            screen.blit(self.platform, (70 / resized, 600 / resized))
-            screen.blit(self.platform, (750 / resized, 600 / resized))
-            screen.blit(self.platform, (1400 / resized, 600 / resized))
 
+            screen.blit(self.new_platform, (70 / resized, 600 / resized))
+            screen.blit(self.new_platform, (755 / resized, 600 / resized))
+            screen.blit(self.new_platform, (1400 / resized, 600 / resized))
+            screen.blit(self.button_quit, self.button_quit_rect)
+            # screen.blit(self.platform, (70 / resized, 600 / resized))
+            # screen.blit(self.platform, (750 / resized, 600 / resized))
+            # screen.blit(self.platform, (1400 / resized, 600 / resized))
             if not self.is_ready_to_start:
                 screen.blit(self.fake_start, self.button_play_rect)
 
