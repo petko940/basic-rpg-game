@@ -96,7 +96,7 @@ class Menu:
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_pos = pygame.mouse.get_pos()
 
-                    if self.button_full_screen_rect.collidepoint(mouse_pos):
+                    if self.button_full_screen_rect.collidepoint(mouse_pos) and not self.is_full_screen:
                         full_screen()
                         self.is_full_screen = True
                     elif self.button_windowed_rect.collidepoint(mouse_pos):
@@ -135,7 +135,6 @@ class Menu:
 
             if not self.main_menu:
                 break
-
             screen.blit(self.button_quit, self.button_quit_rect)
             screen.blit(self.platform, (70 / resized, 600 / resized))
             screen.blit(self.platform, (750 / resized, 600 / resized))
