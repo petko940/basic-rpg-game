@@ -8,10 +8,10 @@ from characters.actions import Actions
 pygame.init()
 
 
-def loading_game_screen(window, current_map: MapController, hero_actions: Actions, rect_of_background: pygame.Rect):
+def loading_game_screen(window, current_map: MapController, hero: object, hero_actions: Actions, rect_of_background: pygame.Rect):
     for i in range(510, 0, -1):
         window.blit(current_map.show_current_map(), (0, 0))
-        window.blit(current_hero.idle_animation('right'), hero_actions.idle())
+        window.blit(hero.idle_animation("right"), hero_actions.idle())
         pygame.draw.rect(window, (50, (255 - i // 2), 0), rect_of_background, int(i * 1.1))
         pygame.display.update()
 
@@ -40,9 +40,10 @@ actions = Actions()
 menu.menu()
 current_hero = menu.chosen_hero
 
+
 background_rect = map_controller.show_current_map().get_rect()
 
-loading_game_screen(screen, map_controller, actions, background_rect)
+loading_game_screen(screen, map_controller, current_hero, actions, background_rect)
 
 
 is_right = True
