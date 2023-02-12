@@ -1,8 +1,4 @@
 import pygame
-
-from characters.mage_character import Mage
-from characters.warrior_character import Warrior
-from characters.hunter_character import Hunter
 from music import music
 
 pygame.mixer.init()
@@ -38,17 +34,17 @@ class Menu:
     heroes_x_y = [(120 / resized, 240 / resized), (790 / resized, 240 / resized),
                   ((790 + 630) / resized, 240 / resized)]
 
-    war_surface = pygame.Surface((580, 520))   # hardcoded
+    war_surface = pygame.Surface((580 / resized, 520 / resized))   # hardcoded
     warrior_rect = war_surface.get_rect()
     warrior_rect.x = heroes_x_y[0][0]
     warrior_rect.y = heroes_x_y[0][1]
 
-    mage_surface = pygame.Surface((580, 520))   # hardcoded
+    mage_surface = pygame.Surface((580 / resized, 520 / resized))   # hardcoded
     mage_rect = mage_surface.get_rect()
     mage_rect.x = heroes_x_y[1][0]
     mage_rect.y = heroes_x_y[1][1]
 
-    hunter_surface = pygame.Surface((580, 520))  # hardcoded
+    hunter_surface = pygame.Surface((580 / resized, 520 / resized))  # hardcoded
     hunter_rect = hunter_surface.get_rect()
     hunter_rect.x = heroes_x_y[2][0]
     hunter_rect.y = heroes_x_y[2][1]
@@ -64,16 +60,16 @@ class Menu:
 
     is_ready_to_start = False
 
-    def __init__(self, ):
+    def __init__(self, warrior: object, mage: object, hunter: object):
         self.main_menu = True
-        # self.warrior = Warrior()
-        self.mage = Mage()
-        self.hunter = Hunter()
+        self.warrior = warrior
+        self.mage = mage
+        self.hunter = hunter
         self.chosen_hero = ''
 
     @property
     def get_current_hero(self):
-        return "Warrior", "Mage", "Hunter"
+        return {"Warrior": self.warrior, "Mage": self.mage, "Hunter": self.hunter}
 
     def menu(self, ):
         while self.main_menu:
@@ -121,9 +117,9 @@ class Menu:
             if not self.is_ready_to_start:
                 self.screen.blit(self.fake_start, self.button_play_rect)
 
-            # self.screen.blit(self.warrior.idle_animation("right"), (self.heroes_x_y[0][0], self.heroes_x_y[0][1]))
-            # self.screen.blit(self.mage.idle_animation('right'), (self.heroes_x_y[1][0], self.heroes_x_y[1][1]))
-            # self.screen.blit(self.hunter.idle_animation(), (self.heroes_x_y[2][0], self.heroes_x_y[2][1]))
+            self.screen.blit(self.warrior.idle_animation("right"), (self.heroes_x_y[0][0], self.heroes_x_y[0][1]))
+            self.screen.blit(self.mage.idle_animation('right'), (self.heroes_x_y[1][0], self.heroes_x_y[1][1]))
+            self.screen.blit(self.hunter.idle_animation('right'), (self.heroes_x_y[2][0], self.heroes_x_y[2][1]))
             i = 0
             for key, value in self.selected.items():
                 self.index += 0.13
@@ -138,7 +134,7 @@ class Menu:
 
                 i += 1
 
-            pygame.display.flip()
+            pygame.display.update()
 
     def before_game_start(self):
         mouse_pos = pygame.mouse.get_pos()
