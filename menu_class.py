@@ -1,9 +1,11 @@
 import pygame
 from music import music
+from fullscreen_windowed import full_screen, windowed
 
 pygame.mixer.init()
 WIDTH, HEIGHT = (1366, 768)
 resized = 1920 / WIDTH
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
 
 class Menu:
@@ -27,19 +29,34 @@ class Menu:
     button_quit = pygame.transform.scale(pygame.image.load('images/menu/exit.png'), (270 / resized, 100 / resized))
     button_quit_rect = button_quit.get_rect()
     button_quit_rect.x = buttons_x
-    button_quit_rect.y = buttons_y + 60
+    button_quit_rect.y = buttons_y + 70
+
+    is_full_screen = False
+
+    button_full_screen = pygame.transform.scale(pygame.image.load('images/menu/fullscreen_button.png'),
+                                                (500 / resized, 100 / resized))
+
+    button_full_screen_rect = button_full_screen.get_rect()
+    button_full_screen_rect.x = buttons_x + 400
+    button_full_screen_rect.y = buttons_y + 70
+
+    button_windowed = pygame.transform.scale(pygame.image.load('images/menu/windowed_button.png'),
+                                             (500 / resized, 100 / resized))
+    button_windowed_rect = button_windowed.get_rect()
+    button_windowed_rect.x = buttons_x + 400
+    button_windowed_rect.y = buttons_y + 70
 
     platform = pygame.transform.scale(pygame.image.load('images/menu/platform.png'), (500 / resized, 320 / resized))
 
     heroes_x_y = [(120 / resized, 240 / resized), (790 / resized, 240 / resized),
                   ((790 + 630) / resized, 240 / resized)]
 
-    war_surface = pygame.Surface((580 / resized, 520 / resized))   # hardcoded
+    war_surface = pygame.Surface((580 / resized, 520 / resized))  # hardcoded
     warrior_rect = war_surface.get_rect()
     warrior_rect.x = heroes_x_y[0][0]
     warrior_rect.y = heroes_x_y[0][1]
 
-    mage_surface = pygame.Surface((580 / resized, 520 / resized))   # hardcoded
+    mage_surface = pygame.Surface((580 / resized, 520 / resized))  # hardcoded
     mage_rect = mage_surface.get_rect()
     mage_rect.x = heroes_x_y[1][0]
     mage_rect.y = heroes_x_y[1][1]
@@ -48,8 +65,6 @@ class Menu:
     hunter_rect = hunter_surface.get_rect()
     hunter_rect.x = heroes_x_y[2][0]
     hunter_rect.y = heroes_x_y[2][1]
-
-    screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.FULLSCREEN)
 
     selected = {"Warrior": False, "Mage": False, "Hunter": False}
 
@@ -73,12 +88,20 @@ class Menu:
 
     def menu(self, ):
         while self.main_menu:
+            screen.blit(self.menu_image, (0, 0))
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         quit()
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_pos = pygame.mouse.get_pos()
+
+                    if self.button_full_screen_rect.collidepoint(mouse_pos):
+                        full_screen()
+                        self.is_full_screen = True
+                    elif self.button_windowed_rect.collidepoint(mouse_pos):
+                        windowed()
+                        self.is_full_screen = False
 
                     if self.warrior_rect.collidepoint(mouse_pos):
                         self.selected['Warrior'] = True
@@ -105,30 +128,34 @@ class Menu:
                         self.main_menu = False
                         # self.before_game_start()
 
+            if self.is_full_screen:
+                screen.blit(self.button_windowed, self.button_windowed_rect)
+            else:
+                screen.blit(self.button_full_screen, self.button_full_screen_rect)
+
             if not self.main_menu:
                 break
-            self.screen.blit(self.menu_image, (0, 0))
 
-            self.screen.blit(self.button_quit, self.button_quit_rect)
-            self.screen.blit(self.platform, (70 / resized, 600 / resized))
-            self.screen.blit(self.platform, (750 / resized, 600 / resized))
-            self.screen.blit(self.platform, (1400 / resized, 600 / resized))
+            screen.blit(self.button_quit, self.button_quit_rect)
+            screen.blit(self.platform, (70 / resized, 600 / resized))
+            screen.blit(self.platform, (750 / resized, 600 / resized))
+            screen.blit(self.platform, (1400 / resized, 600 / resized))
 
             if not self.is_ready_to_start:
-                self.screen.blit(self.fake_start, self.button_play_rect)
+                screen.blit(self.fake_start, self.button_play_rect)
 
-            self.screen.blit(self.warrior.idle_animation("right"), (self.heroes_x_y[0][0], self.heroes_x_y[0][1]))
-            self.screen.blit(self.mage.idle_animation('right'), (self.heroes_x_y[1][0], self.heroes_x_y[1][1]))
-            self.screen.blit(self.hunter.idle_animation('right'), (self.heroes_x_y[2][0], self.heroes_x_y[2][1]))
+            screen.blit(self.warrior.idle_animation("right"), (self.heroes_x_y[0][0], self.heroes_x_y[0][1]))
+            screen.blit(self.mage.idle_animation('right'), (self.heroes_x_y[1][0], self.heroes_x_y[1][1]))
+            screen.blit(self.hunter.idle_animation('right'), (self.heroes_x_y[2][0], self.heroes_x_y[2][1]))
             i = 0
             for key, value in self.selected.items():
                 self.index += 0.13
                 if value:
                     see_arrow = self.arrow[int(self.index) % len(self.arrow)]
-                    self.screen.blit(see_arrow, (self.arrow_pos[i][0], self.arrow_pos[i][1]))
+                    screen.blit(see_arrow, (self.arrow_pos[i][0], self.arrow_pos[i][1]))
 
                     self.is_ready_to_start = True
-                    self.screen.blit(self.button_play, self.button_play_rect)
+                    screen.blit(self.button_play, self.button_play_rect)
 
                     self.chosen_hero = self.get_current_hero[key]
 
@@ -142,11 +169,10 @@ class Menu:
         if self.button_play_rect.collidepoint(mouse_pos):
             music('images/maps/map1/map1_song.mp3')
             for i in range(510):
-                self.screen.blit(self.menu_image, (0, 0))
-                self.screen.blit(chosen_hero.jump_animation(), (650/resized, 200/resized))
-                pygame.draw.rect(self.screen, (50, (255 - i // 2), 0), self.menu_image_rect, int(i * 1.1))
+                screen.blit(self.menu_image, (0, 0))
+                screen.blit(chosen_hero.jump_animation(), (650 / resized, 200 / resized))
+                pygame.draw.rect(screen, (50, (255 - i // 2), 0), self.menu_image_rect, int(i * 1.1))
                 pygame.display.update()
-
 
 # menu = Menu()
 # menu.menu()
