@@ -1,3 +1,6 @@
+import sys
+from random import random, randint
+
 import pygame
 
 
@@ -37,6 +40,17 @@ while True:
     # red
     # pygame.draw.rect(screen, (255, 0, 0), pygame.Rect(11, 11, 65, 18))
     # green
-    bar.draw_bar(screen, (0, 0, 255), pygame.Rect(11, 11, 65, 18))
+    current_health = randint(0, 200)
+    print(f"Current health is: {current_health}")
+    current_hit = randint(0, 200)
+    print(f"Current hit is: {current_hit}")
+    if current_hit >= current_health:
+        current_health = 0
+        print("dead!")
+        sys.exit()
+    else:
+        current_health -= current_hit
+        print(f"Current health is: {current_health}")
+    bar.draw_bar(screen, (0, 0, 255), pygame.Rect(11, 11, current_health, 18))
     pygame.display.flip()
-    clock.tick(60)
+    clock.tick(1)
