@@ -1,15 +1,8 @@
-from pygame import image, transform
+from characters.hero import Hero
 
 
-class Hunter:
+class Hunter(Hero):
 
-    def __init__(self):
-        self.index = 0
-
-    # def idle_animation(self):
-    #     self.index += self.__IDLE_SPEED
-    #     return idle_images[int(self.index) % len(idle_images)]
-    #
-    # def jump_animation(self):
-    #     self.index += 0.1
-    #     return jump_images[int(self.index) % len(jump_images)]
+    def __init__(self, x: int, y: int, attack_images: list, die_images: list, idle_images: list, jump_images: list,
+                 walk_images: list):
+        super().__init__(x, y, attack_images, die_images, idle_images, jump_images, walk_images)
