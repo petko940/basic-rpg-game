@@ -9,7 +9,7 @@ resized = 1.4
 class HeroController:
 
     def __init__(self):
-        self.heroes = []
+        self.heroes = {}
 
     @property
     def valid_heroes(self):
@@ -17,16 +17,20 @@ class HeroController:
 
     @property
     def get_load_funcs(self):
-        return {"Warrior": self.load_warrior_images, "Mage": Mage, "Hunter": Hunter}  # to do ... make static funcs for rest
+        return {"Warrior": self.load_warrior_images, "Mage": self.load_mage_images, "Hunter": self.load_hunter_images}
 
-    def create_hero(self, hero: str):
+    def create_hero(self, hero: str, x_pos: int, y_pos: int):
         if hero in self.valid_heroes:
-            loaded_images = self.get_load_funcs[hero]()
+            loaded_images = self.get_load_funcs[hero.capitalize()]()
 
-            new_hero = self.valid_heroes[hero.capitalize()](100, 100, *loaded_images)
-            self.heroes.append(new_hero)
+            new_hero = self.valid_heroes[hero.capitalize()](x_pos, y_pos, *loaded_images)
+
+            self.heroes[hero.capitalize()] = self.heroes.get(hero.capitalize(), new_hero)
 
             print(f"hero of type {type(new_hero)} has been added")
+
+    def get_hero_object(self, hero_name: str):
+        return self.heroes.get(hero_name.capitalize(), "Not Found")
 
     @staticmethod
     def load_warrior_images():
@@ -47,5 +51,30 @@ class HeroController:
 
         return attack_images, die_images, idle_images, jump_images, walk_images
 
+    @staticmethod
+    def load_mage_images():
+        attack_images = [image.load(f'characters/mage/attack/({i}).png') for i in range(1, 11)]
 
-    # to do ... add 2 more methods
+        die_images = [image.load(f'characters/mage/die/({i}).png') for i in range(1, 11)]
+
+        idle_images = [image.load(f'characters/mage/idle/({i}).png') for i in range(1, 11)]
+
+        jump_images = [image.load(f'characters/mage/jump/({i}).png') for i in range(1, 11)]
+
+        walk_images = [image.load(f'characters/mage/walk/({i}).png') for i in range(1, 11)]
+
+        return attack_images, die_images, idle_images, jump_images, walk_images
+
+    @staticmethod
+    def load_hunter_images():
+        attack_images = [image.load(f'characters/hunt/attack/({i}).png') for i in range(1, 11)]
+
+        die_images = [image.load(f'characters/hunt/die/({i}).png') for i in range(1, 11)]
+
+        idle_images = [image.load(f'characters/hunt/idle/({i}).png') for i in range(1, 11)]
+
+        jump_images = [image.load(f'characters/hunt/jump/({i}).png') for i in range(1, 11)]
+
+        walk_images = [image.load(f'characters/hunt/walk/({i}).png') for i in range(1, 11)]
+
+        return attack_images, die_images, idle_images, jump_images, walk_images
