@@ -2,13 +2,16 @@ from pygame import transform
 
 
 class Hero:
+    __MAP_WIDTH = 1366
     __IDLE_SPEED = 0.25
     __ATK_SPEED = 0.2
+    __MOVE_SPEED = 5
 
     def __init__(self, x: int, y: int, attack_images: list, die_images: list, idle_images: list,
                  jump_images: list, walk_images: list):
         self.x = x
         self.y = y
+        self.level = 1
 
         self.attack_images_right = attack_images
         self.attack_images_left = [transform.flip(self.attack_images_right[i], True, False) for i in range(len(self.attack_images_right))]
@@ -27,7 +30,7 @@ class Hero:
         self.idle_index = 0
         self.on_press_index = 0
 
-        self.is_animating = False
+        self.is_attacking = False
 
     def idle_animation(self, direction: str):
         self.idle_index += self.__IDLE_SPEED
@@ -42,19 +45,36 @@ class Hero:
         return self.walk_images_left[int(self.idle_index) % len(self.walk_images_left)]
 
     def attack_animation(self, direction: str):
-        if not self.is_animating:
-            self.is_animating = True
-            self.on_press_index += self.__ATK_SPEED
+        self.on_press_index += self.__ATK_SPEED
 
-            if self.on_press_index >= len(self.attack_images_right):
-                self.is_animating = False
-                self.on_press_index = 0
+        if self.on_press_index >= len(self.attack_images_right):
+            self.is_attacking = False
+            self.on_press_index = 0
 
-            else:
-                if direction == "right":
-                    return self.attack_images_right[int(self.on_press_index)]
-                return self.attack_images_left[int(self.on_press_index)]
+        if direction == "right":
+            return self.attack_images_right[int(self.on_press_index)]
+        return self.attack_images_left[int(self.on_press_index)]
 
     def jump_animation(self):
         self.idle_index += self.__IDLE_SPEED
         return self.jump_images[int(self.idle_index) % len(self.jump_images)]
+
+    def check_for_traverse(self):
+        if self.x >= self.__MAP_WIDTH - 150:
+            self.x = -30
+            return True
+
+    def walk(self, direction: str):
+        if direction == 'right':
+            self.x += self.__MOVE_SPEED
+
+        else:
+            self.x -= self.__MOVE_SPEED
+
+        return self.x, self.y
+
+    def idle(self):
+        return self.x, self.y
+
+    def attack(self):
+        return self.x, self.y
