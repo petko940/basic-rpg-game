@@ -19,13 +19,13 @@ class HeroController:
     def get_load_funcs(self):
         return {"Warrior": self.load_warrior_images, "Mage": self.load_mage_images, "Hunter": self.load_hunter_images}
 
-    def create_hero(self, hero: str, x_pos: int, y_pos: int):
-        if hero in self.valid_heroes:
-            loaded_images = self.get_load_funcs[hero.capitalize()]()
+    def create_hero(self, hero_type: str, x_pos: int, y_pos: int):
+        if hero_type in self.valid_heroes:
+            loaded_images = self.get_load_funcs[hero_type.capitalize()]()
 
-            new_hero = self.valid_heroes[hero.capitalize()](x_pos, y_pos, *loaded_images)
+            new_hero = self.valid_heroes[hero_type.capitalize()](x_pos, y_pos, *loaded_images)
 
-            self.heroes[hero.capitalize()] = self.heroes.get(hero.capitalize(), new_hero)
+            self.heroes[hero_type.capitalize()] = self.heroes.get(hero_type.capitalize(), new_hero)
 
             print(f"hero of type {type(new_hero)} has been added")
 
