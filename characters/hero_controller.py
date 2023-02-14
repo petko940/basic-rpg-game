@@ -2,6 +2,7 @@ from characters.hunter_character import Hunter
 from characters.mage_character import Mage
 from characters.warrior_character import Warrior
 from pygame import image, transform
+from typing import Dict
 
 resized = 1.4
 
@@ -9,7 +10,7 @@ resized = 1.4
 class HeroController:
 
     def __init__(self):
-        self.heroes = {}
+        self.heroes: Dict[str, object] = {}
 
     @property
     def valid_heroes(self):
