@@ -1,4 +1,4 @@
-from pygame import transform
+from pygame import transform, Rect
 
 
 class Hero:
@@ -6,6 +6,7 @@ class Hero:
     __IDLE_SPEED = 0.25
     __ATK_SPEED = 0.2
     __MOVE_SPEED = 5
+    BAR_LENGTH = 300
 
     def __init__(self, x: int, y: int, attack_images: list, die_images: list, idle_images: list,
                  jump_images: list, walk_images: list):
@@ -31,6 +32,12 @@ class Hero:
         self.on_press_index = 0
 
         self.is_attacking = False
+
+        self.health_bar = self.make_bar(0, 0, self.BAR_LENGTH, 35)
+
+    @staticmethod
+    def make_bar(x, y, width, height):
+        return Rect(x, y, width, height)
 
     def idle_animation(self, direction: str):
         self.idle_index += self.__IDLE_SPEED
