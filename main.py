@@ -20,6 +20,9 @@ WIDTH, HEIGHT = (1366, 768)
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 resized = 1.4
 
+action_bar_image = pygame.image.load('images/action_bar.png')
+action_bar_width = action_bar_image.get_rect().width
+action_bar_x_pos, action_bar_y_pos = (WIDTH // 2) - (action_bar_width // 2), 675
 
 map_controller = MapController()
 map_controller.create_map([pygame.transform.scale(pygame.image.load(f'images/maps/map1/({i}).png'), (1920 / resized, 1080 / resized)) for i in range(1, 5 + 1)], "Forest")
@@ -91,6 +94,9 @@ while game_running:
             screen.blit(current_hero.idle_animation('right'), current_hero.idle())
         elif not is_right and not current_hero.is_attacking:
             screen.blit(current_hero.idle_animation('left'), current_hero.idle())
+
+    screen.blit(action_bar_image, (action_bar_x_pos, action_bar_y_pos))
+
     pygame.display.update()
 
 pygame.quit()
