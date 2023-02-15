@@ -1,3 +1,4 @@
+# for deleting?
 import pygame
 
 
@@ -9,17 +10,13 @@ class Bar:
         self.surface = pygame.Surface((self.width, self.height))
         # if we want to fill the surface with transparency:
         # alpha 0 -> full transparency, alpha 255 -> full color
-        self.surface.set_alpha(35)
+        self.surface.set_alpha(20)
 
         # if we want to fill the surface with solid color:
         # self.surface.fill((255, 255, 255))
 
     def draw_surface(self, x, y):
         return self.surface.blit(self.surface, (x, y))
-
-    # pygame.Rect(x, y, width, height)
-    def draw_bar(self):
-        return pygame.Rect(11, 11, 100, 18)
 
 
 # General Setup
