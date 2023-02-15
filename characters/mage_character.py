@@ -11,4 +11,6 @@ class Mage(Hero):
 
         self.max_health = 80
         self.health = 80
+
+        self.max_mana = 150
         self.mana = 150
