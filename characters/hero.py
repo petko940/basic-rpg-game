@@ -35,14 +35,15 @@ class Hero:
 
         self.health_bar = self.make_bar(0, 0, self.BAR_LENGTH, 35)
 
+        self.background_rect_health_bar = self.make_bar(0, 0, self.BAR_LENGTH, 35)
+        self.background_rect_mana_bar = self.make_bar(0, 35, self.BAR_LENGTH, 35)
+
     @staticmethod
     def make_bar(x, y, width, height):
         return Rect(x, y, width, height)
 
-    @staticmethod
-    def lower_bar_width(bar: Rect, current_value: int or float, max_value: int or float, extract_value: int or float):
-        bar.width *= ((current_value - extract_value) / max_value)
-        return bar
+    def lower_bar_width(self, current_value: int or float, max_value: int or float, extract_value: int or float):
+        return self.BAR_LENGTH * ((current_value - extract_value) / max_value)
 
     def idle_animation(self, direction: str):
         self.idle_index += self.__IDLE_SPEED
