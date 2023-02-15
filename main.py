@@ -53,6 +53,27 @@ background_rect = map_controller.show_current_map().get_rect()
 loading_game_screen(screen, map_controller, current_hero, background_rect)
 
 
+################################################################
+"""
+testing to see if the methods Tamer wrote are working
+you can keep this class for now to test health bars in the future
+"""
+
+
+class Monster:
+
+    def __init__(self):
+        self.damage = 5
+
+
+monster = Monster()
+
+print(current_hero.health_bar)
+hero_controller.take_damage(current_hero, monster)
+print(current_hero.health_bar)
+print(hero_controller.check_if_hero_died(current_hero))
+################################################################
+
 is_right = True
 game_running = True
 while game_running:
@@ -68,7 +89,6 @@ while game_running:
             #     screen.blit(warrior.walk_images("right"),warrior.idle_animation("right").get_rect())
             # TO DO walk right
             # char.walking = True
-
     screen.blit(map_controller.show_current_map(), (0, 0))
 
     if current_hero.is_attacking:
