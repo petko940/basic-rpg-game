@@ -1,12 +1,15 @@
 from characters.hunter_character import Hunter
 from characters.mage_character import Mage
 from characters.warrior_character import Warrior
-from pygame import image, transform
+from pygame import image, transform, draw
 
 resized = 1.4
 
 
 class HeroController:
+    HEALTH_BAR_COLOR = (180, 0, 0)
+    MANA_BAR_COLOR = (0, 0, 220)
+    BACKGROUND_BAR_COLOR = (105, 105, 105)
 
     def __init__(self):
         self.heroes: dict[str, object] = {}
@@ -43,14 +46,23 @@ class HeroController:
         THIS METHOD must be used hand by hand with check_if_hero_died
         """
         if hero in self.heroes.values():
-            hero.health_bar = hero.lower_bar_width(hero.health_bar, hero.health, hero.max_health, monster.damage)
+            hero.health_bar.width = hero.lower_bar_width(hero.health, hero.max_health, monster.damage) # NOQA
+            if hero.health > 0:
+                hero.health -= monster.damage
+
+    def display_bars(self, screen, hero: object):
+        draw.rect(screen, self.BACKGROUND_BAR_COLOR, hero.background_rect_health_bar)
+        draw.rect(screen, self.HEALTH_BAR_COLOR, hero.health_bar)
+        if type(hero).__name__ != "Warrior":
+            draw.rect(screen, self.BACKGROUND_BAR_COLOR, hero.background_rect_mana_bar)
+            draw.rect(screen, self.MANA_BAR_COLOR, hero.mana_bar)
 
     @staticmethod
     def check_if_hero_died(hero: object) -> bool:
         """
-        returns True if the width of the health_bar is less than or equal to zero, otherwise returns False
+        returns True if the health is less than or equal to zero, otherwise returns False
         """
-        return hero.health_bar.width <= 0
+        return hero.health <= 0
 
     @staticmethod
     def load_warrior_images():
