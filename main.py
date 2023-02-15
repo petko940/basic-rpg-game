@@ -36,6 +36,7 @@ mage = hero_controller.get_hero_object("Mage")
 hunter = hero_controller.get_hero_object("Hunter")
 
 collected_game_info = load_data()
+
 map_controller.current_map = collected_game_info["Map"]['current_map']
 warrior.level = collected_game_info["Warrior"]['level']
 mage.level = collected_game_info["Mage"]['level']
@@ -85,8 +86,8 @@ while game_running:
                 game_running = False
             elif event.key == pygame.K_SPACE:
                 current_hero.is_attacking = True
-            # elif event.key == pygame.K_1:
-            #     hero_controller.take_damage(current_hero, monster)
+            elif event.key == pygame.K_1:  # you can test the health bar by pressing 1 on the left side of keyboard
+                hero_controller.take_damage(current_hero, monster)
 
             # elif event.key == pygame.K_d:
             #     screen.blit(warrior.walk_images("right"),warrior.idle_animation("right").get_rect())
@@ -95,6 +96,7 @@ while game_running:
     screen.blit(map_controller.show_current_map(), (0, 0))
 
     hero_controller.display_bars(screen, current_hero)
+    hero_controller.display_health_and_mana_stats(screen, current_hero)
 
     if current_hero.is_attacking:
         screen.blit(current_hero.attack_animation("right"), current_hero.attack())
