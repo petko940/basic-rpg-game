@@ -127,8 +127,8 @@ pygame.quit()
 
 progress_of_game = {
     "Map": {'current_map': map_controller.current_map},
-    "Hunter": {'level': hunter.level, 'health': 100},  # hunter.health
-    "Mage": {'level': mage.level, 'health': 100, 'mana': 100},  # mage.health and mage.mana
-    "Warrior": {'level': warrior.level, 'health': 100},  # warrior.health
+    "Hunter": {'level': hunter.level, 'health': hunter.health, 'mana': hunter.mana},
+    "Mage": {'level': mage.level, 'health': mage.health, 'mana': mage.mana},
+    "Warrior": {'level': warrior.level, 'health': warrior.health},
 }
 save_on_close(progress_of_game)
