@@ -2,7 +2,6 @@ from characters.hunter_character import Hunter
 from characters.mage_character import Mage
 from characters.warrior_character import Warrior
 from pygame import image, transform
-from typing import Dict
 
 resized = 1.4
 
@@ -10,7 +9,7 @@ resized = 1.4
 class HeroController:
 
     def __init__(self):
-        self.heroes: Dict[str, object] = {}
+        self.heroes: dict[str, object] = {}
 
     @property
     def valid_heroes(self):
@@ -31,7 +30,27 @@ class HeroController:
             print(f"hero of type {type(new_hero)} has been added")
 
     def get_hero_object(self, hero_name: str):
+        """
+        returns hero as object and if not found, returns "Not Found"
+        """
         return self.heroes.get(hero_name.capitalize(), "Not Found")
+
+    def take_damage(self, hero: object, monster: object) -> None:
+        # this method is not working since there are still NO monster objects
+        """
+        Gets the hero health_bar and goes into the method (lower bar width) which is inside the Hero class.
+        lower_bar_width returns the new health_bar width and take_damage method applies the changes
+        THIS METHOD must be used hand by hand with check_if_hero_died
+        """
+        if hero in self.heroes.values():
+            hero.health_bar = hero.lower_bar_width(hero.health_bar, hero.health, hero.max_health, monster.damage)
+
+    @staticmethod
+    def check_if_hero_died(hero: object) -> bool:
+        """
+        returns True if the width of the health_bar is less than or equal to zero, otherwise returns False
+        """
+        return hero.health_bar.width <= 0
 
     @staticmethod
     def load_warrior_images():
