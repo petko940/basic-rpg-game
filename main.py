@@ -68,10 +68,10 @@ class Monster:
 
 monster = Monster()
 
-print(current_hero.health_bar)
-hero_controller.take_damage(current_hero, monster)
-print(current_hero.health_bar)
-print(hero_controller.check_if_hero_died(current_hero))
+# print(current_hero.health_bar)
+# hero_controller.take_damage(current_hero, monster)
+# print(current_hero.health_bar)
+# print(hero_controller.check_if_hero_died(current_hero))
 ################################################################
 
 is_right = True
@@ -85,11 +85,16 @@ while game_running:
                 game_running = False
             elif event.key == pygame.K_SPACE:
                 current_hero.is_attacking = True
+            # elif event.key == pygame.K_1:
+            #     hero_controller.take_damage(current_hero, monster)
+
             # elif event.key == pygame.K_d:
             #     screen.blit(warrior.walk_images("right"),warrior.idle_animation("right").get_rect())
             # TO DO walk right
             # char.walking = True
     screen.blit(map_controller.show_current_map(), (0, 0))
+
+    hero_controller.display_bars(screen, current_hero)
 
     if current_hero.is_attacking:
         screen.blit(current_hero.attack_animation("right"), current_hero.attack())
