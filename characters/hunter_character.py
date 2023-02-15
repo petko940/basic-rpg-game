@@ -11,4 +11,6 @@ class Hunter(Hero):
 
         self.max_health = 100
         self.health = 100
+
+        self.max_mana = 80
         self.mana = 80
