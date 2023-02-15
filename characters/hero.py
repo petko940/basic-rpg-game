@@ -39,6 +39,11 @@ class Hero:
     def make_bar(x, y, width, height):
         return Rect(x, y, width, height)
 
+    @staticmethod
+    def lower_bar_width(bar: Rect, current_value: int or float, max_value: int or float, extract_value: int or float):
+        bar.width *= ((current_value - extract_value) / max_value)
+        return bar
+
     def idle_animation(self, direction: str):
         self.idle_index += self.__IDLE_SPEED
         if direction == "right":
