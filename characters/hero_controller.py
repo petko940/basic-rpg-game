@@ -8,13 +8,22 @@ pygame.font.init()
 resized = 1.4
 
 font = pygame.font.SysFont('Cosmic Sans bold', 40)
+level_font = pygame.font.SysFont('Cosmic Sans', 25)
 
 
 class HeroController:
     HEALTH_BAR_COLOR = (180, 0, 0)
     MANA_BAR_COLOR = (0, 0, 220)
+
     BACKGROUND_BAR_COLOR = (105, 105, 105)
+
+    HERO_FRAME_COLOR = (98, 0, 0)
+
     FONT_COLOR = (255, 255, 255)
+
+    PROFILE_FRAME_THICKNESS = 5
+
+    BLACK_COLOR = (0, 0, 0)
 
     def __init__(self):
         self.heroes: dict[str, object] = {}
@@ -51,15 +60,20 @@ class HeroController:
         THIS METHOD must be used hand by hand with check_if_hero_died
         """
         if hero in self.heroes.values():
-            hero.health_bar.width = hero.lower_bar_width(hero.health, hero.max_health, monster.damage) # NOQA
+            hero.health_bar.width = hero.lower_bar_width(hero.health, hero.max_health, monster.damage)  # NOQA
             if hero.health > 0:
                 hero.health -= monster.damage
 
     def display_bars(self, screen, hero: object):
+        # drawing the base health bar on screen
         pygame.draw.rect(screen, self.BACKGROUND_BAR_COLOR, hero.background_rect_health_bar)
+        # drawing the actual health bar above the base health bar
         pygame.draw.rect(screen, self.HEALTH_BAR_COLOR, hero.health_bar)
+        # everyone except warrior has mana bar
         if type(hero).__name__ != "Warrior":
+            # drawing the base mana bar on screen
             pygame.draw.rect(screen, self.BACKGROUND_BAR_COLOR, hero.background_rect_mana_bar)
+            # drawing the actual mana bar above the base mana bar
             pygame.draw.rect(screen, self.MANA_BAR_COLOR, hero.mana_bar)
 
     @staticmethod
@@ -70,64 +84,92 @@ class HeroController:
         return hero.health <= 0
 
     def display_health_and_mana_stats(self, screen, hero: object):
+        # creating health surface
         health_surface = font.render(f"{hero.health}/{hero.max_health}", True, self.FONT_COLOR)
 
-        middle_of_hp_bar = (hero.BAR_LENGTH // 2) - (health_surface.get_rect().width // 2)
+        # finding the middle of the health bar
+        middle_of_hp_bar = (hero.BAR_LENGTH // 2) - (health_surface.get_rect().width // 2) + hero.frame.width
 
+        # displaying the health surface
         screen.blit(health_surface, (middle_of_hp_bar, 5))
         if type(hero).__name__ != "Warrior":
+            # creating mana surface
             mana_surface = font.render(f"{hero.mana}/{hero.max_mana}", True, self.FONT_COLOR)
 
-            middle_of_mana_bar = (hero.BAR_LENGTH // 2) - (mana_surface.get_rect().width // 2)
+            # finding the middle of the mana bar, we can't use the same result of middle_of_hp_bar, because
+            # you can have 500 health and 2000 mana and that's when you will get bad centering position
+            middle_of_mana_bar = (hero.BAR_LENGTH // 2) - (mana_surface.get_rect().width // 2) + hero.frame.width
 
+            # displaying the mana surface on screen
             screen.blit(mana_surface, (middle_of_mana_bar, 40))
 
     def display_hero_frame_and_level(self, screen, hero: object):
-        """
-        must draw a frame (with code) and add the picture of the current hero inside
-        must cut 3 pictures (head of war, mage and hunter)
-        must display current level too
-        """
-        ...
+        # making the hero profile frame
+        pygame.draw.rect(screen, self.HERO_FRAME_COLOR, hero.frame, self.PROFILE_FRAME_THICKNESS)
+        # displaying the image inside the hero profile frame
+        screen.blit(hero.profile_pic, (hero.frame.x + self.PROFILE_FRAME_THICKNESS, hero.frame.y + self.PROFILE_FRAME_THICKNESS))
+
+        # drawing a circle
+        pygame.draw.circle(screen, self.HERO_FRAME_COLOR, (10, 10), 15)
+        # drawing the frame around the circle (black color), (x, y), radius(15), line thickness(4) - grows inwards
+        pygame.draw.circle(screen, self.BLACK_COLOR, (12, 12), 15, 4)
+
+        # creating surface so it can be displayed on screen
+        level_surface = level_font.render(str(hero.level), True, self.FONT_COLOR)
+
+        # finding the middle of the circle. The width of the circle is 25 and i don't think it will be changed
+        middle_of_circle = (25 // 2) - (level_surface.get_rect().width // 2)
+        # displaying the level surface inside the frame of the circle
+        screen.blit(level_surface, (middle_of_circle, 4))
 
     @staticmethod
     def load_warrior_images():
         attack_images = [pygame.transform.scale(pygame.image.load(f'characters/war/attack/({i}).png'),
-                                         (647 / resized, 633 / resized)) for i in range(1, 11)]
+                                                (647 / resized, 633 / resized)) for i in range(1, 11)]
 
         die_images = [pygame.transform.scale(pygame.image.load(f'characters/war/die/({i}).png'),
-                                      (668 / resized, 540 / resized)) for i in range(1, 11)]
+                                             (668 / resized, 540 / resized)) for i in range(1, 11)]
 
         idle_images = [pygame.transform.scale(pygame.image.load(f'characters/war/idle/({i}).png'),
-                                       (580 / resized, 520 / resized)) for i in range(1, 11)]
+                                              (580 / resized, 520 / resized)) for i in range(1, 11)]
 
         jump_images = [pygame.transform.scale(pygame.image.load(f'characters/war/jump/({i}).png'),
-                                       (703 / resized, 678 / resized)) for i in range(1, 11)]
+                                              (703 / resized, 678 / resized)) for i in range(1, 11)]
 
         walk_images = [pygame.transform.scale(pygame.image.load(f'characters/war/walk/({i}).png'),
-                                       (610 / resized, 555 / resized)) for i in range(1, 11)]
+                                              (610 / resized, 555 / resized)) for i in range(1, 11)]
 
-        return attack_images, die_images, idle_images, jump_images, walk_images
+        profile_picture = pygame.image.load(f'characters/war/warrior_profile.png')
+
+        return attack_images, die_images, idle_images, jump_images, walk_images, profile_picture
 
     @staticmethod
     def load_mage_images():
         attack_images = [
-            pygame.transform.scale(pygame.image.load(f'characters/mage/attack/({i}).png'), (466 / resized, 561 / resized)) for i in
+            pygame.transform.scale(pygame.image.load(f'characters/mage/attack/({i}).png'),
+                                   (466 / resized, 561 / resized)) for i in
             range(1, 8)]
 
-        die_images = [pygame.transform.scale(pygame.image.load(f'characters/mage/die/({i}).png'), (671 / resized, 550 / resized)) for
-                      i in range(1, 10)]
+        die_images = [
+            pygame.transform.scale(pygame.image.load(f'characters/mage/die/({i}).png'), (671 / resized, 550 / resized))
+            for
+            i in range(1, 10)]
 
-        idle_images = [pygame.transform.scale(pygame.image.load(f'characters/mage/idle/({i}).png'), (466 / resized, 535 / resized))
-                       for i in range(1, 11)]
+        idle_images = [
+            pygame.transform.scale(pygame.image.load(f'characters/mage/idle/({i}).png'), (466 / resized, 535 / resized))
+            for i in range(1, 11)]
 
-        jump_images = [pygame.transform.scale(pygame.image.load(f'characters/mage/jump/({i}).png'), (478 / resized, 675 / resized))
-                       for i in range(1, 11)]
+        jump_images = [
+            pygame.transform.scale(pygame.image.load(f'characters/mage/jump/({i}).png'), (478 / resized, 675 / resized))
+            for i in range(1, 11)]
 
-        walk_images = [pygame.transform.scale(pygame.image.load(f'characters/mage/walk/({i}).png'), (467 / resized, 561 / resized))
-                       for i in range(1, 11)]
+        walk_images = [
+            pygame.transform.scale(pygame.image.load(f'characters/mage/walk/({i}).png'), (467 / resized, 561 / resized))
+            for i in range(1, 11)]
 
-        return attack_images, die_images, idle_images, jump_images, walk_images
+        profile_picture = pygame.image.load(f'characters/mage/mage_profile.png')
+
+        return attack_images, die_images, idle_images, jump_images, walk_images, profile_picture
 
     @staticmethod
     def load_hunter_images():
@@ -135,11 +177,14 @@ class HeroController:
 
         die_images = [pygame.image.load(f'characters/hunt/die/({i}).png') for i in range(1, 11)]
 
-        idle_images = [pygame.transform.scale(pygame.image.load(f'characters/hunt/idle/({i}).png'), (483 / resized, 550 / resized))
-                       for i in range(1, 11)]
+        idle_images = [
+            pygame.transform.scale(pygame.image.load(f'characters/hunt/idle/({i}).png'), (483 / resized, 550 / resized))
+            for i in range(1, 11)]
 
         jump_images = [pygame.image.load(f'characters/hunt/jump/({i}).png') for i in range(1, 11)]
 
         walk_images = [pygame.image.load(f'characters/hunt/walk/({i}).png') for i in range(1, 11)]
 
-        return attack_images, die_images, idle_images, jump_images, walk_images
+        profile_picture = pygame.image.load(f'characters/hunt/hunter_profile.png')
+
+        return attack_images, die_images, idle_images, jump_images, walk_images, profile_picture
