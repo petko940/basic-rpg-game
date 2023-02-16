@@ -97,6 +97,7 @@ while game_running:
 
     hero_controller.display_bars(screen, current_hero)
     hero_controller.display_health_and_mana_stats(screen, current_hero)
+    hero_controller.display_hero_frame_and_level(screen, current_hero)
 
     if current_hero.is_attacking:
         screen.blit(current_hero.attack_animation("right"), current_hero.attack())
