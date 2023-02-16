@@ -6,10 +6,10 @@ class Hero:
     __IDLE_SPEED = 0.25
     __ATK_SPEED = 0.2
     __MOVE_SPEED = 5
-    BAR_LENGTH = 300
+    BAR_LENGTH = 275
 
     def __init__(self, x: int, y: int, attack_images: list, die_images: list, idle_images: list,
-                 jump_images: list, walk_images: list):
+                 jump_images: list, walk_images: list, profile_pic: object):
         self.x = x
         self.y = y
         self.level = 1
@@ -28,15 +28,19 @@ class Hero:
         self.walk_images_right = walk_images
         self.walk_images_left = [transform.flip(self.walk_images_right[i], True, False) for i in range(len(self.walk_images_right))]
 
+        self.profile_pic = profile_pic  # Surface object
+
         self.idle_index = 0
         self.on_press_index = 0
 
         self.is_attacking = False
 
-        self.health_bar = self.make_bar(0, 0, self.BAR_LENGTH, 35)
+        self.frame = self.make_bar(0, 0, 70, 70)
 
-        self.background_rect_health_bar = self.make_bar(0, 0, self.BAR_LENGTH, 35)
-        self.background_rect_mana_bar = self.make_bar(0, 35, self.BAR_LENGTH, 35)
+        self.health_bar = self.make_bar(self.frame.width, 0, self.BAR_LENGTH, 35)
+
+        self.background_rect_health_bar = self.make_bar(self.frame.width, 0, self.BAR_LENGTH, 35)
+        self.background_rect_mana_bar = self.make_bar(self.frame.width, 35, self.BAR_LENGTH, 35)
 
     @staticmethod
     def make_bar(x, y, width, height):
