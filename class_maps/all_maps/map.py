@@ -2,6 +2,7 @@ from abc import ABC
 
 
 class Map(ABC):
+    MAP_WIDTH = 1366
 
     def __init__(self, name: str, images: list, index=0):
         self.name = name
@@ -24,3 +25,13 @@ class Map(ABC):
     def next_image(self):
         if self.index + 1 < len(self.images):
             self.index += 1
+
+    def previous_image(self):
+        if self.index - 1 >= 0:
+            self.index -= 1
+
+    def get_image_index(self):
+        return self.index
+
+    def get_map_width(self):
+        return self.MAP_WIDTH
