@@ -168,7 +168,7 @@ class Menu:
         mouse_pos = pygame.mouse.get_pos()
         chosen_hero = self.chosen_hero
         if self.button_play_rect.collidepoint(mouse_pos):
-            music('images/maps/map1/map1_song.mp3')
+            # music('images/maps/map1/map1_song.mp3')
             for i in range(510):
                 screen.blit(self.menu_image, (0, 0))
                 screen.blit(chosen_hero.jump_animation(), (650 / resized, 200 / resized))
