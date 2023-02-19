@@ -52,19 +52,21 @@ class HeroController:
         """
         return self.heroes.get(hero_name.capitalize(), "Not Found")
 
-    def take_damage(self, hero: object, monster: object) -> None:
+    @staticmethod
+    def take_damage(hero: object, monster: object) -> None:
         # this method is not working since there are still NO monster objects
         """
         Gets the hero health_bar and goes into the method (lower bar width) which is inside the Hero class.
         lower_bar_width returns the new health_bar width and take_damage method applies the changes
         THIS METHOD must be used hand by hand with check_if_hero_died
         """
-        if hero in self.heroes.values():
-            hero.health_bar.width = hero.lower_bar_width(hero.health, hero.max_health, monster.damage)  # NOQA
-            if hero.health > 0:
-                hero.health -= monster.damage
+        hero.health_bar.width = hero.lower_bar_width(hero.health, hero.max_health, monster.damage)  # NOQA
+        if hero.health - monster.damage > 0:
+            hero.health -= monster.damage
+        else:
+            hero.health = 0
 
-    def display_bars(self, screen, hero: object):
+    def display_health_and_mana_bars(self, screen, hero: object):
         # drawing the base health bar on screen
         pygame.draw.rect(screen, self.BACKGROUND_BAR_COLOR, hero.background_rect_health_bar)
         # drawing the actual health bar above the base health bar
