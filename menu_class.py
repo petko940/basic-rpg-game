@@ -11,9 +11,9 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 class Menu:
     arrow = [pygame.transform.scale(pygame.image.load(f'images/menu/arrow/({i}).png'), (150 / resized, 150 / resized))
              for i in range(1, 9)]
-    arrow_pos = ((225 / resized, 80 / resized), (900 / resized, 80 / resized), ((790 + 740) / resized, 80 / resized))
+    arrow_pos = ((225 / resized, 80 / resized), (925 / resized, 80 / resized), (1580 / resized, 80 / resized))
 
-    music('images/menu/music.mp3')
+    # music('images/menu/music.mp3')
 
     buttons_x, buttons_y = (1920 / 2 - 100) / resized, (1080 / 1.01 - 210) / resized
     menu_image = pygame.transform.scale(pygame.image.load('images/menu/make_character.jpg'), (WIDTH, HEIGHT))
