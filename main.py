@@ -27,9 +27,9 @@ map_controller = MapController()
 map_controller.create_map([pygame.transform.scale(pygame.image.load(f'images/maps/map1/({i}).png'), (1920 / resized, 1080 / resized)) for i in range(1, 5 + 1)], "Forest")
 
 hero_controller = HeroController()
-hero_controller.create_hero("Warrior", 50, 150)
-hero_controller.create_hero("Mage", 300, 300)
-hero_controller.create_hero("Hunter", 200, 200)
+hero_controller.create_hero("Warrior", 20, 200)
+hero_controller.create_hero("Mage", 20, 200)
+hero_controller.create_hero("Hunter", 20, 200)
 
 warrior = hero_controller.get_hero_object("Warrior")
 mage = hero_controller.get_hero_object("Mage")
@@ -95,9 +95,11 @@ while game_running:
             # char.walking = True
     screen.blit(map_controller.show_current_map(), (0, 0))
 
-    hero_controller.display_bars(screen, current_hero)
+    hero_controller.display_health_and_mana_bars(screen, current_hero)
     hero_controller.display_health_and_mana_stats(screen, current_hero)
     hero_controller.display_hero_frame_and_level(screen, current_hero)
+
+    screen.blit(action_bar_image, (action_bar_x_pos, action_bar_y_pos))
 
     if current_hero.is_attacking:
         screen.blit(current_hero.attack_animation("right"), current_hero.attack())
@@ -108,12 +110,14 @@ while game_running:
 
     elif pygame.key.get_pressed()[pygame.K_d]:
         screen.blit(current_hero.walk_images("right"), current_hero.walk("right"))
-        if current_hero.check_for_traverse():
-            map_controller.traverse_image()
+
+        map_controller.check_for_traverse(current_hero)
         is_right = True
 
     elif pygame.key.get_pressed()[pygame.K_a]:
         screen.blit(current_hero.walk_images("left"), current_hero.walk("left"))
+
+        map_controller.check_for_traverse(current_hero)
         is_right = False
 
     else:
@@ -121,8 +125,6 @@ while game_running:
             screen.blit(current_hero.idle_animation('right'), current_hero.idle())
         elif not is_right and not current_hero.is_attacking:
             screen.blit(current_hero.idle_animation('left'), current_hero.idle())
-
-    screen.blit(action_bar_image, (action_bar_x_pos, action_bar_y_pos))
 
     pygame.display.update()
 
