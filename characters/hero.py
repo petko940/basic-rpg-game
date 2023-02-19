@@ -2,7 +2,6 @@ from pygame import transform, Rect
 
 
 class Hero:
-    __MAP_WIDTH = 1366
     __IDLE_SPEED = 0.25
     __ATK_SPEED = 0.2
     __MOVE_SPEED = 5
@@ -75,11 +74,6 @@ class Hero:
     def jump_animation(self):
         self.idle_index += self.__IDLE_SPEED
         return self.jump_images[int(self.idle_index) % len(self.jump_images)]
-
-    def check_for_traverse(self):
-        if self.x >= self.__MAP_WIDTH - 150:
-            self.x = -30
-            return True
 
     def walk(self, direction: str):
         if direction == 'right':
