@@ -18,8 +18,31 @@ class MapController:
 
             print(f"map {map_name} with length of {len(images)} images was added")
 
+    def get_current_map(self):
+        return self.maps[self.current_map]
+
     def show_current_map(self):
         return self.maps[self.current_map].get_current_image()
 
-    def traverse_image(self):
-        self.maps[self.current_map].next_image()
+    def traverse_image(self, direction: str):
+        if direction == 'right':
+            self.maps[self.current_map].next_image()
+        else:
+            self.maps[self.current_map].previous_image()
+
+    def check_for_traverse(self, hero: object):
+        if hero.x >= self.get_current_map().MAP_WIDTH - 150:
+            if self.maps[self.current_map].get_image_index() == len(self.maps[self.current_map].images) - 1:
+                hero.x = self.get_current_map().MAP_WIDTH - 150
+
+            else:
+                self.traverse_image('right')
+                hero.x = -30
+
+        elif hero.x <= -100:
+            if self.maps[self.current_map].get_image_index() == 0:
+                hero.x = -100
+
+            else:
+                self.traverse_image('left')
+                hero.x = self.get_current_map().MAP_WIDTH - 200
