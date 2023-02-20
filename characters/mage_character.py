@@ -1,4 +1,5 @@
 from characters.hero import Hero
+from characters.skills import BlueBall
 
 
 class Mage(Hero):
@@ -14,3 +15,6 @@ class Mage(Hero):
 
         self.max_mana = 150
         self.mana = 150
+
+        blue_ball = BlueBall(20)
+        self.skills = {1: blue_ball}  # idk if it will be like this
