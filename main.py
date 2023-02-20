@@ -23,6 +23,9 @@ resized = 1.4
 action_bar_image = pygame.image.load('images/action_bar.png')
 action_bar_x_pos, action_bar_y_pos = (WIDTH // 2) - (action_bar_image.get_rect().width // 2), 675
 
+blue_ball_skill = pygame.image.load('images/blue_ball_skill_image.png')  # this picture must be moved to other file
+
+
 map_controller = MapController()
 map_controller.create_map([pygame.transform.scale(pygame.image.load(f'images/maps/map1/({i}).png'), (1920 / resized, 1080 / resized)) for i in range(1, 5 + 1)], "Forest")
 
@@ -51,7 +54,7 @@ current_hero = menu.chosen_hero
 
 background_rect = map_controller.show_current_map().get_rect()
 
-loading_game_screen(screen, map_controller, current_hero, background_rect)
+# loading_game_screen(screen, map_controller, current_hero, background_rect)  # for faster loading screen
 
 
 ################################################################
@@ -85,14 +88,28 @@ while game_running:
             if event.key == pygame.K_ESCAPE:
                 game_running = False
             elif event.key == pygame.K_SPACE:
+                pass
+            elif event.key == pygame.K_1:
                 current_hero.is_attacking = True
-            elif event.key == pygame.K_1:  # you can test the health bar by pressing 1 on the left side of keyboard
-                hero_controller.take_damage(current_hero, monster)
+                current_hero.skills[1].cast_ball()   # this two methods should work as one ... i think
+                current_hero.skills[1].animating_the_ball() # also it wont look like this of course
+
+            elif event.key == pygame.K_2:
+                pass
+
+            elif event.key == pygame.K_3:
+                pass
+
+            elif event.key == pygame.K_4:
+                pass
 
             # elif event.key == pygame.K_d:
             #     screen.blit(warrior.walk_images("right"),warrior.idle_animation("right").get_rect())
             # TO DO walk right
             # char.walking = True
+
+    current_hero.skills[1].check_for_end_point()  # checking if the skill has gone outside of map
+
     screen.blit(map_controller.show_current_map(), (0, 0))
 
     hero_controller.display_health_and_mana_bars(screen, current_hero)
@@ -100,6 +117,11 @@ while game_running:
     hero_controller.display_hero_frame_and_level(screen, current_hero)
 
     screen.blit(action_bar_image, (action_bar_x_pos, action_bar_y_pos))
+
+    screen.blit(blue_ball_skill, (action_bar_x_pos + 4, action_bar_y_pos + 4))  # blue ball position
+
+    if current_hero.skills[1].is_animating:  # of course it wont be like this, its just to test the skill animation
+        screen.blit(current_hero.skills[1].animating_the_ball(), (current_hero.skills[1].x_pos, 275))
 
     if current_hero.is_attacking:
         screen.blit(current_hero.attack_animation("right"), current_hero.attack())
