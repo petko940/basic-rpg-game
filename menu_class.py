@@ -127,7 +127,7 @@ class Menu:
                     elif self.button_play_rect.collidepoint(mouse_pos)\
                             and any(value for value in self.selected.values() if value):
                         self.main_menu = False
-                        self.before_game_start()
+                        # self.before_game_start()  # for faster loading screen
 
             if self.is_full_screen:
                 screen.blit(self.button_windowed, self.button_windowed_rect)
