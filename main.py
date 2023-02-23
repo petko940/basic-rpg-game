@@ -23,22 +23,24 @@ resized = 1.4
 action_bar_image = pygame.image.load('images/action_bar.png')
 action_bar_x_pos, action_bar_y_pos = (WIDTH // 2) - (action_bar_image.get_rect().width // 2), 675
 
-blue_ball_skill = pygame.image.load('images/blue_ball_skill_image.png')  # this picture must be moved to other file
-
 
 map_controller = MapController()
 map_controller.create_map([pygame.transform.scale(pygame.image.load(f'images/maps/map1/({i}).png'), (1920 / resized, 1080 / resized)) for i in range(1, 5 + 1)], "Forest")
+
 
 hero_controller = HeroController()
 hero_controller.create_hero("Warrior", 20, 200)
 hero_controller.create_hero("Mage", 20, 200)
 hero_controller.create_hero("Hunter", 20, 200)
 
+
 warrior = hero_controller.get_hero_object("Warrior")
 mage = hero_controller.get_hero_object("Mage")
 hunter = hero_controller.get_hero_object("Hunter")
 
+
 collected_game_info = load_data()
+
 
 map_controller.current_map = collected_game_info["Map"]['current_map']
 warrior.level = collected_game_info["Warrior"]['level']
@@ -47,6 +49,7 @@ hunter.level = collected_game_info["Hunter"]['level']
 
 
 menu = Menu(warrior, mage, hunter)
+
 
 menu.menu()
 current_hero = menu.chosen_hero
@@ -91,8 +94,8 @@ while game_running:
                 pass
             elif event.key == pygame.K_1:
                 current_hero.is_attacking = True
-                current_hero.skills[1].cast_ball()   # this two methods should work as one ... i think
-                current_hero.skills[1].animating_the_ball() # also it wont look like this of course
+                # current_hero.skills[1].cast_ball()   # this two methods should work as one ... i think
+                # current_hero.skills[1].animating_the_ball() # also it wont look like this of course
 
             elif event.key == pygame.K_2:
                 pass
@@ -108,7 +111,7 @@ while game_running:
             # TO DO walk right
             # char.walking = True
 
-    current_hero.skills[1].check_for_end_point()  # checking if the skill has gone outside of map
+    # current_hero.skills[1].check_for_end_point()  # checking if the skill has gone outside of map
 
     screen.blit(map_controller.show_current_map(), (0, 0))
 
@@ -118,10 +121,11 @@ while game_running:
 
     screen.blit(action_bar_image, (action_bar_x_pos, action_bar_y_pos))
 
-    screen.blit(blue_ball_skill, (action_bar_x_pos + 4, action_bar_y_pos + 4))  # blue ball position
+    # must fix isinstance, when we add all the skill icons
+    hero_controller.display_skill_icons(screen, current_hero, action_bar_x_pos, action_bar_y_pos)
 
-    if current_hero.skills[1].is_animating:  # of course it wont be like this, its just to test the skill animation
-        screen.blit(current_hero.skills[1].animating_the_ball(), (current_hero.skills[1].x_pos, 275))
+    # if current_hero.skills[1].is_animating:  # of course it wont be like this, its just to test the skill animation
+    #     screen.blit(current_hero.skills[1].animating_the_ball(), (current_hero.skills[1].x_pos, 275))
 
     if current_hero.is_attacking:
         screen.blit(current_hero.attack_animation("right"), current_hero.attack())
