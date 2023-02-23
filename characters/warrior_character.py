@@ -1,4 +1,5 @@
 from characters.hero import Hero
+from characters.skills import AxeBasicAttack, Heal
 
 
 class Warrior(Hero):
@@ -9,3 +10,13 @@ class Warrior(Hero):
 
         self.max_health = 150
         self.health = 150
+
+        axe_basic_attack = AxeBasicAttack()
+        heal = Heal()
+
+        self.skills = {
+            1: axe_basic_attack,
+            2: heal,
+            3: 'third skill',
+            4: 'fourth skill'
+        }
