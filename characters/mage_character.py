@@ -1,5 +1,5 @@
 from characters.hero import Hero
-from characters.skills import BlueBall
+from characters.skills import BlueBall, HealAndMana
 
 
 class Mage(Hero):
@@ -17,4 +17,10 @@ class Mage(Hero):
         self.mana = 150
 
         blue_ball = BlueBall(20)
-        self.skills = {1: blue_ball}  # idk if it will be like this
+        hp_mp_gain = HealAndMana()
+        self.skills = {
+            1: blue_ball,
+            2: hp_mp_gain,
+            3: 'third skill',
+            4: 'forth skill',
+        }
