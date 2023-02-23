@@ -9,6 +9,7 @@ resized = 1.4
 
 font = pygame.font.SysFont('Cosmic Sans bold', 40)
 level_font = pygame.font.SysFont('Cosmic Sans', 25)
+description_font = pygame.font.SysFont('Cosmic Sans', 25)
 
 
 class HeroController:
@@ -53,14 +54,14 @@ class HeroController:
         return self.heroes.get(hero_name.capitalize(), "Not Found")
 
     @staticmethod
-    def take_damage(hero: object, monster: object) -> None:
+    def take_damage(hero: (Warrior, Hunter, Mage), monster: object) -> None:
         # this method is not working since there are still NO monster objects
         """
         Gets the hero health_bar and goes into the method (lower bar width) which is inside the Hero class.
         lower_bar_width returns the new health_bar width and take_damage method applies the changes
         THIS METHOD must be used hand by hand with check_if_hero_died
         """
-        hero.health_bar.width = hero.lower_bar_width(hero.health, hero.max_health, monster.damage)  # NOQA
+        hero.health_bar.width = hero.lower_bar_width(hero.health, hero.max_health, monster.damage)
         if hero.health - monster.damage > 0:
             hero.health -= monster.damage
         else:
@@ -69,13 +70,45 @@ class HeroController:
     # method to display all skill icons
     @staticmethod
     def display_skill_icons(screen, hero: (Warrior, Hunter, Mage), x_pos: int, y_pos: int):
-        icon_width, space_between_icons = 57, 5
+        """
+        x_y_offset is the pixels fixation to perfectly fit inside the action bar
+
+        x_pos is increasing so the images don't overlap
+
+        setting the rect_icon x and y positions, because they are not set by default
+        this is helping for show_skill_info descriptions.
+        It works very good since you can't hover the mouse before the skills are being shown on screen and there is no
+        chance for a problem to occur
+        """
+        icon_width, space_between_icons, x_y_offset = 57, 5, 4
         for value in hero.skills.values():
             if not isinstance(value, str):
-                screen.blit(value.skill_icon, (x_pos + 4, y_pos + 4))
+                screen.blit(value.skill_icon, (x_pos + x_y_offset, y_pos + x_y_offset))
+                value.rect_icon.x, value.rect_icon.y = x_pos + x_y_offset, y_pos + x_y_offset
+
             x_pos += icon_width + space_between_icons
 
-    def display_health_and_mana_bars(self, screen, hero: object):
+    def show_skill_description(self, screen, hero: (Warrior, Hunter, Mage), mouse_pos: tuple, action_bar_x_pos: int, action_bar_y_pos, action_bar_width: int):
+        space_between_lines = 15
+        space_between_action_bar_and_text_box = 30
+
+        pixels_inside_text_box = 10
+
+        for value in hero.skills.values():
+            # this if statement will be here until we add all the spells
+            if not isinstance(value, str):
+                if value.rect_icon.collidepoint(mouse_pos):
+                    x_pos = action_bar_x_pos + action_bar_width + space_between_action_bar_and_text_box
+                    screen.blit(value.text_box, (x_pos, action_bar_y_pos))
+
+                    for sentence in value.get_description():
+                        text_surface = description_font.render(sentence, True, self.FONT_COLOR)
+                        text_x_pos = action_bar_x_pos + action_bar_width + space_between_action_bar_and_text_box + pixels_inside_text_box
+                        screen.blit(text_surface, (text_x_pos, action_bar_y_pos + pixels_inside_text_box))
+
+                        action_bar_y_pos += space_between_lines
+
+    def display_health_and_mana_bars(self, screen, hero: (Warrior, Hunter, Mage)):
         # drawing the base health bar on screen
         pygame.draw.rect(screen, self.BACKGROUND_BAR_COLOR, hero.background_rect_health_bar)
         # drawing the actual health bar above the base health bar
@@ -88,13 +121,13 @@ class HeroController:
             pygame.draw.rect(screen, self.MANA_BAR_COLOR, hero.mana_bar)
 
     @staticmethod
-    def check_if_hero_died(hero: object) -> bool:
+    def check_if_hero_died(hero: (Warrior, Hunter, Mage)) -> bool:
         """
         returns True if the health is less than or equal to zero, otherwise returns False
         """
         return hero.health <= 0
 
-    def display_health_and_mana_stats(self, screen, hero: object):
+    def display_health_and_mana_stats(self, screen, hero: (Warrior, Hunter, Mage)):
         # creating health surface
         health_surface = font.render(f"{hero.health}/{hero.max_health}", True, self.FONT_COLOR)
 
@@ -114,7 +147,7 @@ class HeroController:
             # displaying the mana surface on screen
             screen.blit(mana_surface, (middle_of_mana_bar, 40))
 
-    def display_hero_frame_and_level(self, screen, hero: object):
+    def display_hero_frame_and_level(self, screen, hero: (Warrior, Hunter, Mage)):
         # making the hero profile frame
         pygame.draw.rect(screen, self.HERO_FRAME_COLOR, hero.frame, self.PROFILE_FRAME_THICKNESS)
         # displaying the image inside the hero profile frame
