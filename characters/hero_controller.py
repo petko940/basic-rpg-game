@@ -66,6 +66,15 @@ class HeroController:
         else:
             hero.health = 0
 
+    # method to display all skill icons
+    @staticmethod
+    def display_skill_icons(screen, hero: (Warrior, Hunter, Mage), x_pos: int, y_pos: int):
+        icon_width, space_between_icons = 57, 5
+        for value in hero.skills.values():
+            if not isinstance(value, str):
+                screen.blit(value.skill_icon, (x_pos + 4, y_pos + 4))
+            x_pos += icon_width + space_between_icons
+
     def display_health_and_mana_bars(self, screen, hero: object):
         # drawing the base health bar on screen
         pygame.draw.rect(screen, self.BACKGROUND_BAR_COLOR, hero.background_rect_health_bar)
