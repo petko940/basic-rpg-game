@@ -1,4 +1,4 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 from pygame import transform, image
 
 
@@ -11,6 +11,10 @@ class Skill(ABC):
         self.text_box = image.load('characters/skill_info_box/info_text_box.png')
         self.is_animating = False
 
+    @abstractmethod
+    def get_description(self):
+        pass
+
 
 class BlueBall(Skill):
     BALL_SPEED = 9
@@ -20,6 +24,7 @@ class BlueBall(Skill):
     def __init__(self, skill_cost: int):
         super().__init__(skill_cost, self.LEVEL_REQUIRED)
         self.skill_icon = image.load('characters/mage/blue_ball_skill_image.png')
+        self.rect_icon = self.skill_icon.get_rect()
         self.images_right = [image.load(f'characters/mage/blue_ball_sprites/{i}.png') for i in range(1, 6 + 1)]
         self.images_left = [transform.flip(self.images_right[i], True, False) for i in range(len(self.images_right))]
         self.x_pos = 0
@@ -49,6 +54,11 @@ class BlueBall(Skill):
     def level_up(self):
         self.damage += self.DAMAGE_INCREASE
 
+    def get_description(self):
+        return ["Blue Ball",
+                f"Cost: {self.skill_cost}",
+                f"Damage: {self.damage}"]
+
 
 class HealAndMana(Skill):
     LEVEL_REQUIRED = 2
@@ -57,6 +67,7 @@ class HealAndMana(Skill):
         super().__init__(0, self.LEVEL_REQUIRED)
 
         self.skill_icon = image.load('characters/mage/hp_mp_gain.png')
+        self.rect_icon = self.skill_icon.get_rect()
         self.healing = 25
 
     def heal(self):
@@ -64,6 +75,12 @@ class HealAndMana(Skill):
 
     def level_up(self):
         self.healing += 10
+
+    def get_description(self):
+        return ["Heal and Mana",
+                f"Cost: {self.skill_cost}",
+                f"Heal power: {self.healing}",
+                f"Mana gain: {self.healing}"]
 
 
 class AxeBasicAttack(Skill):
@@ -73,10 +90,16 @@ class AxeBasicAttack(Skill):
     def __init__(self):
         super().__init__(0, self.LEVEL_REQUIRED)
         self.skill_icon = image.load('characters/war/axe_basic_attack.png')
+        self.rect_icon = self.skill_icon.get_rect()
         self.damage = 25
 
     def level_up(self):
         self.damage += self.DAMAGE_INCREASE
+
+    def get_description(self):
+        return ["Axe Attack",
+                f"Cost: {self.skill_cost}",
+                f"Damage: {self.damage}"]
 
 
 class Heal(Skill):
@@ -86,6 +109,7 @@ class Heal(Skill):
     def __init__(self):
         super().__init__(0, self.LEVEL_REQUIRED)
         self.skill_icon = image.load('characters/war/heal.png')
+        self.rect_icon = self.skill_icon.get_rect()
         self.healing = 25
 
     def heal(self):
@@ -93,3 +117,8 @@ class Heal(Skill):
 
     def level_up(self):
         self.healing += self.HEAL_INCREASE
+
+    def get_description(self):
+        return ["Heal",
+                f"Cost: {self.skill_cost}",
+                f"Heal power: {self.healing}"]
