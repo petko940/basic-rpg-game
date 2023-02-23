@@ -1,4 +1,5 @@
 from characters.hero import Hero
+from characters.skills import HealAndMana
 
 
 class Hunter(Hero):
@@ -14,3 +15,12 @@ class Hunter(Hero):
 
         self.max_mana = 80
         self.mana = 80
+
+        hp_mp_gain = HealAndMana()
+
+        self.skills = {
+            1: 'first skill',
+            2: hp_mp_gain,
+            3: 'third skill',
+            4: 'fourth skill'
+        }
