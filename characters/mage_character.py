@@ -1,5 +1,5 @@
 from characters.hero import Hero
-from characters.skills import BlueBall, HealAndMana, Lightning
+from characters.skills import BlueBall, HealAndMana, Lightning, MeteorStrike
 
 
 class Mage(Hero):
@@ -19,10 +19,11 @@ class Mage(Hero):
         blue_ball = BlueBall(20)
         hp_mp_gain = HealAndMana()
         lightning = Lightning(30)
+        meteor_strike = MeteorStrike(40)
 
         self.skills = {
             1: blue_ball,
             2: hp_mp_gain,
             3: lightning,
-            4: 'forth skill',
+            4: meteor_strike,
         }
