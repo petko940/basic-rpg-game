@@ -168,8 +168,8 @@ class HeroController:
 
     @staticmethod
     def load_warrior_images():
-        attack_images = [pygame.transform.scale(pygame.image.load(f'characters/war/attack/({i}).png'),
-                                                (647 / resized, 633 / resized)) for i in range(1, 11)]
+        attack_images = [pygame.transform.scale(pygame.image.load(f'characters/war/attack/{i}.png'),
+                                                (580 / resized, 520 / resized)) for i in range(1, 8)]
 
         die_images = [pygame.transform.scale(pygame.image.load(f'characters/war/die/({i}).png'),
                                              (668 / resized, 540 / resized)) for i in range(1, 11)]
