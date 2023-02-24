@@ -1,5 +1,5 @@
 from characters.hero import Hero
-from characters.skills import AxeBasicAttack, Heal
+from characters.skills import AxeBasicAttack, Heal, DamageBoost, PassiveCrit
 
 
 class Warrior(Hero):
@@ -13,10 +13,12 @@ class Warrior(Hero):
 
         axe_basic_attack = AxeBasicAttack()
         heal = Heal()
+        damage_boost = DamageBoost()
+        passive_crit = PassiveCrit()
 
         self.skills = {
             1: axe_basic_attack,
             2: heal,
-            3: 'third skill',
-            4: 'fourth skill'
+            3: damage_boost,
+            4: passive_crit
         }
