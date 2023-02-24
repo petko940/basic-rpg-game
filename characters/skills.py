@@ -23,7 +23,7 @@ class BlueBall(Skill):
 
     def __init__(self, skill_cost: int):
         super().__init__(skill_cost, self.LEVEL_REQUIRED)
-        self.skill_icon = image.load('characters/mage/blue_ball_skill_image.png')
+        self.skill_icon = image.load('characters/mage/skill_icons/blue_ball_skill_image.png')
         self.rect_icon = self.skill_icon.get_rect()
         self.images_right = [image.load(f'characters/mage/skill_animations/blue_ball_sprites/{i}.png') for i in range(1, 6 + 1)]
         self.images_left = [transform.flip(self.images_right[i], True, False) for i in range(len(self.images_right))]
@@ -56,7 +56,7 @@ class BlueBall(Skill):
 
     def get_description(self):
         return ["Blue Ball",
-                f"Cost: {self.skill_cost}",
+                f"Cost: {self.skill_cost} mana",
                 f"Damage: {self.damage}"
                 ]
 
@@ -68,7 +68,7 @@ class HealAndMana(Skill):
     def __init__(self):
         super().__init__(0, self.LEVEL_REQUIRED)
 
-        self.skill_icon = image.load('characters/mage/hp_mp_gain.png')
+        self.skill_icon = image.load('characters/mage/skill_icons/hp_mp_gain.png')
         self.rect_icon = self.skill_icon.get_rect()
         self.healing = 25
 
@@ -80,7 +80,7 @@ class HealAndMana(Skill):
 
     def get_description(self):
         return ["Heal and Mana",
-                f"Cost: {self.skill_cost}",
+                f"Cost: {self.skill_cost} mana",
                 f"Heal power: {self.healing}",
                 f"Mana gain: {self.healing}"
                 ]
@@ -93,7 +93,7 @@ class Lightning(Skill):
     def __init__(self, skill_cost: int):
         super().__init__(skill_cost, self.LEVEL_REQUIRED)
 
-        self.skill_icon = image.load('characters/mage/thunderstorm_skill_icon.png')
+        self.skill_icon = image.load('characters/mage/skill_icons/thunderstorm_skill_icon.png')
         self.rect_icon = self.skill_icon.get_rect()
         self.images = [image.load(f'characters/mage/skill_animations/thunder_sprites/{x}.png') for x in range(1, 9 + 1)]
         self.img_index = 0
@@ -104,7 +104,30 @@ class Lightning(Skill):
 
     def get_description(self):
         return ["Lightning",
-                f"Cost: {self.skill_cost}",
+                f"Cost: {self.skill_cost} mana",
+                f"Damage: {self.damage}"
+                ]
+
+
+class MeteorStrike(Skill):
+    LEVEL_REQUIRED = 4
+    DAMAGE_INCREASE_PER_LEVEL = 10
+
+    def __init__(self, skill_cost: int):
+        super().__init__(skill_cost, self.LEVEL_REQUIRED)
+
+        self.skill_icon = image.load('characters/mage/skill_icons/meteor_strike.jpg')
+        self.rect_icon = self.skill_icon.get_rect()
+        self.images = [image.load(f'characters/mage/skill_animations/thunder_sprites/{x}.png') for x in range(1, 9 + 1)]
+        self.img_index = 0
+        self.damage = 30
+
+    def level_up(self):
+        self.damage += self.DAMAGE_INCREASE_PER_LEVEL
+
+    def get_description(self):
+        return ["Meteor Strike",
+                f"Cost: {self.skill_cost} mana",
                 f"Damage: {self.damage}"
                 ]
 
@@ -115,7 +138,7 @@ class AxeBasicAttack(Skill):
 
     def __init__(self):
         super().__init__(0, self.LEVEL_REQUIRED)
-        self.skill_icon = image.load('characters/war/axe_basic_attack.png')
+        self.skill_icon = image.load('characters/war/skill_icons/axe_basic_attack.png')
         self.rect_icon = self.skill_icon.get_rect()
         self.damage = 25
 
@@ -134,7 +157,7 @@ class Heal(Skill):
 
     def __init__(self):
         super().__init__(0, self.LEVEL_REQUIRED)
-        self.skill_icon = image.load('characters/war/heal.png')
+        self.skill_icon = image.load('characters/war/skill_icons/heal.png')
         self.rect_icon = self.skill_icon.get_rect()
         self.healing = 25
 
@@ -148,4 +171,48 @@ class Heal(Skill):
         return ["Heal",
                 f"Cost: {self.skill_cost}",
                 f"Heal power: {self.healing}"
+                ]
+
+
+class DamageBoost(Skill):
+    DAMAGE_BOOST_PER_LEVEL = 5
+    LEVEL_REQUIRED = 3
+
+    def __init__(self):
+        super().__init__(0, self.LEVEL_REQUIRED)
+
+        self.skill_icon = image.load('characters/war/skill_icons/damage_boost.png')
+        self.rect_icon = self.skill_icon.get_rect()
+        self.damage_boost = 5
+
+    def level_up(self):
+        self.damage_boost += self.DAMAGE_BOOST_PER_LEVEL
+
+    def get_description(self):
+        return ["Damage Boost",
+                f"Cost: {self.skill_cost}",
+                f"Damage boost: {self.damage_boost}",
+                ]
+
+
+class PassiveCrit(Skill):
+    PASSIVE_CRIT_INCREASE_PER_LEVEL = 5
+    MAX_CRIT_CHANCE = 100
+
+    LEVEL_REQUIRED = 4
+
+    def __init__(self):
+        super().__init__(0, self.LEVEL_REQUIRED)
+
+        self.skill_icon = image.load('characters/war/skill_icons/passive_crit.png')
+        self.rect_icon = self.skill_icon.get_rect()
+        self.crit_chance = 5  # must work with random method like this - if self.crit_chance >= random.randint(0, 100)
+
+    def level_up(self):
+        if self.crit_chance + self.PASSIVE_CRIT_INCREASE_PER_LEVEL <= self.MAX_CRIT_CHANCE:
+            self.crit_chance += self.PASSIVE_CRIT_INCREASE_PER_LEVEL
+
+    def get_description(self):
+        return ["Passive",
+                f"Chance to crit: {self.crit_chance}%"
                 ]
