@@ -14,6 +14,20 @@ class Menu:
     arrow_pos = ((225 / resized, 80 / resized), (925 / resized, 80 / resized), (1580 / resized, 80 / resized))
 
     # music('images/menu/music.mp3')
+    start_image = pygame.image.load("images/menu/start_image.png")
+
+    font = pygame.font.SysFont(None, 48)
+    press_to_continue = font.render("press any key to continue...", True, (255, 255, 255))
+    start_image.blit(press_to_continue, (1366 / 2 - 200, 700))
+
+    screen.blit(start_image, (0, 0))
+    pygame.display.update()
+
+    while True:
+        event = pygame.event.wait()
+        if event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
+            break
+
 
     buttons_x, buttons_y = (1920 / 2 - 100) / resized, (1080 / 1.01 - 210) / resized
     menu_image = pygame.transform.scale(pygame.image.load('images/menu/make_character.jpg'), (WIDTH, HEIGHT))
