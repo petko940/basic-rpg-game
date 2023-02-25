@@ -180,7 +180,7 @@ class Menu:
         font = pygame.font.SysFont(None, 48)
         press_to_continue = font.render("press any key to continue...", True, (255, 255, 255))
 
-        self.start_image.blit(press_to_continue, (1366 / 2 - press_to_continue.get_width() / 2, 700))
+        self.start_image.blit(press_to_continue, (WIDTH / 2 - press_to_continue.get_width() / 2, 700))
 
         screen.blit(self.start_image, (0, 0))
 
