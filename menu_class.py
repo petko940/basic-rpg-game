@@ -16,19 +16,6 @@ class Menu:
     # music('images/menu/music.mp3')
     start_image = pygame.image.load("images/menu/start_image.png")
 
-    font = pygame.font.SysFont(None, 48)
-    press_to_continue = font.render("press any key to continue...", True, (255, 255, 255))
-    start_image.blit(press_to_continue, (1366 / 2 - 200, 700))
-
-    screen.blit(start_image, (0, 0))
-    pygame.display.update()
-
-    while True:
-        event = pygame.event.wait()
-        if event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
-            break
-
-
     buttons_x, buttons_y = (1920 / 2 - 100) / resized, (1080 / 1.01 - 210) / resized
     menu_image = pygame.transform.scale(pygame.image.load('images/menu/make_character.jpg'), (WIDTH, HEIGHT))
     menu_image_rect = menu_image.get_rect()
@@ -188,6 +175,21 @@ class Menu:
                 screen.blit(chosen_hero.jump_animation(), (650 / resized, 200 / resized))
                 pygame.draw.rect(screen, (50, (255 - i // 2), 0), self.menu_image_rect, int(i * 1.1))
                 pygame.display.update()
+
+    def display_beginning_image(self):
+        font = pygame.font.SysFont(None, 48)
+        press_to_continue = font.render("press any key to continue...", True, (255, 255, 255))
+
+        self.start_image.blit(press_to_continue, (1366 / 2 - press_to_continue.get_width() / 2, 700))
+
+        screen.blit(self.start_image, (0, 0))
+
+        show_screen = True
+        while show_screen:
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
+                    show_screen = False
+            pygame.display.update()
 
 # menu = Menu()
 # menu.menu()
