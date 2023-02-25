@@ -88,7 +88,8 @@ class HeroController:
 
             x_pos += icon_width + space_between_icons
 
-    def show_skill_description(self, screen, hero: (Warrior, Hunter, Mage), mouse_pos: tuple, action_bar_x_pos: int, action_bar_y_pos, action_bar_width: int):
+    def show_skill_description(self, screen, hero: (Warrior, Hunter, Mage), mouse_pos: tuple, action_bar_x_pos: int,
+                               action_bar_y_pos, action_bar_width: int):
         space_between_lines = 15
         space_between_action_bar_and_text_box = 30
 
@@ -151,7 +152,8 @@ class HeroController:
         # making the hero profile frame
         pygame.draw.rect(screen, self.HERO_FRAME_COLOR, hero.frame, self.PROFILE_FRAME_THICKNESS)
         # displaying the image inside the hero profile frame
-        screen.blit(hero.profile_pic, (hero.frame.x + self.PROFILE_FRAME_THICKNESS, hero.frame.y + self.PROFILE_FRAME_THICKNESS))
+        screen.blit(hero.profile_pic,
+                    (hero.frame.x + self.PROFILE_FRAME_THICKNESS, hero.frame.y + self.PROFILE_FRAME_THICKNESS))
 
         # drawing a circle
         pygame.draw.circle(screen, self.HERO_FRAME_COLOR, (10, 10), 15)
@@ -171,8 +173,8 @@ class HeroController:
         attack_images = [pygame.transform.scale(pygame.image.load(f'characters/war/attack/{i}.png'),
                                                 (580 / resized, 520 / resized)) for i in range(1, 8)]
 
-        die_images = [pygame.transform.scale(pygame.image.load(f'characters/war/die/({i}).png'),
-                                             (668 / resized, 540 / resized)) for i in range(1, 11)]
+        die_image = pygame.transform.scale(pygame.image.load(f'characters/war/die/1.png'),
+                                           (765 / resized, 615 / resized))
 
         idle_images = [pygame.transform.scale(pygame.image.load(f'characters/war/idle/({i}).png'),
                                               (580 / resized, 520 / resized)) for i in range(1, 11)]
@@ -185,19 +187,15 @@ class HeroController:
 
         profile_picture = pygame.image.load(f'characters/war/warrior_profile.png')
 
-        return attack_images, die_images, idle_images, jump_images, walk_images, profile_picture
+        return attack_images, die_image, idle_images, jump_images, walk_images, profile_picture
 
     @staticmethod
     def load_mage_images():
-        attack_images = [
-            pygame.transform.scale(pygame.image.load(f'characters/mage/attack/({i}).png'),
-                                   (466 / resized, 561 / resized)) for i in
-            range(1, 8)]
+        attack_images = [pygame.transform.scale(pygame.image.load(f'characters/mage/attack/({i}).png'),
+                                                (466 / resized, 561 / resized)) for i in range(1, 8)]
 
-        die_images = [
-            pygame.transform.scale(pygame.image.load(f'characters/mage/die/({i}).png'), (671 / resized, 550 / resized))
-            for
-            i in range(1, 10)]
+        die_image = pygame.transform.scale(pygame.image.load(f'characters/mage/die/1.png'),
+                                           (671 / resized, 550 / resized))
 
         idle_images = [
             pygame.transform.scale(pygame.image.load(f'characters/mage/idle/({i}).png'), (466 / resized, 535 / resized))
@@ -213,13 +211,13 @@ class HeroController:
 
         profile_picture = pygame.image.load(f'characters/mage/mage_profile.png')
 
-        return attack_images, die_images, idle_images, jump_images, walk_images, profile_picture
+        return attack_images, die_image, idle_images, jump_images, walk_images, profile_picture
 
     @staticmethod
     def load_hunter_images():
         attack_images = [pygame.image.load(f'characters/hunt/attack/({i}).png') for i in range(1, 11)]
 
-        die_images = [pygame.image.load(f'characters/hunt/die/({i}).png') for i in range(1, 11)]
+        die_image = pygame.transform.scale(pygame.image.load(f'characters/hunt/die/1.png'), (554 / resized, 550 / resized))
 
         idle_images = [
             pygame.transform.scale(pygame.image.load(f'characters/hunt/idle/({i}).png'), (483 / resized, 550 / resized))
@@ -231,4 +229,4 @@ class HeroController:
 
         profile_picture = pygame.image.load(f'characters/hunt/hunter_profile.png')
 
-        return attack_images, die_images, idle_images, jump_images, walk_images, profile_picture
+        return attack_images, die_image, idle_images, jump_images, walk_images, profile_picture
