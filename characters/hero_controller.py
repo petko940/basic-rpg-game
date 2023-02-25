@@ -215,17 +215,15 @@ class HeroController:
 
     @staticmethod
     def load_hunter_images():
-        attack_images = [pygame.image.load(f'characters/hunt/attack/({i}).png') for i in range(1, 11)]
+        attack_images = [pygame.transform.scale(pygame.image.load(f'characters/hunt/attack/{i}.png'), (547 / resized, 556 / resized)) for i in range(6)]
 
         die_image = pygame.transform.scale(pygame.image.load(f'characters/hunt/die/1.png'), (554 / resized, 550 / resized))
 
-        idle_images = [
-            pygame.transform.scale(pygame.image.load(f'characters/hunt/idle/({i}).png'), (483 / resized, 550 / resized))
-            for i in range(1, 11)]
+        idle_images = [pygame.transform.scale(pygame.image.load(f'characters/hunt/idle/({i}).png'), (483 / resized, 550 / resized)) for i in range(1, 11)]
 
-        jump_images = [pygame.image.load(f'characters/hunt/jump/({i}).png') for i in range(1, 11)]
+        jump_images = [pygame.transform.scale(pygame.image.load(f'characters/hunt/jump/({i}).png'), (527 / resized, 618 / resized)) for i in range(1, 11)]
 
-        walk_images = [pygame.image.load(f'characters/hunt/walk/({i}).png') for i in range(1, 11)]
+        walk_images = [pygame.transform.scale(pygame.image.load(f'characters/hunt/walk/({i}).png'), (458 / resized, 539 / resized)) for i in range(1, 11)]
 
         profile_picture = pygame.image.load(f'characters/hunt/hunter_profile.png')
 
