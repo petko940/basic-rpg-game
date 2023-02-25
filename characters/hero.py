@@ -1,4 +1,4 @@
-from pygame import transform, Rect
+from pygame import transform, Rect, Surface
 
 
 class Hero:
@@ -7,7 +7,7 @@ class Hero:
     __MOVE_SPEED = 5
     BAR_LENGTH = 275
 
-    def __init__(self, x: int, y: int, attack_images: list, die_images: list, idle_images: list,
+    def __init__(self, x: int, y: int, attack_images: list, die_image: Surface, idle_images: list,
                  jump_images: list, walk_images: list, profile_pic: object):
         self.x = x
         self.y = y
@@ -16,8 +16,7 @@ class Hero:
         self.attack_images_right = attack_images
         self.attack_images_left = [transform.flip(self.attack_images_right[i], True, False) for i in range(len(self.attack_images_right))]
 
-        self.die_images_right = die_images
-        self.die_images_left = [transform.flip(self.die_images_right[i], True, False) for i in range(len(self.die_images_right))]
+        self.die_image = die_image
 
         self.idle_images_right = idle_images
         self.idle_images_left = [transform.flip(self.idle_images_right[i], True, False) for i in range((len(self.idle_images_right)))]
