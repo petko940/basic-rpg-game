@@ -51,7 +51,7 @@ hunter.level = collected_game_info["Hunter"]['level']
 
 menu = Menu(warrior, mage, hunter)
 
-
+menu.display_beginning_image()
 menu.menu()
 current_hero = menu.chosen_hero
 
