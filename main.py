@@ -21,7 +21,6 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 resized = 1.4
 
 action_bar_image = pygame.image.load('images/action_bar.png')
-action_bar_rect = action_bar_image.get_rect()
 action_bar_x_pos, action_bar_y_pos = (WIDTH // 2) - (action_bar_image.get_rect().width // 2), 675
 
 
@@ -129,7 +128,7 @@ while game_running:
     #     screen.blit(current_hero.skills[1].animating_the_ball(), (current_hero.skills[1].x_pos, 275))
 
     # shows skill description if you hover on a skill icon
-    hero_controller.show_skill_description(screen, current_hero, pygame.mouse.get_pos(), action_bar_x_pos, action_bar_y_pos, action_bar_rect.width)
+    hero_controller.show_skill_description(screen, current_hero, pygame.mouse.get_pos())
 
     if current_hero.is_attacking:
         screen.blit(current_hero.attack_animation("right"), current_hero.attack())
