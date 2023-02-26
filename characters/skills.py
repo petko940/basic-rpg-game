@@ -15,10 +15,15 @@ class Skill(ABC):
     def get_description(self):
         pass
 
+    @abstractmethod
+    def level_up(self):
+        pass
+
 
 class BlueBall(Skill):
     BALL_SPEED = 9
     DAMAGE_INCREASE_PER_LEVEL = 5
+    MANA_COST_INCREASE_PER_LEVEL = 5
     LEVEL_REQUIRED = 1
 
     def __init__(self, skill_cost: int):
@@ -28,31 +33,41 @@ class BlueBall(Skill):
         self.images_right = [image.load(f'characters/mage/skill_animations/blue_ball_sprites/{i}.png') for i in range(1, 6 + 1)]
         self.images_left = [transform.flip(self.images_right[i], True, False) for i in range(len(self.images_right))]
         self.x_pos = 0
+        self.y_pos = 0
         self.img_index = 0
         self.damage = 25
 
-    def cast_ball(self):
-        if not self.is_animating:
-            self.is_animating = True
-
-    def animating_the_ball(self):
+    def animate(self):
         if self.is_animating:
-            self.x_pos += self.BALL_SPEED
-            self.img_index += 0.2
+            self.moving_the_ball()
+            self.check_for_end_point()
 
-            return self.images_right[int(self.img_index) % len(self.images_right)]
+    def cast_skill(self):
+        self.is_animating = True
+        self.animate()
+
+    def show_image(self):
+        return self.images_right[int(self.img_index) % len(self.images_right)]
+
+    def moving_the_ball(self):
+        self.x_pos += self.BALL_SPEED
+        self.img_index += 0.2
 
     def check_for_end_point(self):
-        if self.x_pos > self.MAP_WIDTH + self.images_right[0].get_rect().width:
+        if self.x_pos > self.MAP_WIDTH:
             self.reset_skill_position()
 
     def reset_skill_position(self):
-        self.x_pos = 0
         self.img_index = 0
         self.is_animating = False
 
+    def set_skill_pos(self, new_x_pos: int, new_y_pos: int):
+        self.x_pos = new_x_pos + 150
+        self.y_pos = new_y_pos + 50
+
     def level_up(self):
         self.damage += self.DAMAGE_INCREASE_PER_LEVEL
+        self.skill_cost += self.MANA_COST_INCREASE_PER_LEVEL
 
     def get_description(self):
         return ["Blue Ball",
@@ -89,6 +104,7 @@ class HealAndMana(Skill):
 class Lightning(Skill):
     LEVEL_REQUIRED = 3
     DAMAGE_INCREASE_PER_LEVEL = 10
+    MANA_COST_INCREASE_PER_LEVEL = 5
 
     def __init__(self, skill_cost: int):
         super().__init__(skill_cost, self.LEVEL_REQUIRED)
@@ -101,6 +117,7 @@ class Lightning(Skill):
 
     def level_up(self):
         self.damage += self.DAMAGE_INCREASE_PER_LEVEL
+        self.skill_cost += self.MANA_COST_INCREASE_PER_LEVEL
 
     def get_description(self):
         return ["Lightning",
@@ -112,6 +129,7 @@ class Lightning(Skill):
 class MeteorStrike(Skill):
     LEVEL_REQUIRED = 4
     DAMAGE_INCREASE_PER_LEVEL = 10
+    MANA_COST_INCREASE_PER_LEVEL = 5
 
     def __init__(self, skill_cost: int):
         super().__init__(skill_cost, self.LEVEL_REQUIRED)
@@ -124,6 +142,7 @@ class MeteorStrike(Skill):
 
     def level_up(self):
         self.damage += self.DAMAGE_INCREASE_PER_LEVEL
+        self.skill_cost += self.MANA_COST_INCREASE_PER_LEVEL
 
     def get_description(self):
         return ["Meteor Strike",
@@ -136,6 +155,7 @@ class AxeBasicAttack(Skill):
     DAMAGE_PER_LEVEL_INCREASE = 5
     LEVEL_REQUIRED = 1
 
+    # should add the basic attack of warrior images here
     def __init__(self):
         super().__init__(0, self.LEVEL_REQUIRED)
         self.skill_icon = image.load('characters/war/skill_icons/axe_basic_attack.png')
@@ -215,4 +235,28 @@ class PassiveCrit(Skill):
     def get_description(self):
         return ["Passive",
                 f"Chance to crit: {self.crit_chance}%"
+                ]
+
+
+class ArrowRain(Skill):
+    LEVEL_REQUIRED = 4
+    DAMAGE_INCREASE_PER_LEVEL = 5
+    MANA_COST_INCREASE_PER_LEVEL = 5
+
+    def __init__(self, skill_cost: int):
+        super().__init__(skill_cost, self.LEVEL_REQUIRED)
+
+        self.skill_icon = image.load('characters/hunt/skill_icons/ultimate_hunter.png')
+        self.rect_icon = self.skill_icon.get_rect()
+
+        self.damage = 10
+
+    def level_up(self):
+        self.damage += self.DAMAGE_INCREASE_PER_LEVEL
+        self.skill_cost += self.MANA_COST_INCREASE_PER_LEVEL
+
+    def get_description(self):
+        return ["Arrow Rain",
+                f"Cost: {self.skill_cost} mana",
+                f"Damage per hit: {self.damage}"
                 ]
