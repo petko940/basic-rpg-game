@@ -9,7 +9,6 @@ resized = 1.4
 
 font = pygame.font.SysFont('Cosmic Sans bold', 40)
 level_font = pygame.font.SysFont('Cosmic Sans', 25)
-description_font = pygame.font.SysFont('Cosmic Sans', 25)
 
 
 class HeroController:
@@ -28,6 +27,7 @@ class HeroController:
 
     def __init__(self):
         self.heroes: dict[str, object] = {}
+        self.skill_to_use = None
 
     @property
     def valid_heroes(self):
@@ -52,6 +52,22 @@ class HeroController:
         returns hero as object and if not found, returns "Not Found"
         """
         return self.heroes.get(hero_name.capitalize(), "Not Found")
+
+    def check_end_of_skill_animation(self, skill: object):
+        if not skill.is_animating:
+            self.skill_to_use = None
+
+    # may separate this method to 3 for each hero
+    def use_skill(self, hero: (Warrior, Hunter, Mage), screen):
+        if self.skill_to_use:
+            skill = hero.skills[self.skill_to_use]
+            if not skill.is_animating:
+                skill.set_skill_pos(hero.x, hero.y)
+
+            skill.cast_skill()
+            screen.blit(skill.show_image(), (skill.x_pos, skill.y_pos))
+
+            self.check_end_of_skill_animation(skill)
 
     @staticmethod
     def take_damage(hero: (Warrior, Hunter, Mage), monster: object) -> None:
@@ -106,7 +122,7 @@ class HeroController:
                     screen.blit(value.text_box, (mouse_x_pos + space_between_mouse_and_text_box, mouse_y_pos - pixels_above_mouse))
 
                     for sentence in value.get_description():
-                        text_surface = description_font.render(sentence, True, self.FONT_COLOR)
+                        text_surface = level_font.render(sentence, True, self.FONT_COLOR)
                         text_x_pos, text_y_pos = mouse_x_pos + text_inside_x_pos, mouse_y_pos - text_inside_y_pos
 
                         screen.blit(text_surface, (text_x_pos, text_y_pos))
