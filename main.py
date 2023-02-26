@@ -90,28 +90,26 @@ while game_running:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 game_running = False
-            elif event.key == pygame.K_SPACE:
-                pass
+
+            # means that a skill is currently animating
+            if hero_controller.skill_to_use:
+                continue
+
             elif event.key == pygame.K_1:
                 current_hero.is_attacking = True
-                # current_hero.skills[1].cast_ball()   # this two methods should work as one ... i think
-                # current_hero.skills[1].animating_the_ball() # also it wont look like this of course
+                hero_controller.skill_to_use = 1
 
             elif event.key == pygame.K_2:
-                pass
+                current_hero.is_attacking = True
+                hero_controller.skill_to_use = 2
 
             elif event.key == pygame.K_3:
-                pass
+                current_hero.is_attacking = True
+                hero_controller.skill_to_use = 3
 
             elif event.key == pygame.K_4:
-                pass
-
-            # elif event.key == pygame.K_d:
-            #     screen.blit(warrior.walk_images("right"),warrior.idle_animation("right").get_rect())
-            # TO DO walk right
-            # char.walking = True
-
-    # current_hero.skills[1].check_for_end_point()  # checking if the skill has gone outside of map
+                current_hero.is_attacking = True
+                hero_controller.skill_to_use = 4
 
     screen.blit(map_controller.show_current_map(), (0, 0))
 
@@ -124,17 +122,13 @@ while game_running:
     # must fix isinstance, when we add all the skill icons
     hero_controller.display_skill_icons(screen, current_hero, action_bar_x_pos, action_bar_y_pos)
 
-    # if current_hero.skills[1].is_animating:  # of course it wont be like this, its just to test the skill animation
-    #     screen.blit(current_hero.skills[1].animating_the_ball(), (current_hero.skills[1].x_pos, 275))
-
     # shows skill description if you hover on a skill icon
     hero_controller.show_skill_description(screen, current_hero, pygame.mouse.get_pos())
 
-    if current_hero.is_attacking:
-        screen.blit(current_hero.attack_animation("right"), current_hero.attack())
+    # calling the skills animations on button press
+    hero_controller.use_skill(current_hero, screen)
 
-    if pygame.key.get_pressed()[pygame.K_d] and pygame.key.get_pressed()[pygame.K_SPACE]:
-        screen.blit(current_hero.walk_images("right"), current_hero.walk("right"))
+    if current_hero.is_attacking:
         screen.blit(current_hero.attack_animation("right"), current_hero.attack())
 
     elif pygame.key.get_pressed()[pygame.K_d]:
