@@ -1,5 +1,5 @@
 from characters.hero import Hero
-from characters.skills import HealAndMana
+from characters.skills import HealAndMana, ArrowRain
 
 
 class Hunter(Hero):
@@ -17,10 +17,11 @@ class Hunter(Hero):
         self.mana = 80
 
         hp_mp_gain = HealAndMana()
+        arrow_rain = ArrowRain(40)
 
         self.skills = {
             1: 'first skill',
             2: hp_mp_gain,
             3: 'third skill',
-            4: 'fourth skill'
+            4: arrow_rain
         }
