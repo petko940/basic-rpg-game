@@ -88,26 +88,32 @@ class HeroController:
 
             x_pos += icon_width + space_between_icons
 
-    def show_skill_description(self, screen, hero: (Warrior, Hunter, Mage), mouse_pos: tuple, action_bar_x_pos: int,
-                               action_bar_y_pos, action_bar_width: int):
+    def show_skill_description(self, screen, hero: (Warrior, Hunter, Mage), mouse_pos: tuple):
         space_between_lines = 15
-        space_between_action_bar_and_text_box = 30
 
-        pixels_inside_text_box = 10
+        space_between_mouse_and_text_box = 10
+
+        pixels_above_mouse = 100
+
+        text_inside_y_pos = pixels_above_mouse - 10
+        text_inside_x_pos = space_between_mouse_and_text_box * 2
 
         for value in hero.skills.values():
             # this if statement will be here until we add all the spells
             if not isinstance(value, str):
                 if value.rect_icon.collidepoint(mouse_pos):
-                    x_pos = action_bar_x_pos + action_bar_width + space_between_action_bar_and_text_box
-                    screen.blit(value.text_box, (x_pos, action_bar_y_pos))
+                    mouse_x_pos, mouse_y_pos = mouse_pos
+                    screen.blit(value.text_box, (mouse_x_pos + space_between_mouse_and_text_box, mouse_y_pos - pixels_above_mouse))
 
                     for sentence in value.get_description():
                         text_surface = description_font.render(sentence, True, self.FONT_COLOR)
-                        text_x_pos = action_bar_x_pos + action_bar_width + space_between_action_bar_and_text_box + pixels_inside_text_box
-                        screen.blit(text_surface, (text_x_pos, action_bar_y_pos + pixels_inside_text_box))
+                        text_x_pos, text_y_pos = mouse_x_pos + text_inside_x_pos, mouse_y_pos - text_inside_y_pos
 
-                        action_bar_y_pos += space_between_lines
+                        screen.blit(text_surface, (text_x_pos, text_y_pos))
+
+                        # increasing this, so it makes a new line to display the next sentence
+                        # also it is needed so the text doesn't overlap
+                        mouse_y_pos += space_between_lines
 
     def display_health_and_mana_bars(self, screen, hero: (Warrior, Hunter, Mage)):
         # drawing the base health bar on screen
