@@ -5,6 +5,10 @@ from menu_class import Menu
 from class_maps.map_controller import MapController
 from default_properties import load_data, save_on_close
 
+# timer 83 , 151
+from timer import timer
+import time
+
 pygame.init()
 
 
@@ -23,37 +27,32 @@ resized = 1.4
 action_bar_image = pygame.image.load('images/action_bar.png')
 action_bar_x_pos, action_bar_y_pos = (WIDTH // 2) - (action_bar_image.get_rect().width // 2), 675
 
-
 map_controller = MapController()
-map_controller.create_map([pygame.transform.scale(pygame.image.load(f'images/maps/map1/({i}).png'), (1920 / resized, 1080 / resized)) for i in range(1, 5 + 1)], "Forest")
-
+map_controller.create_map(
+    [pygame.transform.scale(pygame.image.load(f'images/maps/map1/({i}).png'), (1920 / resized, 1080 / resized)) for i in
+     range(1, 5 + 1)], "Forest")
 
 hero_controller = HeroController()
 hero_controller.create_hero("Warrior", 20, 200)
 hero_controller.create_hero("Mage", 20, 200)
 hero_controller.create_hero("Hunter", 20, 200)
 
-
 warrior = hero_controller.get_hero_object("Warrior")
 mage = hero_controller.get_hero_object("Mage")
 hunter = hero_controller.get_hero_object("Hunter")
 
-
 collected_game_info = load_data()
-
 
 map_controller.current_map = collected_game_info["Map"]['current_map']
 warrior.level = collected_game_info["Warrior"]['level']
 mage.level = collected_game_info["Mage"]['level']
 hunter.level = collected_game_info["Hunter"]['level']
 
-
 menu = Menu(warrior, mage, hunter)
 
 menu.display_beginning_image()
 menu.menu()
 current_hero = menu.chosen_hero
-
 
 background_rect = map_controller.show_current_map().get_rect()
 
@@ -81,11 +80,12 @@ monster = Monster()
 # print(hero_controller.check_if_hero_died(current_hero))
 ################################################################
 
+start_time = time.time()
+
 is_right = True
 game_running = True
 while game_running:
     pygame.time.Clock().tick(100)
-
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
@@ -148,7 +148,7 @@ while game_running:
             screen.blit(current_hero.idle_animation('right'), current_hero.idle())
         elif not is_right and not current_hero.is_attacking:
             screen.blit(current_hero.idle_animation('left'), current_hero.idle())
-
+    timer(start_time, screen)
     pygame.display.update()
 
 pygame.quit()
