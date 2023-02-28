@@ -75,7 +75,10 @@ class HeroController:
             self.skill_to_use = None
 
         if type(skill).__name__ == "Heal":
-            hero.health_bar.width = hero.increase_bar_width(hero.health, hero.max_health, skill.heal())
+            heal_power = skill.heal()
+
+            hero.health_bar.width = hero.increase_bar_width(hero.health, hero.max_health, heal_power)
+            hero.receive_healing(heal_power)
 
     def use_mage_skills(self, hero: Mage, screen):
         skill = hero.skills[self.skill_to_use]
