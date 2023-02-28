@@ -23,3 +23,11 @@ class Hunter(Hero):
             3: 'third skill',
             4: arrow_rain
         }
+
+    def check_mana_limit(self):
+        if self.mana > self.max_mana:
+            self.mana = self.max_mana
+
+    def receive_mana(self, amount: int or float):
+        self.mana += amount
+        self.check_mana_limit()
