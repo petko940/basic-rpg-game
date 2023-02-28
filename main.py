@@ -92,15 +92,17 @@ while game_running:
                 game_running = False
 
             # means that a skill is currently animating
-            if hero_controller.skill_to_use:
+            if hero_controller.skill_to_use or current_hero.is_attacking:
                 continue
+
+            elif event.key == pygame.K_5:
+                hero_controller.take_damage(current_hero, monster)
 
             elif event.key == pygame.K_1:
                 current_hero.is_attacking = True
                 hero_controller.skill_to_use = 1
 
             elif event.key == pygame.K_2:
-                current_hero.is_attacking = True
                 hero_controller.skill_to_use = 2
 
             elif event.key == pygame.K_3:
