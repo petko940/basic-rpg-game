@@ -48,10 +48,26 @@ class Hero:
         return Rect(x, y, width, height)
 
     def lower_bar_width(self, current_value: int or float, max_value: int or float, extract_value: int or float):
-        return self.BAR_LENGTH * ((current_value - extract_value) / max_value)
+        bar_width = self.BAR_LENGTH * ((current_value - extract_value) / max_value)
+
+        if bar_width > self.BAR_LENGTH:
+            return self.BAR_LENGTH
+        return bar_width
 
     def increase_bar_width(self, current_value: int or float, max_value: int or float, add_value: int or float):
-        return self.BAR_LENGTH * ((current_value + add_value) / max_value)
+        bar_width = self.BAR_LENGTH * ((current_value + add_value) / max_value)
+
+        if bar_width > self.BAR_LENGTH:
+            return self.BAR_LENGTH
+        return bar_width
+
+    def check_health_limit(self):
+        if self.health > self.max_health:
+            self.health = self.max_health
+
+    def receive_healing(self, amount: int or float):
+        self.health += amount
+        self.check_health_limit()
 
     def idle_animation(self, direction: str):
         self.idle_index += self.__IDLE_SPEED
