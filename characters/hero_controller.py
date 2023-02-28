@@ -53,6 +53,14 @@ class HeroController:
         """
         return self.heroes.get(hero_name.capitalize(), "Not Found")
 
+    @staticmethod
+    def heal_and_receive_mana(hero: (Mage, Hunter), heal_power: int or float):
+        hero.health_bar.width = hero.increase_bar_width(hero.health, hero.max_health, heal_power)
+        hero.receive_healing(heal_power)
+
+        hero.mana_bar.width = hero.increase_bar_width(hero.mana, hero.max_mana, heal_power)
+        hero.receive_mana(heal_power)
+
     def check_end_of_skill_animation(self, skill: object):
         if not skill.is_animating:
             self.skill_to_use = None
@@ -66,7 +74,7 @@ class HeroController:
                 self.use_warrior_skills(hero)
 
             elif type(hero).__name__ == "Hunter":
-                pass
+                self.use_hunter_skills(hero, screen)
 
     def use_warrior_skills(self, hero: Warrior):
         skill = hero.skills[self.skill_to_use]
@@ -82,13 +90,30 @@ class HeroController:
 
     def use_mage_skills(self, hero: Mage, screen):
         skill = hero.skills[self.skill_to_use]
-        if not skill.is_animating:
+
+        if all(not skill.is_animating for skill in hero.skills.values()) and type(skill).__name__ == "HealAndMana":
+            self.heal_and_receive_mana(hero, skill.heal())
+
+            self.skill_to_use = None
+
+        elif not skill.is_animating:
             skill.set_skill_pos(hero.x, hero.y)
+            skill.cast_skill()
 
-        skill.cast_skill()
-        screen.blit(skill.show_image(), (skill.x_pos, skill.y_pos))
+        if skill.is_animating:
+            skill.animate()
+            screen.blit(skill.show_image(), (skill.x_pos, skill.y_pos))
 
-        self.check_end_of_skill_animation(skill)
+            self.check_end_of_skill_animation(skill)
+
+    def use_hunter_skills(self, hero: Hunter, screen):
+        skill = hero.skills[self.skill_to_use]
+
+        # type(skill) == object is needed because not all the skills are added yet.If removed it will crash the program
+        if all(not skill.is_animating for skill in hero.skills.values() if type(skill) == object) and type(skill).__name__ == "HealAndMana":
+            self.heal_and_receive_mana(hero, skill.heal())
+
+            self.skill_to_use = None
 
     @staticmethod
     def take_damage(hero: (Warrior, Hunter, Mage), monster: object) -> None:
