@@ -25,3 +25,11 @@ class Mage(Hero):
             3: lightning,
             4: meteor_strike,
         }
+
+    def check_mana_limit(self):
+        if self.mana > self.max_mana:
+            self.mana = self.max_mana
+
+    def receive_mana(self, amount: int or float):
+        self.mana += amount
+        self.check_mana_limit()
