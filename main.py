@@ -50,7 +50,7 @@ hunter.level = collected_game_info["Hunter"]['level']
 
 menu = Menu(warrior, mage, hunter)
 
-menu.display_beginning_image()
+# menu.display_beginning_image() skipping the beginning image
 menu.menu()
 current_hero = menu.chosen_hero
 
@@ -102,6 +102,7 @@ while game_running:
                 current_hero.is_attacking = True
                 hero_controller.skill_to_use = 1
 
+            # healing spell
             elif event.key == pygame.K_2:
                 hero_controller.skill_to_use = 2
 
