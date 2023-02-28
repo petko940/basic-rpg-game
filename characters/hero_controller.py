@@ -57,17 +57,35 @@ class HeroController:
         if not skill.is_animating:
             self.skill_to_use = None
 
-    # may separate this method to 3 for each hero
     def use_skill(self, hero: (Warrior, Hunter, Mage), screen):
         if self.skill_to_use:
-            skill = hero.skills[self.skill_to_use]
-            if not skill.is_animating:
-                skill.set_skill_pos(hero.x, hero.y)
+            if type(hero).__name__ == "Mage":
+                self.use_mage_skills(hero, screen)
 
-            skill.cast_skill()
-            screen.blit(skill.show_image(), (skill.x_pos, skill.y_pos))
+            elif type(hero).__name__ == "Warrior":
+                self.use_warrior_skills(hero)
 
-            self.check_end_of_skill_animation(skill)
+            elif type(hero).__name__ == "Hunter":
+                pass
+
+    def use_warrior_skills(self, hero: Warrior):
+        skill = hero.skills[self.skill_to_use]
+
+        if not hero.is_attacking:
+            self.skill_to_use = None
+
+        if type(skill).__name__ == "Heal":
+            hero.health_bar.width = hero.increase_bar_width(hero.health, hero.max_health, skill.heal())
+
+    def use_mage_skills(self, hero: Mage, screen):
+        skill = hero.skills[self.skill_to_use]
+        if not skill.is_animating:
+            skill.set_skill_pos(hero.x, hero.y)
+
+        skill.cast_skill()
+        screen.blit(skill.show_image(), (skill.x_pos, skill.y_pos))
+
+        self.check_end_of_skill_animation(skill)
 
     @staticmethod
     def take_damage(hero: (Warrior, Hunter, Mage), monster: object) -> None:
