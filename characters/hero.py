@@ -50,8 +50,8 @@ class Hero:
     def lower_bar_width(self, current_value: int or float, max_value: int or float, extract_value: int or float):
         bar_width = self.BAR_LENGTH * ((current_value - extract_value) / max_value)
 
-        if bar_width > self.BAR_LENGTH:
-            return self.BAR_LENGTH
+        if bar_width < 0:
+            return 0
         return bar_width
 
     def increase_bar_width(self, current_value: int or float, max_value: int or float, add_value: int or float):
