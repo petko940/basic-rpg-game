@@ -7,11 +7,14 @@ class Hero:
     __MOVE_SPEED = 5
     BAR_LENGTH = 275
 
-    def __init__(self, x: int, y: int, attack_images: list, die_image: Surface, idle_images: list,
+    def __init__(self, x: int, y: int, health: int, max_health: int, attack_images: list, die_image: Surface, idle_images: list,
                  jump_images: list, walk_images: list, profile_pic: object):
         self.x = x
         self.y = y
         self.level = 1
+
+        self.max_health = max_health
+        self.health = health
 
         self.attack_images_right = attack_images
         self.attack_images_left = [transform.flip(self.attack_images_right[i], True, False) for i in range(len(self.attack_images_right))]
@@ -46,6 +49,9 @@ class Hero:
 
     def lower_bar_width(self, current_value: int or float, max_value: int or float, extract_value: int or float):
         return self.BAR_LENGTH * ((current_value - extract_value) / max_value)
+
+    def increase_bar_width(self, current_value: int or float, max_value: int or float, add_value: int or float):
+        return self.BAR_LENGTH * ((current_value + add_value) / max_value)
 
     def idle_animation(self, direction: str):
         self.idle_index += self.__IDLE_SPEED
