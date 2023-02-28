@@ -44,7 +44,6 @@ class BlueBall(Skill):
 
     def cast_skill(self):
         self.is_animating = True
-        self.animate()
 
     def show_image(self):
         return self.images_right[int(self.img_index) % len(self.images_right)]
