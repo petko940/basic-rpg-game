@@ -96,7 +96,9 @@ class HeroController:
 
         elif not skill.is_animating and type(skill).__name__ != "HealAndMana":
             if hero.check_enough_mana_to_cast(skill.skill_cost):
-                skill.set_skill_pos(hero.x, hero.y)
+                skill.right_direction = hero.is_right_direction
+
+                skill.set_skill_pos(*hero.get_hero_pos())
                 skill.cast_skill()
 
                 hero.decrease_mana_bar_width(skill.skill_cost)
