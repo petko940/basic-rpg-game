@@ -82,7 +82,6 @@ monster = Monster()
 
 start_time = time.time()
 
-is_right = True
 game_running = True
 while game_running:
     pygame.time.Clock().tick(100)
@@ -132,25 +131,30 @@ while game_running:
     hero_controller.use_skill(current_hero, screen)
 
     if current_hero.is_attacking:
-        screen.blit(current_hero.attack_animation("right"), current_hero.attack())
+        screen.blit(current_hero.attack_animation(), current_hero.get_hero_pos())
 
     elif pygame.key.get_pressed()[pygame.K_d]:
-        screen.blit(current_hero.walk_images("right"), current_hero.walk("right"))
+        if not current_hero.is_right_direction:
+            current_hero.change_direction()
+
+        current_hero.walk()
+        screen.blit(current_hero.walk_images(), current_hero.get_hero_pos())
 
         map_controller.check_for_traverse(current_hero)
-        is_right = True
 
     elif pygame.key.get_pressed()[pygame.K_a]:
-        screen.blit(current_hero.walk_images("left"), current_hero.walk("left"))
+        if current_hero.is_right_direction:
+            current_hero.change_direction()
+
+        current_hero.walk()
+        screen.blit(current_hero.walk_images(), current_hero.get_hero_pos())
 
         map_controller.check_for_traverse(current_hero)
-        is_right = False
 
     else:
-        if is_right and not current_hero.is_attacking:
-            screen.blit(current_hero.idle_animation('right'), current_hero.idle())
-        elif not is_right and not current_hero.is_attacking:
-            screen.blit(current_hero.idle_animation('left'), current_hero.idle())
+        if not current_hero.is_attacking:
+            screen.blit(current_hero.idle_animation(), current_hero.get_hero_pos())
+
     timer(start_time, screen)
     pygame.display.update()
 
