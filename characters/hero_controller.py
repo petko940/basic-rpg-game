@@ -53,14 +53,6 @@ class HeroController:
         """
         return self.heroes.get(hero_name.capitalize(), "Not Found")
 
-    @staticmethod
-    def heal_and_receive_mana(hero: (Mage, Hunter), heal_power: int or float):
-        hero.health_bar.width = hero.increase_bar_width(hero.health, hero.max_health, heal_power)
-        hero.receive_healing(heal_power)
-
-        hero.mana_bar.width = hero.increase_bar_width(hero.mana, hero.max_mana, heal_power)
-        hero.receive_mana(heal_power)
-
     def check_end_of_skill_animation(self, skill: object):
         if not skill.is_animating:
             self.skill_to_use = None
@@ -83,22 +75,32 @@ class HeroController:
             self.skill_to_use = None
 
         if type(skill).__name__ == "Heal":
-            heal_power = skill.heal()
-
-            hero.health_bar.width = hero.increase_bar_width(hero.health, hero.max_health, heal_power)
-            hero.receive_healing(heal_power)
+            hero.increase_health_bar_width(skill.heal())
+            hero.receive_healing(skill.heal())
 
     def use_mage_skills(self, hero: Mage, screen):
         skill = hero.skills[self.skill_to_use]
 
-        if all(not skill.is_animating for skill in hero.skills.values()) and type(skill).__name__ == "HealAndMana":
-            self.heal_and_receive_mana(hero, skill.heal())
+        if not skill.is_animating and not hero.check_enough_mana_to_cast(skill.skill_cost):
+            self.skill_to_use = None
+            hero.is_attacking = False
+
+        if not skill.is_animating and type(skill).__name__ == "HealAndMana":
+            hero.increase_health_bar_width(skill.heal())
+            hero.increase_mana_bar_width(skill.heal())
+
+            hero.receive_mana(skill.heal())
+            hero.receive_healing(skill.heal())
 
             self.skill_to_use = None
 
-        elif not skill.is_animating:
-            skill.set_skill_pos(hero.x, hero.y)
-            skill.cast_skill()
+        elif not skill.is_animating and type(skill).__name__ != "HealAndMana":
+            if hero.check_enough_mana_to_cast(skill.skill_cost):
+                skill.set_skill_pos(hero.x, hero.y)
+                skill.cast_skill()
+
+                hero.decrease_mana_bar_width(skill.skill_cost)
+                hero.consume_mana_on_skill(skill.skill_cost)
 
         if skill.is_animating:
             skill.animate()
@@ -111,7 +113,11 @@ class HeroController:
 
         # type(skill) == object is needed because not all the skills are added yet.If removed it will crash the program
         if all(not skill.is_animating for skill in hero.skills.values() if type(skill) == object) and type(skill).__name__ == "HealAndMana":
-            self.heal_and_receive_mana(hero, skill.heal())
+            hero.increase_health_bar_width(skill.heal())
+            hero.increase_mana_bar_width(skill.heal())
+
+            hero.receive_healing(skill.heal())
+            hero.receive_mana(skill.heal())
 
             self.skill_to_use = None
 
