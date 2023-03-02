@@ -61,6 +61,9 @@ class Hero:
             return self.BAR_LENGTH
         return bar_width
 
+    def increase_health_bar_width(self, heal_power: int or float):
+        self.health_bar.width = self.increase_bar_width(self.health, self.max_health, heal_power)
+
     def check_health_limit(self):
         if self.health > self.max_health:
             self.health = self.max_health
