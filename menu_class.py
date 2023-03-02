@@ -146,9 +146,9 @@ class Menu:
             if not self.is_ready_to_start:
                 screen.blit(self.fake_start, self.button_play_rect)
 
-            screen.blit(self.warrior.idle_animation("right"), (self.heroes_x_y[0][0], self.heroes_x_y[0][1]))
-            screen.blit(self.mage.idle_animation('right'), (self.heroes_x_y[1][0], self.heroes_x_y[1][1]))
-            screen.blit(self.hunter.idle_animation('right'), (self.heroes_x_y[2][0], self.heroes_x_y[2][1]))
+            screen.blit(self.warrior.idle_animation(), (self.heroes_x_y[0][0], self.heroes_x_y[0][1]))
+            screen.blit(self.mage.idle_animation(), (self.heroes_x_y[1][0], self.heroes_x_y[1][1]))
+            screen.blit(self.hunter.idle_animation(), (self.heroes_x_y[2][0], self.heroes_x_y[2][1]))
             i = 0
             for key, value in self.selected.items():
                 self.index += 0.13
