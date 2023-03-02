@@ -26,6 +26,9 @@ class BlueBall(Skill):
     MANA_COST_INCREASE_PER_LEVEL = 5
     LEVEL_REQUIRED = 1
 
+    RIGHT_X_POS_FIXATION = 150
+    HEIGHT_OF_SKILL_FIXATION = 50
+
     def __init__(self, skill_cost: int):
         super().__init__(skill_cost, self.LEVEL_REQUIRED)
         self.skill_icon = image.load('characters/mage/skill_icons/blue_ball_skill_image.png')
@@ -36,6 +39,7 @@ class BlueBall(Skill):
         self.y_pos = 0
         self.img_index = 0
         self.damage = 25
+        self.right_direction = None
 
     def animate(self):
         if self.is_animating:
@@ -49,20 +53,29 @@ class BlueBall(Skill):
         return self.images_right[int(self.img_index) % len(self.images_right)]
 
     def moving_the_ball(self):
-        self.x_pos += self.BALL_SPEED
+        if self.right_direction:
+            self.x_pos += self.BALL_SPEED
+        else:
+            self.x_pos -= self.BALL_SPEED
+
         self.img_index += 0.2
 
     def check_for_end_point(self):
-        if self.x_pos > self.MAP_WIDTH:
+        if self.x_pos > self.MAP_WIDTH or self.x_pos < -self.images_right[0].get_rect().width:
             self.reset_skill_position()
 
     def reset_skill_position(self):
         self.img_index = 0
         self.is_animating = False
+        self.right_direction = None
 
     def set_skill_pos(self, new_x_pos: int, new_y_pos: int):
-        self.x_pos = new_x_pos + 150
-        self.y_pos = new_y_pos + 50
+        if self.right_direction:
+            self.x_pos = new_x_pos + self.RIGHT_X_POS_FIXATION
+        else:
+            self.x_pos = new_x_pos
+
+        self.y_pos = new_y_pos + self.HEIGHT_OF_SKILL_FIXATION
 
     def level_up(self):
         self.damage += self.DAMAGE_INCREASE_PER_LEVEL
