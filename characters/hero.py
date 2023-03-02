@@ -2,7 +2,7 @@ from pygame import transform, Rect, Surface
 
 
 class Hero:
-    __IDLE_SPEED = 0.25
+    __IMAGE_LOOP_SPEED = 0.25
     __ATK_SPEED = 0.2
     __MOVE_SPEED = 5
     BAR_LENGTH = 275
@@ -35,6 +35,8 @@ class Hero:
         self.on_press_index = 0
 
         self.is_attacking = False
+
+        self.is_right_direction = True
 
         self.frame = self.make_bar(0, 0, 70, 70)
 
@@ -72,44 +74,44 @@ class Hero:
         self.health += amount
         self.check_health_limit()
 
-    def idle_animation(self, direction: str):
-        self.idle_index += self.__IDLE_SPEED
-        if direction == "right":
+    def idle_animation(self):
+        self.idle_index += self.__IMAGE_LOOP_SPEED
+        if self.is_right_direction:
             return self.idle_images_right[int(self.idle_index) % len(self.idle_images_right)]
         return self.idle_images_left[int(self.idle_index) % len(self.idle_images_left)]
 
-    def walk_images(self, direction: str):
-        self.idle_index += self.__IDLE_SPEED
-        if direction == "right":
+    def walk_images(self):
+        self.idle_index += self.__IMAGE_LOOP_SPEED
+        if self.is_right_direction:
             return self.walk_images_right[int(self.idle_index) % len(self.walk_images_right)]
         return self.walk_images_left[int(self.idle_index) % len(self.walk_images_left)]
 
-    def attack_animation(self, direction: str):
+    def attack_animation(self):
         self.on_press_index += self.__ATK_SPEED
 
         if self.on_press_index >= len(self.attack_images_right):
             self.is_attacking = False
             self.on_press_index = 0
 
-        if direction == "right":
+        if self.is_right_direction:
             return self.attack_images_right[int(self.on_press_index)]
         return self.attack_images_left[int(self.on_press_index)]
 
     def jump_animation(self):
-        self.idle_index += self.__IDLE_SPEED
+        self.idle_index += self.__IMAGE_LOOP_SPEED
         return self.jump_images[int(self.idle_index) % len(self.jump_images)]
 
-    def walk(self, direction: str):
-        if direction == 'right':
+    def walk(self):
+        if self.is_right_direction:
             self.x += self.__MOVE_SPEED
-
         else:
             self.x -= self.__MOVE_SPEED
 
+    def get_hero_pos(self):
         return self.x, self.y
 
-    def idle(self):
-        return self.x, self.y
-
-    def attack(self):
-        return self.x, self.y
+    def change_direction(self):
+        if self.is_right_direction:
+            self.is_right_direction = False
+        else:
+            self.is_right_direction = True
