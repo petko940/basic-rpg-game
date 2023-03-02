@@ -33,3 +33,15 @@ class Mage(Hero):
     def receive_mana(self, amount: int or float):
         self.mana += amount
         self.check_mana_limit()
+
+    def consume_mana_on_skill(self, amount: int or float):
+        self.mana -= amount
+
+    def check_enough_mana_to_cast(self, amount: int or float):
+        return self.mana >= amount
+
+    def increase_mana_bar_width(self, heal_power: int or float):
+        self.mana_bar.width = self.increase_bar_width(self.mana, self.max_mana, heal_power)
+
+    def decrease_mana_bar_width(self, skill_cost: int or float):
+        self.mana_bar.width = self.lower_bar_width(self.mana, self.max_mana, skill_cost)
