@@ -121,6 +121,10 @@ class HeroController:
 
             self.skill_to_use = None
 
+        # dont forget to add when implementing the skills and remove them from decrease methods in hunter class
+        #                      hero.decrease_mana_bar_width(skill.skill_cost)
+        #                      hero.consume_mana_on_skill(skill.skill_cost)
+
     @staticmethod
     def take_damage(hero: (Warrior, Hunter, Mage), monster: object) -> None:
         # this method is not working since there are still NO monster objects
