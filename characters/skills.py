@@ -27,7 +27,7 @@ class BlueBall(Skill):
     LEVEL_REQUIRED = 1
 
     RIGHT_X_POS_FIXATION = 150
-    HEIGHT_OF_SKILL_FIXATION = 50
+    BALL_Y_POS = 300
 
     def __init__(self, skill_cost: int):
         super().__init__(skill_cost, self.LEVEL_REQUIRED)
@@ -36,7 +36,7 @@ class BlueBall(Skill):
         self.images_right = [image.load(f'characters/mage/skill_animations/blue_ball_sprites/{i}.png') for i in range(1, 6 + 1)]
         self.images_left = [transform.flip(self.images_right[i], True, False) for i in range(len(self.images_right))]
         self.x_pos = 0
-        self.y_pos = 0
+        self.y_pos = self.BALL_Y_POS
         self.img_index = 0
         self.damage = 25
         self.right_direction = None
@@ -71,13 +71,11 @@ class BlueBall(Skill):
         self.is_animating = False
         self.right_direction = None
 
-    def set_skill_pos(self, new_x_pos: int, new_y_pos: int):
+    def set_skill_pos(self, new_x_pos: int):
         if self.right_direction:
             self.x_pos = new_x_pos + self.RIGHT_X_POS_FIXATION
         else:
             self.x_pos = new_x_pos
-
-        self.y_pos = new_y_pos + self.HEIGHT_OF_SKILL_FIXATION
 
     def level_up(self):
         self.damage += self.DAMAGE_INCREASE_PER_LEVEL
@@ -120,14 +118,48 @@ class Lightning(Skill):
     DAMAGE_INCREASE_PER_LEVEL = 10
     MANA_COST_INCREASE_PER_LEVEL = 5
 
+    HEIGHT_OF_SKILL_FIXATION = -30
+
     def __init__(self, skill_cost: int):
         super().__init__(skill_cost, self.LEVEL_REQUIRED)
 
         self.skill_icon = image.load('characters/mage/skill_icons/thunderstorm_skill_icon.png')
         self.rect_icon = self.skill_icon.get_rect()
         self.images = [image.load(f'characters/mage/skill_animations/thunder_sprites/{x}.png') for x in range(1, 9 + 1)]
+        self.x_pos = None
+        self.y_pos = self.HEIGHT_OF_SKILL_FIXATION
         self.img_index = 0
         self.damage = 30
+        self.has_target = False
+
+    def animate(self):
+        if self.is_animating:
+            self.release_lightning()
+            self.check_for_end_point()
+
+    def cast_skill(self):
+        self.is_animating = True
+
+    def show_image(self):
+        return self.images[int(self.img_index)]
+
+    def release_lightning(self):
+        self.img_index += 0.2
+
+    def check_for_end_point(self):
+        if int(self.img_index) >= len(self.images) or int(self.img_index) < 0:
+            self.reset_skill_position()
+
+    def reset_skill_position(self):
+        self.img_index = 0
+        self.is_animating = False
+        self.has_target = False
+
+    def set_skill_pos(self, new_x_pos: int):
+        if self.has_target:
+            self.x_pos = new_x_pos
+        else:
+            self.x_pos = 1000
 
     def level_up(self):
         self.damage += self.DAMAGE_INCREASE_PER_LEVEL
@@ -150,7 +182,7 @@ class MeteorStrike(Skill):
 
         self.skill_icon = image.load('characters/mage/skill_icons/meteor_strike.jpg')
         self.rect_icon = self.skill_icon.get_rect()
-        self.images = [image.load(f'characters/mage/skill_animations/thunder_sprites/{x}.png') for x in range(1, 9 + 1)]
+        self.images = [image.load(f'characters/mage/skill_animations/thunder_sprites/{x}.png') for x in range(1, 8 + 1)]
         self.img_index = 0
         self.damage = 30
 
@@ -259,7 +291,7 @@ class ArrowShot(Skill):
     LEVEL_REQUIRED = 1
 
     RIGHT_ARROW_X_POS_FIXATION = 225
-    ARROW_ARROW_Y_POS_FIXATION = 200
+    ARROW_Y_POS = 400
 
     def __init__(self, skill_cost: int):
         super().__init__(skill_cost, self.LEVEL_REQUIRED)
@@ -269,7 +301,7 @@ class ArrowShot(Skill):
         self.images_right = [image.load(f'characters/hunt/skill_animations/arrow_shot_sprites/{i}.png') for i in range(1, 5 + 1)]
         self.images_left = [transform.flip(self.images_right[i], True, False) for i in range(len(self.images_right))]
         self.x_pos = 0
-        self.y_pos = 0
+        self.y_pos = self.ARROW_Y_POS
         self.img_index = 0
         self.damage = 20
         self.right_direction = None
@@ -304,16 +336,14 @@ class ArrowShot(Skill):
         self.is_animating = False
         self.right_direction = None
 
-    def set_skill_pos(self, new_x_pos: int, new_y_pos: int):
+    def set_skill_pos(self, new_x_pos: int):
         if self.right_direction:
             self.x_pos = new_x_pos + self.RIGHT_ARROW_X_POS_FIXATION
         else:
             self.x_pos = new_x_pos
 
-        self.y_pos = new_y_pos + self.ARROW_ARROW_Y_POS_FIXATION
-
     def get_description(self):
-        return [f"{type(self).__name__}",
+        return [f"Arrow Shot",
                 f"Cost: {self.skill_cost} mana",
                 f"Damage: {self.damage}"
                 ]
