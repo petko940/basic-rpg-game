@@ -252,6 +252,77 @@ class PassiveCrit(Skill):
                 ]
 
 
+class ArrowShot(Skill):
+    ARROW_SPEED = 9
+    DAMAGE_INCREASE_PER_LEVEL = 5
+    MANA_INCREASE_PER_LEVEL = 5
+    LEVEL_REQUIRED = 1
+
+    RIGHT_ARROW_X_POS_FIXATION = 225
+    ARROW_ARROW_Y_POS_FIXATION = 200
+
+    def __init__(self, skill_cost: int):
+        super().__init__(skill_cost, self.LEVEL_REQUIRED)
+
+        self.skill_icon = image.load('characters/hunt/skill_icons/arrow_shot.jpg')
+        self.rect_icon = self.skill_icon.get_rect()
+        self.images_right = [image.load(f'characters/hunt/skill_animations/arrow_shot_sprites/{i}.png') for i in range(1, 5 + 1)]
+        self.images_left = [transform.flip(self.images_right[i], True, False) for i in range(len(self.images_right))]
+        self.x_pos = 0
+        self.y_pos = 0
+        self.img_index = 0
+        self.damage = 20
+        self.right_direction = None
+
+    def animate(self):
+        if self.is_animating:
+            self.moving_the_arrow()
+            self.check_for_end_point()
+
+    def cast_skill(self):
+        self.is_animating = True
+
+    def show_image(self):
+        if self.right_direction:
+            return self.images_right[int(self.img_index) % len(self.images_right)]
+        return self.images_left[int(self.img_index) % len(self.images_left)]
+
+    def moving_the_arrow(self):
+        if self.right_direction:
+            self.x_pos += self.ARROW_SPEED
+        else:
+            self.x_pos -= self.ARROW_SPEED
+
+        self.img_index += 0.2
+
+    def check_for_end_point(self):
+        if self.x_pos > self.MAP_WIDTH or self.x_pos < -self.images_right[0].get_rect().width:
+            self.reset_skill_position()
+
+    def reset_skill_position(self):
+        self.img_index = 0
+        self.is_animating = False
+        self.right_direction = None
+
+    def set_skill_pos(self, new_x_pos: int, new_y_pos: int):
+        if self.right_direction:
+            self.x_pos = new_x_pos + self.RIGHT_ARROW_X_POS_FIXATION
+        else:
+            self.x_pos = new_x_pos
+
+        self.y_pos = new_y_pos + self.ARROW_ARROW_Y_POS_FIXATION
+
+    def get_description(self):
+        return [f"{type(self).__name__}",
+                f"Cost: {self.skill_cost} mana",
+                f"Damage: {self.damage}"
+                ]
+
+    def level_up(self):
+        self.damage += self.DAMAGE_INCREASE_PER_LEVEL
+        self.skill_cost += self.MANA_INCREASE_PER_LEVEL
+
+
 class ArrowRain(Skill):
     LEVEL_REQUIRED = 4
     DAMAGE_INCREASE_PER_LEVEL = 5
