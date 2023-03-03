@@ -106,7 +106,7 @@ class HeroController:
                 hero.decrease_mana_bar_width(skill.skill_cost)
                 hero.consume_mana_on_skill(skill.skill_cost)
 
-        if skill.is_animating:
+        if skill.is_animating and not hero.is_attacking:
             skill.animate()
             screen.blit(skill.show_image(), (skill.x_pos, skill.y_pos))
 
@@ -139,7 +139,7 @@ class HeroController:
                 hero.decrease_mana_bar_width(skill.skill_cost)
                 hero.consume_mana_on_skill(skill.skill_cost)
 
-        if skill.is_animating:
+        if skill.is_animating and not hero.is_attacking:
             skill.animate()
             screen.blit(skill.show_image(), (skill.x_pos, skill.y_pos))
 
