@@ -100,7 +100,7 @@ class HeroController:
             if hero.check_enough_mana_to_cast(skill.skill_cost):
                 skill.right_direction = hero.is_right_direction
 
-                skill.set_skill_pos(*hero.get_hero_pos())
+                skill.set_skill_pos(hero.x)
                 skill.cast_skill()
 
                 hero.decrease_mana_bar_width(skill.skill_cost)
@@ -133,7 +133,7 @@ class HeroController:
             if hero.check_enough_mana_to_cast(skill.skill_cost):
                 skill.right_direction = hero.is_right_direction
 
-                skill.set_skill_pos(*hero.get_hero_pos())
+                skill.set_skill_pos(hero.x)
                 skill.cast_skill()
 
                 hero.decrease_mana_bar_width(skill.skill_cost)
