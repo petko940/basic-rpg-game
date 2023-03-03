@@ -114,6 +114,7 @@ class HealAndMana(Skill):
 
 
 class Lightning(Skill):
+    IMAGE_LOOP_SPEED = 0.2
     LEVEL_REQUIRED = 3
     DAMAGE_INCREASE_PER_LEVEL = 10
     MANA_COST_INCREASE_PER_LEVEL = 5
@@ -144,10 +145,10 @@ class Lightning(Skill):
         return self.images[int(self.img_index)]
 
     def release_lightning(self):
-        self.img_index += 0.2
+        self.img_index += self.IMAGE_LOOP_SPEED
 
     def check_for_end_point(self):
-        if int(self.img_index) >= len(self.images) or int(self.img_index) < 0:
+        if int(self.img_index) >= len(self.images):
             self.reset_skill_position()
 
     def reset_skill_position(self):
