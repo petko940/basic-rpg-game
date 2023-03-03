@@ -107,9 +107,9 @@ class HeroController:
                 hero.consume_mana_on_skill(skill.skill_cost)
 
         if skill.is_animating and not hero.is_attacking:
-            skill.animate()
             screen.blit(skill.show_image(), (skill.x_pos, skill.y_pos))
 
+            skill.animate()
             self.check_end_of_skill_animation(skill)
 
     def use_hunter_skills(self, hero: Hunter, screen):
