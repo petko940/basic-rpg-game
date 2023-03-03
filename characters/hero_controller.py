@@ -1,3 +1,5 @@
+from typing import Dict
+
 from characters.hunter_character import Hunter
 from characters.mage_character import Mage
 from characters.warrior_character import Warrior
@@ -26,7 +28,7 @@ class HeroController:
     BLACK_COLOR = (0, 0, 0)
 
     def __init__(self):
-        self.heroes: dict[str, object] = {}
+        self.heroes: Dict[str: object] = {}
         self.skill_to_use = None
 
     @property
@@ -113,6 +115,10 @@ class HeroController:
     def use_hunter_skills(self, hero: Hunter, screen):
         skill = hero.skills[self.skill_to_use]
 
+        if not skill.is_animating and not hero.check_enough_mana_to_cast(skill.skill_cost):
+            self.skill_to_use = None
+            hero.is_attacking = False
+
         # type(skill) == object is needed because not all the skills are added yet.If removed it will crash the program
         if all(not skill.is_animating for skill in hero.skills.values() if type(skill) == object) and type(skill).__name__ == "HealAndMana":
             hero.increase_health_bar_width(skill.heal())
@@ -123,9 +129,21 @@ class HeroController:
 
             self.skill_to_use = None
 
-        # dont forget to add when implementing the skills and remove them from decrease methods in hunter class
-        #                      hero.decrease_mana_bar_width(skill.skill_cost)
-        #                      hero.consume_mana_on_skill(skill.skill_cost)
+        elif not skill.is_animating and type(skill).__name__ != "HealAndMana":
+            if hero.check_enough_mana_to_cast(skill.skill_cost):
+                skill.right_direction = hero.is_right_direction
+
+                skill.set_skill_pos(*hero.get_hero_pos())
+                skill.cast_skill()
+
+                hero.decrease_mana_bar_width(skill.skill_cost)
+                hero.consume_mana_on_skill(skill.skill_cost)
+
+        if skill.is_animating:
+            skill.animate()
+            screen.blit(skill.show_image(), (skill.x_pos, skill.y_pos))
+
+            self.check_end_of_skill_animation(skill)
 
     @staticmethod
     def take_damage(hero: (Warrior, Hunter, Mage), monster: object) -> None:
