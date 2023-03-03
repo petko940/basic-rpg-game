@@ -50,7 +50,9 @@ class BlueBall(Skill):
         self.is_animating = True
 
     def show_image(self):
-        return self.images_right[int(self.img_index) % len(self.images_right)]
+        if self.right_direction:
+            return self.images_right[int(self.img_index) % len(self.images_right)]
+        return self.images_left[int(self.img_index) % len(self.images_left)]
 
     def moving_the_ball(self):
         if self.right_direction:
