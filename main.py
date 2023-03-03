@@ -80,7 +80,7 @@ monster = Monster()
 # print(hero_controller.check_if_hero_died(current_hero))
 ################################################################
 
-start_time = time.time()
+# start_time = time.time()
 
 game_running = True
 while game_running:
@@ -155,7 +155,7 @@ while game_running:
         if not current_hero.is_attacking:
             screen.blit(current_hero.idle_animation(), current_hero.get_hero_pos())
 
-    timer(start_time, screen)
+    # timer(start_time, screen)
     pygame.display.update()
 
 pygame.quit()
