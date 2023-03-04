@@ -1,5 +1,5 @@
 from characters.hero import Hero
-from characters.skills import HealAndMana, ArrowRain, ArrowShot
+from characters.skills import HealAndMana, ArrowRain, ArrowShot, RapidShot
 
 
 class Hunter(Hero):
@@ -16,12 +16,13 @@ class Hunter(Hero):
 
         arrow_shot = ArrowShot(5)
         hp_mp_gain = HealAndMana()
+        rapid_shot = RapidShot(15)
         arrow_rain = ArrowRain(40)
 
         self.skills = {
             1: arrow_shot,
             2: hp_mp_gain,
-            3: 'third skill',
+            3: rapid_shot,
             4: arrow_rain
         }
 
