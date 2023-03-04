@@ -424,6 +424,29 @@ class ArrowShot(Skill):
         self.skill_cost += self.MANA_INCREASE_PER_LEVEL
 
 
+class RapidShot(Skill):
+    LEVEL_REQUIRED = 3
+    DAMAGE_INCREASE_PER_LEVEL = 5
+    MANA_COST_INCREASE_PER_LEVEL = 5
+
+    def __init__(self, skill_cost: int):
+        super().__init__(skill_cost, self.LEVEL_REQUIRED)
+        self.skill_icon = image.load('characters/hunt/skill_icons/rapid_shot.png')
+        self.rect_icon = self.skill_icon.get_rect()
+
+        self.damage = 35
+
+    def level_up(self):
+        self.damage += self.DAMAGE_INCREASE_PER_LEVEL
+        self.skill_cost += self.MANA_COST_INCREASE_PER_LEVEL
+
+    def get_description(self):
+        return ["Rapid Shot",
+                f"Cost: {self.skill_cost} mana",
+                f"Damage: {self.damage}"
+                ]
+
+
 class ArrowRain(Skill):
     LEVEL_REQUIRED = 4
     DAMAGE_INCREASE_PER_LEVEL = 5
