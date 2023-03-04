@@ -119,8 +119,7 @@ class HeroController:
             self.skill_to_use = None
             hero.is_attacking = False
 
-        # type(skill) == object is needed because not all the skills are added yet.If removed it will crash the program
-        if all(not skill.is_animating for skill in hero.skills.values() if type(skill) == object) and type(skill).__name__ == "HealAndMana":
+        if not skill.is_animating and type(skill).__name__ == "HealAndMana":
             hero.increase_health_bar_width(skill.heal())
             hero.increase_mana_bar_width(skill.heal())
 
@@ -159,7 +158,6 @@ class HeroController:
         else:
             hero.health = 0
 
-    # method to display all skill icons
     @staticmethod
     def display_skill_icons(screen, hero: (Warrior, Hunter, Mage), x_pos: int, y_pos: int):
         """
@@ -174,9 +172,8 @@ class HeroController:
         """
         icon_width, space_between_icons, x_y_offset = 57, 5, 4
         for value in hero.skills.values():
-            if not isinstance(value, str):
-                screen.blit(value.skill_icon, (x_pos + x_y_offset, y_pos + x_y_offset))
-                value.rect_icon.x, value.rect_icon.y = x_pos + x_y_offset, y_pos + x_y_offset
+            screen.blit(value.skill_icon, (x_pos + x_y_offset, y_pos + x_y_offset))
+            value.rect_icon.x, value.rect_icon.y = x_pos + x_y_offset, y_pos + x_y_offset
 
             x_pos += icon_width + space_between_icons
 
@@ -191,21 +188,19 @@ class HeroController:
         text_inside_x_pos = space_between_mouse_and_text_box * 2
 
         for value in hero.skills.values():
-            # this if statement will be here until we add all the spells
-            if not isinstance(value, str):
-                if value.rect_icon.collidepoint(mouse_pos):
-                    mouse_x_pos, mouse_y_pos = mouse_pos
-                    screen.blit(value.text_box, (mouse_x_pos + space_between_mouse_and_text_box, mouse_y_pos - pixels_above_mouse))
+            if value.rect_icon.collidepoint(mouse_pos):
+                mouse_x_pos, mouse_y_pos = mouse_pos
+                screen.blit(value.text_box, (mouse_x_pos + space_between_mouse_and_text_box, mouse_y_pos - pixels_above_mouse))
 
-                    for sentence in value.get_description():
-                        text_surface = level_font.render(sentence, True, self.FONT_COLOR)
-                        text_x_pos, text_y_pos = mouse_x_pos + text_inside_x_pos, mouse_y_pos - text_inside_y_pos
+                for sentence in value.get_description():
+                    text_surface = level_font.render(sentence, True, self.FONT_COLOR)
+                    text_x_pos, text_y_pos = mouse_x_pos + text_inside_x_pos, mouse_y_pos - text_inside_y_pos
 
-                        screen.blit(text_surface, (text_x_pos, text_y_pos))
+                    screen.blit(text_surface, (text_x_pos, text_y_pos))
 
-                        # increasing this, so it makes a new line to display the next sentence
-                        # also it is needed so the text doesn't overlap
-                        mouse_y_pos += space_between_lines
+                    # increasing this, so it makes a new line to display the next sentence
+                    # also it is needed so the text doesn't overlap
+                    mouse_y_pos += space_between_lines
 
     def display_health_and_mana_bars(self, screen, hero: (Warrior, Hunter, Mage)):
         # drawing the base health bar on screen
