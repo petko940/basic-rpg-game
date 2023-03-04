@@ -181,6 +181,7 @@ class MeteorStrike(Skill):
     METEOR_Y_START_LOCATION = -700
     METEOR_DROP_SPEED = 10
     IMAGE_LOOP_SPEED = 0.2
+    REVERSE_IMAGE_LOOP_SPEED = 0.3
 
     def __init__(self, skill_cost: int):
         super().__init__(skill_cost, self.LEVEL_REQUIRED)
@@ -225,7 +226,7 @@ class MeteorStrike(Skill):
         self.img_index += self.IMAGE_LOOP_SPEED
 
     def reverse_explosion(self):
-        self.img_index -= self.IMAGE_LOOP_SPEED
+        self.img_index -= self.REVERSE_IMAGE_LOOP_SPEED
 
     def check_if_explosion_reached(self):
         return self.y_pos >= self.explosion_y_target
