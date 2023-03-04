@@ -26,7 +26,7 @@ class BlueBall(Skill):
     MANA_COST_INCREASE_PER_LEVEL = 5
     LEVEL_REQUIRED = 1
 
-    RIGHT_X_POS_FIXATION = 150
+    RIGHT_X_POS_FIXATION = 200
     BALL_Y_POS = 300
 
     def __init__(self, skill_cost: int):
@@ -178,8 +178,8 @@ class MeteorStrike(Skill):
     DAMAGE_INCREASE_PER_LEVEL = 10
     MANA_COST_INCREASE_PER_LEVEL = 5
 
-    METEOR_Y_START_LOCATION = -100
-    METEOR_DROP_SPEED = 9
+    METEOR_Y_START_LOCATION = -700
+    METEOR_DROP_SPEED = 10
     IMAGE_LOOP_SPEED = 0.2
 
     def __init__(self, skill_cost: int):
@@ -187,24 +187,30 @@ class MeteorStrike(Skill):
 
         self.skill_icon = image.load('characters/mage/skill_icons/meteor_strike.jpg')
         self.rect_icon = self.skill_icon.get_rect()
-        self.images = [image.load(f'characters/mage/skill_animations/explosion_sprites/{x}.png') for x in range(10)]
+        self.images = [transform.scale(image.load(f'characters/mage/skill_animations/explosion_sprites/{x}.png'), (930, 630)) for x in range(13)]
         self.img_index = 0
         self.damage = 40
 
         self.x_pos = None
         self.y_pos = self.METEOR_Y_START_LOCATION
 
-        self.explosion_y_target = 350
+        self.explosion_y_target = -30
 
         self.has_target = False
+        self.explosion_reached = False
 
     def animate(self):
         if self.is_animating:
             if not self.check_if_explosion_reached():
                 self.moving_the_meteor()
-            else:
+
+            elif not self.explosion_reached:
                 self.release_explosion()
                 self.check_for_end_point()
+
+            elif self.explosion_reached:
+                self.reverse_explosion()
+                self.check_for_end_of_reversed_explosion()
 
     def cast_skill(self):
         self.is_animating = True
@@ -218,11 +224,23 @@ class MeteorStrike(Skill):
     def release_explosion(self):
         self.img_index += self.IMAGE_LOOP_SPEED
 
+    def reverse_explosion(self):
+        self.img_index -= self.IMAGE_LOOP_SPEED
+
     def check_if_explosion_reached(self):
         return self.y_pos >= self.explosion_y_target
 
     def check_for_end_point(self):
         if int(self.img_index) >= len(self.images):
+            self.explosion_reached = True
+            self.set_img_index_for_reverse_explosion()
+
+    def set_img_index_for_reverse_explosion(self):
+        self.img_index = 9
+
+    def check_for_end_of_reversed_explosion(self):
+        # showing image 0 is very weird, that's why it's set to < 1
+        if self.img_index < 1:
             self.reset_skill_position()
 
     def reset_skill_position(self):
@@ -230,12 +248,13 @@ class MeteorStrike(Skill):
         self.y_pos = self.METEOR_Y_START_LOCATION
         self.is_animating = False
         self.has_target = False
+        self.explosion_reached = False
 
     def set_skill_pos(self, new_x_pos: int):
         if self.has_target:
             self.x_pos = new_x_pos
         else:
-            self.x_pos = 1000
+            self.x_pos = 600
 
     def level_up(self):
         self.damage += self.DAMAGE_INCREASE_PER_LEVEL
