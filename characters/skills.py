@@ -178,14 +178,64 @@ class MeteorStrike(Skill):
     DAMAGE_INCREASE_PER_LEVEL = 10
     MANA_COST_INCREASE_PER_LEVEL = 5
 
+    METEOR_Y_START_LOCATION = -100
+    METEOR_DROP_SPEED = 9
+    IMAGE_LOOP_SPEED = 0.2
+
     def __init__(self, skill_cost: int):
         super().__init__(skill_cost, self.LEVEL_REQUIRED)
 
         self.skill_icon = image.load('characters/mage/skill_icons/meteor_strike.jpg')
         self.rect_icon = self.skill_icon.get_rect()
-        self.images = [image.load(f'characters/mage/skill_animations/thunder_sprites/{x}.png') for x in range(1, 8 + 1)]
+        self.images = [image.load(f'characters/mage/skill_animations/explosion_sprites/{x}.png') for x in range(10)]
         self.img_index = 0
-        self.damage = 30
+        self.damage = 40
+
+        self.x_pos = None
+        self.y_pos = self.METEOR_Y_START_LOCATION
+
+        self.explosion_y_target = 350
+
+        self.has_target = False
+
+    def animate(self):
+        if self.is_animating:
+            if not self.check_if_explosion_reached():
+                self.moving_the_meteor()
+            else:
+                self.release_explosion()
+                self.check_for_end_point()
+
+    def cast_skill(self):
+        self.is_animating = True
+
+    def show_image(self):
+        return self.images[int(self.img_index)]
+
+    def moving_the_meteor(self):
+        self.y_pos += self.METEOR_DROP_SPEED
+
+    def release_explosion(self):
+        self.img_index += self.IMAGE_LOOP_SPEED
+
+    def check_if_explosion_reached(self):
+        return self.y_pos >= self.explosion_y_target
+
+    def check_for_end_point(self):
+        if int(self.img_index) >= len(self.images):
+            self.reset_skill_position()
+
+    def reset_skill_position(self):
+        self.img_index = 0
+        self.y_pos = self.METEOR_Y_START_LOCATION
+        self.is_animating = False
+        self.has_target = False
+
+    def set_skill_pos(self, new_x_pos: int):
+        if self.has_target:
+            self.x_pos = new_x_pos
+        else:
+            self.x_pos = 1000
 
     def level_up(self):
         self.damage += self.DAMAGE_INCREASE_PER_LEVEL
