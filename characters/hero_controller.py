@@ -27,6 +27,8 @@ class HeroController:
 
     BLACK_COLOR = (0, 0, 0)
 
+    LOCKED_SKILL_COLOR_AND_TRANSPARENCY = (128, 128, 128, 150)   # last value is transparency
+
     def __init__(self):
         self.heroes: Dict[str: object] = {}
         self.skill_to_use = None
@@ -158,8 +160,14 @@ class HeroController:
         else:
             hero.health = 0
 
-    @staticmethod
-    def display_skill_icons(screen, hero: (Warrior, Hunter, Mage), x_pos: int, y_pos: int):
+    def display_skill_icons(self, screen, hero: (Warrior, Hunter, Mage), x_pos: int, y_pos: int):
+        def draw_rect_alpha(surface, color, rect):
+            """
+            displays semi transparent image above the skill icon that is higher level than the hero level
+            """
+            cooldown_surf = pygame.Surface(pygame.Rect(rect).size, pygame.SRCALPHA)
+            pygame.draw.rect(cooldown_surf, color, cooldown_surf.get_rect())
+            surface.blit(cooldown_surf, rect)
         """
         x_y_offset is the pixels fixation to perfectly fit inside the action bar
 
@@ -174,6 +182,9 @@ class HeroController:
         for value in hero.skills.values():
             screen.blit(value.skill_icon, (x_pos + x_y_offset, y_pos + x_y_offset))
             value.rect_icon.x, value.rect_icon.y = x_pos + x_y_offset, y_pos + x_y_offset
+
+            if hero.level < value.LEVEL_REQUIRED:
+                draw_rect_alpha(screen, self.LOCKED_SKILL_COLOR_AND_TRANSPARENCY, value.rect_icon)
 
             x_pos += icon_width + space_between_icons
 
