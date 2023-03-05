@@ -494,9 +494,16 @@ class RapidShot(Skill):
 
 
 class ArrowRain(Skill):
+    ARROWS_FALL_SPEED = 10
     LEVEL_REQUIRED = 4
     DAMAGE_INCREASE_PER_LEVEL = 5
     MANA_COST_INCREASE_PER_LEVEL = 5
+
+    IMAGE_LOOP_SPEED = 0.2
+
+    MAX_ARROW_DROPS_COUNTER = 3
+
+    ARROWS_Y_START_LOCATION = -200
 
     def __init__(self, skill_cost: int):
         super().__init__(skill_cost, self.LEVEL_REQUIRED)
@@ -504,7 +511,68 @@ class ArrowRain(Skill):
         self.skill_icon = image.load('characters/hunt/skill_icons/ultimate_hunter.png')
         self.rect_icon = self.skill_icon.get_rect()
 
+        self.images = [image.load(f'characters/hunt/skill_animations/arrow_rain/{x}.png') for x in range(10)]
+        self.img_index = 0
+
+        self.drop_counter = 0
+
         self.damage = 10
+
+        self.x_pos = None
+        self.y_pos = self.ARROWS_Y_START_LOCATION
+
+        self.arrows_y_target = 350
+
+        self.has_target = False
+
+    def animate(self):
+        if self.is_animating:
+            if not self.check_if_arrows_dropped():
+                self.moving_the_arrows()
+
+            elif self.check_if_arrows_dropped():
+                self.increase_drop_counter()
+                self.set_default_arrow_y_position()
+
+        if self.check_for_max_arrow_drops():
+            self.reset_skill_position()
+
+    def cast_skill(self):
+        self.is_animating = True
+
+    def show_image(self):
+        return self.images[int(self.img_index) % len(self.images)]
+
+    def moving_the_arrows(self):
+        self.y_pos += self.ARROWS_FALL_SPEED
+        self.img_index += self.IMAGE_LOOP_SPEED
+
+    def increase_drop_counter(self):
+        self.drop_counter += 1
+
+    def set_default_arrow_y_position(self):
+        self.y_pos = self.ARROWS_Y_START_LOCATION
+        self.img_index = 0
+
+    def check_if_arrows_dropped(self):
+        return self.y_pos >= self.arrows_y_target
+
+    def check_for_max_arrow_drops(self):
+        return self.drop_counter >= self.MAX_ARROW_DROPS_COUNTER
+
+    def reset_skill_position(self):
+        self.img_index = 0
+        self.drop_counter = 0
+        self.y_pos = self.ARROWS_Y_START_LOCATION
+        self.x_pos = None
+        self.is_animating = False
+        self.has_target = False
+
+    def set_skill_pos(self, new_x_pos: int):
+        if self.has_target:
+            self.x_pos = new_x_pos
+        else:
+            self.x_pos = 950
 
     def level_up(self):
         self.damage += self.DAMAGE_INCREASE_PER_LEVEL
