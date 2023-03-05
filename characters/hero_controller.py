@@ -141,9 +141,9 @@ class HeroController:
                 hero.consume_mana_on_skill(skill.skill_cost)
 
         if skill.is_animating and not hero.is_attacking:
-            skill.animate()
             screen.blit(skill.show_image(), (skill.x_pos, skill.y_pos))
 
+            skill.animate()
             self.check_end_of_skill_animation(skill)
 
     @staticmethod
@@ -161,13 +161,13 @@ class HeroController:
             hero.health = 0
 
     def display_skill_icons(self, screen, hero: (Warrior, Hunter, Mage), x_pos: int, y_pos: int):
-        def draw_rect_alpha(surface, color, rect):
+        def draw_rect_alpha(color, rect: pygame.Rect):
             """
             displays semi transparent image above the skill icon that is higher level than the hero level
             """
-            cooldown_surf = pygame.Surface(pygame.Rect(rect).size, pygame.SRCALPHA)
-            pygame.draw.rect(cooldown_surf, color, cooldown_surf.get_rect())
-            surface.blit(cooldown_surf, rect)
+            surface = pygame.Surface(pygame.Rect(rect).size, pygame.SRCALPHA)
+            pygame.draw.rect(surface, color, surface.get_rect())
+            screen.blit(surface, rect)
         """
         x_y_offset is the pixels fixation to perfectly fit inside the action bar
 
@@ -179,12 +179,12 @@ class HeroController:
         chance for a problem to occur
         """
         icon_width, space_between_icons, x_y_offset = 57, 5, 4
-        for value in hero.skills.values():
-            screen.blit(value.skill_icon, (x_pos + x_y_offset, y_pos + x_y_offset))
-            value.rect_icon.x, value.rect_icon.y = x_pos + x_y_offset, y_pos + x_y_offset
+        for skill in hero.skills.values():
+            screen.blit(skill.skill_icon, (x_pos + x_y_offset, y_pos + x_y_offset))
+            skill.rect_icon.x, skill.rect_icon.y = x_pos + x_y_offset, y_pos + x_y_offset
 
-            if hero.level < value.LEVEL_REQUIRED:
-                draw_rect_alpha(screen, self.LOCKED_SKILL_COLOR_AND_TRANSPARENCY, value.rect_icon)
+            if hero.level < skill.LEVEL_REQUIRED:
+                draw_rect_alpha(self.LOCKED_SKILL_COLOR_AND_TRANSPARENCY, skill.rect_icon)
 
             x_pos += icon_width + space_between_icons
 
@@ -198,12 +198,12 @@ class HeroController:
         text_inside_y_pos = pixels_above_mouse - 10
         text_inside_x_pos = space_between_mouse_and_text_box * 2
 
-        for value in hero.skills.values():
-            if value.rect_icon.collidepoint(mouse_pos):
+        for skill in hero.skills.values():
+            if skill.rect_icon.collidepoint(mouse_pos):
                 mouse_x_pos, mouse_y_pos = mouse_pos
-                screen.blit(value.text_box, (mouse_x_pos + space_between_mouse_and_text_box, mouse_y_pos - pixels_above_mouse))
+                screen.blit(skill.text_box, (mouse_x_pos + space_between_mouse_and_text_box, mouse_y_pos - pixels_above_mouse))
 
-                for sentence in value.get_description():
+                for sentence in skill.get_description():
                     text_surface = level_font.render(sentence, True, self.FONT_COLOR)
                     text_x_pos, text_y_pos = mouse_x_pos + text_inside_x_pos, mouse_y_pos - text_inside_y_pos
 
