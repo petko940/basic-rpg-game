@@ -82,9 +82,13 @@ monster = Monster()
 
 # start_time = time.time()
 
+MANA_REGEN = pygame.USEREVENT  # next event must be +1 ,because the events have ID's
+pygame.time.set_timer(MANA_REGEN, 1000)
+
 game_running = True
 while game_running:
     pygame.time.Clock().tick(100)
+
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
@@ -109,6 +113,10 @@ while game_running:
 
             elif event.key == pygame.K_4:
                 hero_controller.skill_to_use = 4
+
+        # calling custom event that regenerates the mana per second if the hero is not attacking
+        if event.type == MANA_REGEN:
+            hero_controller.mana_regen(current_hero)
 
     screen.blit(map_controller.show_current_map(), (0, 0))
 
