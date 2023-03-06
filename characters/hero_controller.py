@@ -82,6 +82,9 @@ class HeroController:
             hero.increase_health_bar_width(skill.heal())
             hero.receive_healing(skill.heal())
 
+        elif type(skill).__name__ == "AxeBasicAttack":
+            hero.is_attacking = True
+
     def use_mage_skills(self, hero: Mage, screen):
         skill = hero.skills[self.skill_to_use]
 
@@ -104,6 +107,7 @@ class HeroController:
 
                 skill.set_skill_pos(hero.x)
                 skill.cast_skill()
+                hero.is_attacking = True
 
                 hero.decrease_mana_bar_width(skill.skill_cost)
                 hero.consume_mana_on_skill(skill.skill_cost)
@@ -136,6 +140,7 @@ class HeroController:
 
                 skill.set_skill_pos(hero.x)
                 skill.cast_skill()
+                hero.is_attacking = True
 
                 hero.decrease_mana_bar_width(skill.skill_cost)
                 hero.consume_mana_on_skill(skill.skill_cost)
