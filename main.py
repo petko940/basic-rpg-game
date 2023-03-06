@@ -98,7 +98,6 @@ while game_running:
                 hero_controller.take_damage(current_hero, monster)
 
             elif event.key == pygame.K_1:
-                current_hero.is_attacking = True
                 hero_controller.skill_to_use = 1
 
             # healing spell
@@ -106,11 +105,9 @@ while game_running:
                 hero_controller.skill_to_use = 2
 
             elif event.key == pygame.K_3:
-                current_hero.is_attacking = True
                 hero_controller.skill_to_use = 3
 
             elif event.key == pygame.K_4:
-                current_hero.is_attacking = True
                 hero_controller.skill_to_use = 4
 
     screen.blit(map_controller.show_current_map(), (0, 0))
@@ -126,9 +123,6 @@ while game_running:
 
     # shows skill description if you hover on a skill icon
     hero_controller.show_skill_description(screen, current_hero, pygame.mouse.get_pos())
-
-    # calling the skills animations on button press
-    hero_controller.use_skill(current_hero, screen)
 
     if current_hero.is_attacking:
         screen.blit(current_hero.attack_animation(), current_hero.get_hero_pos())
@@ -154,6 +148,9 @@ while game_running:
     else:
         if not current_hero.is_attacking:
             screen.blit(current_hero.idle_animation(), current_hero.get_hero_pos())
+
+    # calling the skills animations on button press
+    hero_controller.use_skill(current_hero, screen)
 
     # timer(start_time, screen)
     pygame.display.update()
