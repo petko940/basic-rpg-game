@@ -5,6 +5,8 @@ from characters.skills import BlueBall, HealAndMana, Lightning, MeteorStrike
 class Mage(Hero):
     START_HEALTH = 80
 
+    MANA_REGEN_PER_SECOND = 1
+
     def __init__(self, x: int, y: int, attack_images: list, die_image, idle_images: list, jump_images: list,
                  walk_images: list, profile_pic: object):
         super().__init__(x, y, self.START_HEALTH, self.START_HEALTH, attack_images, die_image, idle_images, jump_images, walk_images, profile_pic)
