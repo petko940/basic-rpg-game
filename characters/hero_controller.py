@@ -57,6 +57,11 @@ class HeroController:
         """
         return self.heroes.get(hero_name.capitalize(), "Not Found")
 
+    def mana_regen(self, hero: (Warrior, Mage, Hunter)):
+        if not self.skill_to_use and type(hero).__name__ != "Warrior":
+            hero.receive_mana(hero.MANA_REGEN_PER_SECOND)
+            hero.increase_mana_bar_width(hero.MANA_REGEN_PER_SECOND)
+
     def check_end_of_skill_animation(self, skill: object):
         if not skill.is_animating:
             self.skill_to_use = None
