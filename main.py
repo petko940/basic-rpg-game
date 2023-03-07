@@ -85,6 +85,9 @@ monster = Monster()
 MANA_REGEN = pygame.USEREVENT  # next event must be +1 ,because the events have ID's
 pygame.time.set_timer(MANA_REGEN, 1000)
 
+SKILL_COOLDOWN = pygame.USEREVENT + 1
+pygame.time.set_timer(SKILL_COOLDOWN, 100)
+
 game_running = True
 while game_running:
     pygame.time.Clock().tick(100)
@@ -117,6 +120,9 @@ while game_running:
         # calling custom event that regenerates the mana per second if the hero is not attacking
         if event.type == MANA_REGEN:
             hero_controller.mana_regen(current_hero)
+
+        if event.type == SKILL_COOLDOWN:
+            hero_controller.lower_skill_cooldown(current_hero, 0.100)
 
     screen.blit(map_controller.show_current_map(), (0, 0))
 
