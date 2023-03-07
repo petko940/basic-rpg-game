@@ -11,6 +11,7 @@ resized = 1.4
 
 font = pygame.font.SysFont('Cosmic Sans bold', 40)
 level_font = pygame.font.SysFont('Cosmic Sans', 25)
+cooldown_font = pygame.font.SysFont('Cosmic Sans bold', 60)
 
 
 class HeroController:
@@ -27,7 +28,9 @@ class HeroController:
 
     BLACK_COLOR = (0, 0, 0)
 
-    LOCKED_SKILL_COLOR_AND_TRANSPARENCY = (128, 128, 128, 150)   # last value is transparency
+    LOCKED_SKILL_COLOR_AND_TRANSPARENCY = (150, 150, 150, 150)   # last value is transparency
+
+    COOLDOWN_SECONDS_COLOR = (220, 0, 0)
 
     def __init__(self):
         self.heroes: Dict[str: object] = {}
@@ -69,107 +72,108 @@ class HeroController:
             skill.lower_icon_height(amount)  # it is very important that this is executed first
             skill.lower_cooldown(amount)
 
-    def check_end_of_skill_animation(self, skill: object):
-        if not skill.is_animating:
-            self.skill_to_use = None
-
     def use_skill(self, hero: (Warrior, Hunter, Mage), screen):
-        if self.skill_to_use:
-            if type(hero).__name__ == "Mage":
-                self.use_mage_skills(hero, screen)
+        if type(hero).__name__ in "Mage":
+            self.use_mage_skills(hero, screen)
 
-            elif type(hero).__name__ == "Warrior":
-                self.use_warrior_skills(hero)
+        elif type(hero).__name__ == "Warrior":
+            self.use_warrior_skills(hero)
 
-            elif type(hero).__name__ == "Hunter":
-                self.use_hunter_skills(hero, screen)
+        elif type(hero).__name__ == "Hunter":
+            self.use_hunter_skills(hero, screen)
 
     def use_warrior_skills(self, hero: Warrior):
-        skill = hero.skills[self.skill_to_use]
+        skill = hero.skills.get(self.skill_to_use, False)
 
-        if not hero.is_attacking:
-            self.skill_to_use = None
+        if skill:
 
-        if not skill.is_on_cooldown:
-
-            if type(skill).__name__ == "Heal":
-                hero.increase_health_bar_width(skill.heal())
-                hero.receive_healing(skill.heal())
-
-            elif type(skill).__name__ == "AxeBasicAttack":
-                skill.cast_skill()
-                hero.is_attacking = True
-
-            elif type(skill).__name__ == "DamageBoost":
-                skill.cast_skill()
-
-    def use_mage_skills(self, hero: Mage, screen):
-        skill = hero.skills[self.skill_to_use]
-
-        if not skill.is_animating and not hero.check_enough_mana_to_cast(skill.skill_cost):
-            self.skill_to_use = None
-            hero.is_attacking = False
-
-        if type(skill).__name__ == "HealAndMana":
-            if not skill.is_on_cooldown:
-                hero.increase_health_bar_width(skill.heal())
-                hero.increase_mana_bar_width(skill.heal())
-
-                hero.receive_mana(skill.heal())
-                hero.receive_healing(skill.heal())
-
-            elif skill.is_on_cooldown:
+            if not hero.is_attacking or skill.is_on_cooldown:
                 self.skill_to_use = None
 
-        elif not skill.is_animating and type(skill).__name__ != "HealAndMana":
-            if hero.check_enough_mana_to_cast(skill.skill_cost) and not skill.is_on_cooldown:
-                skill.right_direction = hero.is_right_direction
+            if not skill.is_on_cooldown:
 
-                skill.set_skill_pos(hero.x)
-                skill.cast_skill()
-                hero.is_attacking = True
+                if type(skill).__name__ == "Heal":
+                    hero.increase_health_bar_width(skill.heal())
+                    hero.receive_healing(skill.heal())
 
-                hero.decrease_mana_bar_width(skill.skill_cost)
-                hero.consume_mana_on_skill(skill.skill_cost)
+                if type(skill).__name__ == "AxeBasicAttack":
+                    skill.cast_skill()
+                    hero.is_attacking = True
 
-        if skill.is_animating and not hero.is_attacking:
-            screen.blit(skill.show_image(), (skill.x_pos, skill.y_pos))
+                if type(skill).__name__ == "DamageBoost":
+                    skill.cast_skill()
 
-            skill.animate()
-            self.check_end_of_skill_animation(skill)
+    def use_mage_skills(self, hero: Mage, screen):
+        for c_skill in hero.skills.values():
+            if c_skill.is_animating and type(c_skill).__name__ != "HealAndMana":
+                screen.blit(c_skill.show_image(), (c_skill.x_pos, c_skill.y_pos))
+
+                c_skill.animate()
+
+        skill = hero.skills.get(self.skill_to_use, False)
+
+        if skill:
+
+            if skill.is_animating or not hero.check_enough_mana_to_cast(skill.skill_cost) or skill.is_on_cooldown:
+                self.skill_to_use = None
+                hero.is_attacking = False
+
+            if not skill.is_on_cooldown and hero.check_enough_mana_to_cast(skill.skill_cost):
+
+                if type(skill).__name__ == "HealAndMana":
+                    hero.increase_health_bar_width(skill.heal())
+                    hero.increase_mana_bar_width(skill.heal())
+
+                    hero.receive_mana(skill.heal())
+                    hero.receive_healing(skill.heal())
+
+                if not skill.is_animating and type(skill).__name__ != "HealAndMana":
+                    skill.right_direction = hero.is_right_direction
+
+                    skill.set_skill_pos(hero.x)
+                    skill.cast_skill()
+                    hero.is_attacking = True
+
+                    hero.decrease_mana_bar_width(skill.skill_cost)
+                    hero.consume_mana_on_skill(skill.skill_cost)
+
+                self.skill_to_use = None
 
     def use_hunter_skills(self, hero: Hunter, screen):
-        skill = hero.skills[self.skill_to_use]
+        for c_skill in hero.skills.values():
+            if c_skill.is_animating and type(c_skill).__name__ != "HealAndMana":
+                screen.blit(c_skill.show_image(), (c_skill.x_pos, c_skill.y_pos))
 
-        if not skill.is_animating and not hero.check_enough_mana_to_cast(skill.skill_cost):
-            self.skill_to_use = None
-            hero.is_attacking = False
+                c_skill.animate()
 
-        if not skill.is_animating and type(skill).__name__ == "HealAndMana":
-            hero.increase_health_bar_width(skill.heal())
-            hero.increase_mana_bar_width(skill.heal())
+        skill = hero.skills.get(self.skill_to_use, False)
 
-            hero.receive_healing(skill.heal())
-            hero.receive_mana(skill.heal())
+        if skill:
 
-            self.skill_to_use = None
+            if skill.is_animating or not hero.check_enough_mana_to_cast(skill.skill_cost) or skill.is_on_cooldown:
+                self.skill_to_use = None
+                hero.is_attacking = False
 
-        elif not skill.is_animating and type(skill).__name__ != "HealAndMana":
-            if hero.check_enough_mana_to_cast(skill.skill_cost):
-                skill.right_direction = hero.is_right_direction
+            if not skill.is_on_cooldown and hero.check_enough_mana_to_cast(skill.skill_cost):
 
-                skill.set_skill_pos(hero.x)
-                skill.cast_skill()
-                hero.is_attacking = True
+                if type(skill).__name__ == "HealAndMana":
+                    hero.increase_health_bar_width(skill.heal())
+                    hero.increase_mana_bar_width(skill.heal())
 
-                hero.decrease_mana_bar_width(skill.skill_cost)
-                hero.consume_mana_on_skill(skill.skill_cost)
+                    hero.receive_mana(skill.heal())
+                    hero.receive_healing(skill.heal())
 
-        if skill.is_animating and not hero.is_attacking:
-            screen.blit(skill.show_image(), (skill.x_pos, skill.y_pos))
+                if not skill.is_animating and type(skill).__name__ != "HealAndMana":
+                    skill.right_direction = hero.is_right_direction
 
-            skill.animate()
-            self.check_end_of_skill_animation(skill)
+                    skill.set_skill_pos(hero.x)
+                    skill.cast_skill()
+                    hero.is_attacking = True
+
+                    hero.decrease_mana_bar_width(skill.skill_cost)
+                    hero.consume_mana_on_skill(skill.skill_cost)
+
+                self.skill_to_use = None
 
     @staticmethod
     def take_damage(hero: (Warrior, Hunter, Mage), monster: object) -> None:
@@ -186,13 +190,6 @@ class HeroController:
             hero.health = 0
 
     def display_skill_icons(self, screen, hero: (Warrior, Hunter, Mage), x_pos: int, y_pos: int):
-        def draw_rect_alpha(color, rect: pygame.Rect):
-            """
-            displays semi transparent image above the skill icon that is higher level than the hero level
-            """
-            surface = pygame.Surface(pygame.Rect(rect).size, pygame.SRCALPHA)
-            pygame.draw.rect(surface, color, surface.get_rect())
-            screen.blit(surface, rect)
         """
         x_y_offset is the pixels fixation to perfectly fit inside the action bar
 
@@ -203,17 +200,37 @@ class HeroController:
         It works very good since you can't hover the mouse before the skills are being shown on screen and there is no
         chance for a problem to occur
         """
+
+        def draw_rect_alpha(color, rect: pygame.Rect):
+            """
+            displays semi transparent image above the skill icon that is higher level than the hero level
+            """
+            surface = pygame.Surface(pygame.Rect(rect).size, pygame.SRCALPHA)
+            pygame.draw.rect(surface, color, surface.get_rect())
+            screen.blit(surface, rect)
+
+        def cooldown_seconds_counter(seconds_remaining, icon: pygame.Rect):
+            seconds_surface = cooldown_font.render(f"{seconds_remaining:.0f}", True, self.COOLDOWN_SECONDS_COLOR)
+
+            middle_of_skill_icon = (icon.width // 2) - (seconds_surface.get_width() // 2) + icon.x
+            middle_of_y_position = (icon.height // 2) - (seconds_surface.get_height() // 2) + icon.y
+
+            screen.blit(seconds_surface, (middle_of_skill_icon, middle_of_y_position))
+
         icon_width, space_between_icons, x_y_offset = 57, 5, 4
         for skill in hero.skills.values():
             screen.blit(skill.skill_icon, (x_pos + x_y_offset, y_pos + x_y_offset))
-            skill.rect_icon.x, skill.rect_icon.y = x_pos + x_y_offset, y_pos + x_y_offset
-            skill.cooldown_rect.x, skill.cooldown_rect.y = x_pos + x_y_offset, y_pos + x_y_offset
+
+            if not skill.rect_icon.x or not skill.cooldown_rect.x:
+                skill.rect_icon.x, skill.rect_icon.y = x_pos + x_y_offset, y_pos + x_y_offset
+                skill.cooldown_rect.x, skill.cooldown_rect.y = x_pos + x_y_offset, y_pos + x_y_offset
 
             # if hero.level < skill.LEVEL_REQUIRED:
             #     draw_rect_alpha(self.LOCKED_SKILL_COLOR_AND_TRANSPARENCY, skill.rect_icon)
 
             if skill.is_on_cooldown:
                 draw_rect_alpha(self.LOCKED_SKILL_COLOR_AND_TRANSPARENCY, skill.cooldown_rect)
+                cooldown_seconds_counter(skill.cooldown_left, skill.rect_icon)
 
             x_pos += icon_width + space_between_icons
 
