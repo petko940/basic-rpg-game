@@ -98,10 +98,21 @@ class HeroController:
 
                 if type(skill).__name__ == "AxeBasicAttack":
                     skill.cast_skill()
+
+                    # TO DO
+                    # MUST CHECK FOR COLLISION HERE
+
+                    damage_boost_skill = hero.skills[3]
+                    if damage_boost_skill.check_if_consumed():
+                        skill.drop_damage(damage_boost_skill.damage_boost)
+
                     hero.is_attacking = True
 
                 if type(skill).__name__ == "DamageBoost":
                     skill.cast_skill()
+
+                    axe_attack_skill = hero.skills[1]
+                    axe_attack_skill.gain_damage(skill.damage_boost)
 
     def use_mage_skills(self, hero: Mage, screen):
         for c_skill in hero.skills.values():
@@ -210,7 +221,8 @@ class HeroController:
             screen.blit(surface, rect)
 
         def cooldown_seconds_counter(seconds_remaining, icon: pygame.Rect):
-            seconds_surface = cooldown_font.render(f"{seconds_remaining:.0f}", True, self.COOLDOWN_SECONDS_COLOR)
+            seconds_surface = cooldown_font.render(f"{seconds_remaining:.0f}" if seconds_remaining > 1
+                                                   else f"{seconds_remaining:.1f}", True, self.COOLDOWN_SECONDS_COLOR)
 
             middle_of_skill_icon = (icon.width // 2) - (seconds_surface.get_width() // 2) + icon.x
             middle_of_y_position = (icon.height // 2) - (seconds_surface.get_height() // 2) + icon.y
@@ -227,6 +239,9 @@ class HeroController:
 
             # if hero.level < skill.LEVEL_REQUIRED:
             #     draw_rect_alpha(self.LOCKED_SKILL_COLOR_AND_TRANSPARENCY, skill.rect_icon)
+
+            if type(skill).__name__ == "DamageBoost" and skill.is_clicked:
+                draw_rect_alpha(self.LOCKED_SKILL_COLOR_AND_TRANSPARENCY, skill.cooldown_rect)
 
             if skill.is_on_cooldown:
                 draw_rect_alpha(self.LOCKED_SKILL_COLOR_AND_TRANSPARENCY, skill.cooldown_rect)
