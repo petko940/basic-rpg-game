@@ -5,11 +5,14 @@ from pygame import transform, image
 class Skill(ABC):
     MAP_WIDTH = 1366
 
+    HEIGHT_OF_SKILL_ICON = 58
+
     def __init__(self, skill_cost: int, level_required: int):
         self.skill_cost = skill_cost
         self.level_required = level_required
         self.text_box = image.load('characters/skill_info_box/info_text_box.png')
         self.is_animating = False
+        self.is_on_cooldown = False
 
     @abstractmethod
     def get_description(self):
@@ -29,10 +32,13 @@ class BlueBall(Skill):
     RIGHT_X_POS_FIXATION = 200
     BALL_Y_POS = 300
 
+    LOCKED_COOLDOWN = 1
+
     def __init__(self, skill_cost: int):
         super().__init__(skill_cost, self.LEVEL_REQUIRED)
         self.skill_icon = image.load('characters/mage/skill_icons/blue_ball_skill_image.png')
         self.rect_icon = self.skill_icon.get_rect()
+        self.cooldown_rect = self.skill_icon.get_rect()
         self.images_right = [image.load(f'characters/mage/skill_animations/blue_ball_sprites/{i}.png') for i in range(1, 6 + 1)]
         self.images_left = [transform.flip(self.images_right[i], True, False) for i in range(len(self.images_right))]
         self.x_pos = 0
@@ -40,6 +46,20 @@ class BlueBall(Skill):
         self.img_index = 0
         self.damage = 25
         self.right_direction = None
+        self.cooldown_left = self.LOCKED_COOLDOWN
+
+    def lower_icon_height(self, extract_value: int or float):
+        if self.is_on_cooldown:
+            self.cooldown_rect.height = self.HEIGHT_OF_SKILL_ICON * ((self.cooldown_left - extract_value) / self.LOCKED_COOLDOWN)
+
+    def lower_cooldown(self, amount_to_remove: int or float):
+        if self.is_on_cooldown:
+            self.cooldown_left -= amount_to_remove
+
+            if self.cooldown_left <= 0:
+                self.is_on_cooldown = False
+                self.cooldown_rect.height = self.HEIGHT_OF_SKILL_ICON
+                self.cooldown_left = self.LOCKED_COOLDOWN
 
     def animate(self):
         if self.is_animating:
@@ -47,6 +67,7 @@ class BlueBall(Skill):
             self.check_for_end_point()
 
     def cast_skill(self):
+        self.is_on_cooldown = True
         self.is_animating = True
 
     def show_image(self):
@@ -92,14 +113,32 @@ class HealAndMana(Skill):
     LEVEL_REQUIRED = 2
     HEAL_MANA_INCREASE_PER_LEVEL = 10
 
+    LOCKED_COOLDOWN = 5
+
     def __init__(self):
         super().__init__(0, self.LEVEL_REQUIRED)
 
         self.skill_icon = image.load('characters/mage/skill_icons/hp_mp_gain.png')
         self.rect_icon = self.skill_icon.get_rect()
+        self.cooldown_rect = self.skill_icon.get_rect()
         self.healing = 25
+        self.cooldown_left = self.LOCKED_COOLDOWN
+
+    def lower_icon_height(self, extract_value: int or float):
+        if self.is_on_cooldown:
+            self.cooldown_rect.height = self.HEIGHT_OF_SKILL_ICON * ((self.cooldown_left - extract_value) / self.LOCKED_COOLDOWN)
+
+    def lower_cooldown(self, amount_to_remove: int or float):
+        if self.is_on_cooldown:
+            self.cooldown_left -= amount_to_remove
+
+            if self.cooldown_left <= 0:
+                self.is_on_cooldown = False
+                self.cooldown_rect.height = self.HEIGHT_OF_SKILL_ICON
+                self.cooldown_left = self.LOCKED_COOLDOWN
 
     def heal(self):
+        self.is_on_cooldown = True
         return self.healing
 
     def level_up(self):
@@ -121,17 +160,34 @@ class Lightning(Skill):
 
     HEIGHT_OF_SKILL_FIXATION = -30
 
+    LOCKED_COOLDOWN = 3
+
     def __init__(self, skill_cost: int):
         super().__init__(skill_cost, self.LEVEL_REQUIRED)
 
         self.skill_icon = image.load('characters/mage/skill_icons/thunderstorm_skill_icon.png')
         self.rect_icon = self.skill_icon.get_rect()
+        self.cooldown_rect = self.skill_icon.get_rect()
         self.images = [image.load(f'characters/mage/skill_animations/thunder_sprites/{x}.png') for x in range(1, 9 + 1)]
         self.x_pos = None
         self.y_pos = self.HEIGHT_OF_SKILL_FIXATION
         self.img_index = 0
         self.damage = 30
         self.has_target = False
+        self.cooldown_left = self.LOCKED_COOLDOWN
+
+    def lower_icon_height(self, extract_value: int or float):
+        if self.is_on_cooldown:
+            self.cooldown_rect.height = self.HEIGHT_OF_SKILL_ICON * ((self.cooldown_left - extract_value) / self.LOCKED_COOLDOWN)
+
+    def lower_cooldown(self, amount_to_remove: int or float):
+        if self.is_on_cooldown:
+            self.cooldown_left -= amount_to_remove
+
+            if self.cooldown_left <= 0:
+                self.is_on_cooldown = False
+                self.cooldown_rect.height = self.HEIGHT_OF_SKILL_ICON
+                self.cooldown_left = self.LOCKED_COOLDOWN
 
     def animate(self):
         if self.is_animating:
@@ -139,6 +195,7 @@ class Lightning(Skill):
             self.check_for_end_point()
 
     def cast_skill(self):
+        self.is_on_cooldown = True
         self.is_animating = True
 
     def show_image(self):
@@ -183,11 +240,14 @@ class MeteorStrike(Skill):
     IMAGE_LOOP_SPEED = 0.2
     REVERSE_IMAGE_LOOP_SPEED = 0.3
 
+    LOCKED_COOLDOWN = 8
+
     def __init__(self, skill_cost: int):
         super().__init__(skill_cost, self.LEVEL_REQUIRED)
 
         self.skill_icon = image.load('characters/mage/skill_icons/meteor_strike.jpg')
         self.rect_icon = self.skill_icon.get_rect()
+        self.cooldown_rect = self.skill_icon.get_rect()
         self.images = [transform.scale(image.load(f'characters/mage/skill_animations/explosion_sprites/{x}.png'), (930, 630)) for x in range(13)]
         self.img_index = 0
         self.damage = 40
@@ -199,6 +259,21 @@ class MeteorStrike(Skill):
 
         self.has_target = False
         self.explosion_reached = False
+
+        self.cooldown_left = self.LOCKED_COOLDOWN
+
+    def lower_icon_height(self, extract_value: int or float):
+        if self.is_on_cooldown:
+            self.cooldown_rect.height = self.HEIGHT_OF_SKILL_ICON * ((self.cooldown_left - extract_value) / self.LOCKED_COOLDOWN)
+
+    def lower_cooldown(self, amount_to_remove: int or float):
+        if self.is_on_cooldown:
+            self.cooldown_left -= amount_to_remove
+
+            if self.cooldown_left <= 0:
+                self.is_on_cooldown = False
+                self.cooldown_rect.height = self.HEIGHT_OF_SKILL_ICON
+                self.cooldown_left = self.LOCKED_COOLDOWN
 
     def animate(self):
         if self.is_animating:
@@ -214,6 +289,7 @@ class MeteorStrike(Skill):
                 self.check_for_end_of_reversed_explosion()
 
     def cast_skill(self):
+        self.is_on_cooldown = True
         self.is_animating = True
 
     def show_image(self):
@@ -272,12 +348,33 @@ class AxeBasicAttack(Skill):
     DAMAGE_PER_LEVEL_INCREASE = 5
     LEVEL_REQUIRED = 1
 
+    LOCKED_COOLDOWN = 1
+
     # should add the basic attack of warrior images here
     def __init__(self):
         super().__init__(0, self.LEVEL_REQUIRED)
         self.skill_icon = image.load('characters/war/skill_icons/axe_basic_attack.png')
         self.rect_icon = self.skill_icon.get_rect()
+        self.cooldown_rect = self.skill_icon.get_rect()
         self.damage = 25
+
+        self.cooldown_left = self.LOCKED_COOLDOWN
+
+    def lower_icon_height(self, extract_value: int or float):
+        if self.is_on_cooldown:
+            self.cooldown_rect.height = self.HEIGHT_OF_SKILL_ICON * ((self.cooldown_left - extract_value) / self.LOCKED_COOLDOWN)
+
+    def lower_cooldown(self, amount_to_remove: int or float):
+        if self.is_on_cooldown:
+            self.cooldown_left -= amount_to_remove
+
+            if self.cooldown_left <= 0:
+                self.is_on_cooldown = False
+                self.cooldown_rect.height = self.HEIGHT_OF_SKILL_ICON
+                self.cooldown_left = self.LOCKED_COOLDOWN
+
+    def cast_skill(self):
+        self.is_on_cooldown = True
 
     def level_up(self):
         self.damage += self.DAMAGE_PER_LEVEL_INCREASE
@@ -292,13 +389,32 @@ class Heal(Skill):
     HEAL_INCREASE_PER_LEVEL = 5
     LEVEL_REQUIRED = 1
 
+    LOCKED_COOLDOWN = 5
+
     def __init__(self):
         super().__init__(0, self.LEVEL_REQUIRED)
         self.skill_icon = image.load('characters/war/skill_icons/heal.png')
         self.rect_icon = self.skill_icon.get_rect()
+        self.cooldown_rect = self.skill_icon.get_rect()
         self.healing = 25
 
+        self.cooldown_left = self.LOCKED_COOLDOWN
+
+    def lower_icon_height(self, extract_value: int or float):
+        if self.is_on_cooldown:
+            self.cooldown_rect.height = self.HEIGHT_OF_SKILL_ICON * ((self.cooldown_left - extract_value) / self.LOCKED_COOLDOWN)
+
+    def lower_cooldown(self, amount_to_remove: int or float):
+        if self.is_on_cooldown:
+            self.cooldown_left -= amount_to_remove
+
+            if self.cooldown_left <= 0:
+                self.is_on_cooldown = False
+                self.cooldown_rect.height = self.HEIGHT_OF_SKILL_ICON
+                self.cooldown_left = self.LOCKED_COOLDOWN
+
     def heal(self):
+        self.is_on_cooldown = True
         return self.healing
 
     def level_up(self):
@@ -315,12 +431,33 @@ class DamageBoost(Skill):
     DAMAGE_BOOST_PER_LEVEL = 5
     LEVEL_REQUIRED = 3
 
+    LOCKED_COOLDOWN = 5
+
     def __init__(self):
         super().__init__(0, self.LEVEL_REQUIRED)
 
         self.skill_icon = image.load('characters/war/skill_icons/damage_boost.png')
         self.rect_icon = self.skill_icon.get_rect()
+        self.cooldown_rect = self.skill_icon.get_rect()
         self.damage_boost = 5
+
+        self.cooldown_left = self.LOCKED_COOLDOWN
+
+    def lower_icon_height(self, extract_value: int or float):
+        if self.is_on_cooldown:
+            self.cooldown_rect.height = self.HEIGHT_OF_SKILL_ICON * ((self.cooldown_left - extract_value) / self.LOCKED_COOLDOWN)
+
+    def lower_cooldown(self, amount_to_remove: int or float):
+        if self.is_on_cooldown:
+            self.cooldown_left -= amount_to_remove
+
+            if self.cooldown_left <= 0:
+                self.is_on_cooldown = False
+                self.cooldown_rect.height = self.HEIGHT_OF_SKILL_ICON
+                self.cooldown_left = self.LOCKED_COOLDOWN
+
+    def cast_skill(self):
+        self.is_on_cooldown = True
 
     def level_up(self):
         self.damage_boost += self.DAMAGE_BOOST_PER_LEVEL
@@ -338,12 +475,30 @@ class PassiveCrit(Skill):
 
     LEVEL_REQUIRED = 4
 
+    LOCKED_COOLDOWN = 0
+
     def __init__(self):
         super().__init__(0, self.LEVEL_REQUIRED)
 
         self.skill_icon = image.load('characters/war/skill_icons/passive_crit.png')
         self.rect_icon = self.skill_icon.get_rect()
+        self.cooldown_rect = self.skill_icon.get_rect()
         self.crit_chance = 5  # must work with random method like this - if self.crit_chance >= random.randint(0, 100)
+
+        self.cooldown_left = self.LOCKED_COOLDOWN
+
+    def lower_icon_height(self, extract_value: int or float):
+        if self.is_on_cooldown:
+            self.cooldown_rect.height = self.HEIGHT_OF_SKILL_ICON * ((self.cooldown_left - extract_value) / self.LOCKED_COOLDOWN)
+
+    def lower_cooldown(self, amount_to_remove: int or float):
+        if self.is_on_cooldown:
+            self.cooldown_left -= amount_to_remove
+
+            if self.cooldown_left <= 0:
+                self.is_on_cooldown = False
+                self.cooldown_rect.height = self.HEIGHT_OF_SKILL_ICON
+                self.cooldown_left = self.LOCKED_COOLDOWN
 
     def level_up(self):
         if self.crit_chance + self.PASSIVE_CRIT_INCREASE_PER_LEVEL <= self.MAX_CRIT_CHANCE:
@@ -364,11 +519,14 @@ class ArrowShot(Skill):
     RIGHT_ARROW_X_POS_FIXATION = 225
     ARROW_Y_POS = 400
 
+    LOCKED_COOLDOWN = 1
+
     def __init__(self, skill_cost: int):
         super().__init__(skill_cost, self.LEVEL_REQUIRED)
 
         self.skill_icon = image.load('characters/hunt/skill_icons/arrow_shot.jpg')
         self.rect_icon = self.skill_icon.get_rect()
+        self.cooldown_rect = self.skill_icon.get_rect()
         self.images_right = [image.load(f'characters/hunt/skill_animations/arrow_shot_sprites/{i}.png') for i in range(1, 5 + 1)]
         self.images_left = [transform.flip(self.images_right[i], True, False) for i in range(len(self.images_right))]
         self.x_pos = 0
@@ -377,12 +535,28 @@ class ArrowShot(Skill):
         self.damage = 20
         self.right_direction = None
 
+        self.cooldown_left = self.LOCKED_COOLDOWN
+
+    def lower_icon_height(self, extract_value: int or float):
+        if self.is_on_cooldown:
+            self.cooldown_rect.height = self.HEIGHT_OF_SKILL_ICON * ((self.cooldown_left - extract_value) / self.LOCKED_COOLDOWN)
+
+    def lower_cooldown(self, amount_to_remove: int or float):
+        if self.is_on_cooldown:
+            self.cooldown_left -= amount_to_remove
+
+            if self.cooldown_left <= 0:
+                self.is_on_cooldown = False
+                self.cooldown_rect.height = self.HEIGHT_OF_SKILL_ICON
+                self.cooldown_left = self.LOCKED_COOLDOWN
+
     def animate(self):
         if self.is_animating:
             self.moving_the_arrow()
             self.check_for_end_point()
 
     def cast_skill(self):
+        self.is_on_cooldown = True
         self.is_animating = True
 
     def show_image(self):
@@ -433,10 +607,13 @@ class RapidShot(Skill):
     RIGHT_ARROW_X_POS_FIXATION = 225
     ARROW_Y_POS = 400
 
+    LOCKED_COOLDOWN = 3
+
     def __init__(self, skill_cost: int):
         super().__init__(skill_cost, self.LEVEL_REQUIRED)
         self.skill_icon = image.load('characters/hunt/skill_icons/rapid_shot.png')
         self.rect_icon = self.skill_icon.get_rect()
+        self.cooldown_rect = self.skill_icon.get_rect()
 
         self.images_right = [image.load(f'characters/hunt/skill_animations/rapid_shot_sprites/{i}.png') for i in range(7)]
         self.images_left = [transform.flip(self.images_right[i], True, False) for i in range(len(self.images_right))]
@@ -446,12 +623,28 @@ class RapidShot(Skill):
         self.damage = 35
         self.right_direction = None
 
+        self.cooldown_left = self.LOCKED_COOLDOWN
+
+    def lower_icon_height(self, extract_value: int or float):
+        if self.is_on_cooldown:
+            self.cooldown_rect.height = self.HEIGHT_OF_SKILL_ICON * ((self.cooldown_left - extract_value) / self.LOCKED_COOLDOWN)
+
+    def lower_cooldown(self, amount_to_remove: int or float):
+        if self.is_on_cooldown:
+            self.cooldown_left -= amount_to_remove
+
+            if self.cooldown_left <= 0:
+                self.is_on_cooldown = False
+                self.cooldown_rect.height = self.HEIGHT_OF_SKILL_ICON
+                self.cooldown_left = self.LOCKED_COOLDOWN
+
     def animate(self):
         if self.is_animating:
             self.moving_the_arrow()
             self.check_for_end_point()
 
     def cast_skill(self):
+        self.is_on_cooldown = True
         self.is_animating = True
 
     def show_image(self):
@@ -505,11 +698,14 @@ class ArrowRain(Skill):
 
     ARROWS_Y_START_LOCATION = -200
 
+    LOCKED_COOLDOWN = 8
+
     def __init__(self, skill_cost: int):
         super().__init__(skill_cost, self.LEVEL_REQUIRED)
 
         self.skill_icon = image.load('characters/hunt/skill_icons/ultimate_hunter.png')
         self.rect_icon = self.skill_icon.get_rect()
+        self.cooldown_rect = self.skill_icon.get_rect()
 
         self.images = [image.load(f'characters/hunt/skill_animations/arrow_rain/{x}.png') for x in range(10)]
         self.img_index = 0
@@ -525,6 +721,21 @@ class ArrowRain(Skill):
 
         self.has_target = False
 
+        self.cooldown_left = self.LOCKED_COOLDOWN
+
+    def lower_icon_height(self, extract_value: int or float):
+        if self.is_on_cooldown:
+            self.cooldown_rect.height = self.HEIGHT_OF_SKILL_ICON * ((self.cooldown_left - extract_value) / self.LOCKED_COOLDOWN)
+
+    def lower_cooldown(self, amount_to_remove: int or float):
+        if self.is_on_cooldown:
+            self.cooldown_left -= amount_to_remove
+
+            if self.cooldown_left <= 0:
+                self.is_on_cooldown = False
+                self.cooldown_rect.height = self.HEIGHT_OF_SKILL_ICON
+                self.cooldown_left = self.LOCKED_COOLDOWN
+
     def animate(self):
         if self.is_animating:
             if not self.check_if_arrows_dropped():
@@ -538,6 +749,7 @@ class ArrowRain(Skill):
             self.reset_skill_position()
 
     def cast_skill(self):
+        self.is_on_cooldown = True
         self.is_animating = True
 
     def show_image(self):
