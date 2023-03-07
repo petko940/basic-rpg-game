@@ -97,8 +97,7 @@ while game_running:
             if event.key == pygame.K_ESCAPE:
                 game_running = False
 
-            # means that a skill is currently animating
-            if hero_controller.skill_to_use or current_hero.is_attacking:
+            if current_hero.is_attacking:
                 continue
 
             elif event.key == pygame.K_5:
