@@ -373,6 +373,12 @@ class AxeBasicAttack(Skill):
                 self.cooldown_rect.height = self.HEIGHT_OF_SKILL_ICON
                 self.cooldown_left = self.LOCKED_COOLDOWN
 
+    def gain_damage(self, amount: int or float):
+        self.damage += amount
+
+    def drop_damage(self, amount: int or float):
+        self.damage -= amount
+
     def cast_skill(self):
         self.is_on_cooldown = True
 
@@ -443,6 +449,9 @@ class DamageBoost(Skill):
 
         self.cooldown_left = self.LOCKED_COOLDOWN
 
+        self.is_clicked = False
+        self.has_gained_damage = False
+
     def lower_icon_height(self, extract_value: int or float):
         if self.is_on_cooldown:
             self.cooldown_rect.height = self.HEIGHT_OF_SKILL_ICON * ((self.cooldown_left - extract_value) / self.LOCKED_COOLDOWN)
@@ -453,11 +462,24 @@ class DamageBoost(Skill):
 
             if self.cooldown_left <= 0:
                 self.is_on_cooldown = False
+                self.is_clicked = False
+                self.has_gained_damage = False
                 self.cooldown_rect.height = self.HEIGHT_OF_SKILL_ICON
                 self.cooldown_left = self.LOCKED_COOLDOWN
 
+    def check_if_consumed(self):
+        if self.is_clicked and self.has_gained_damage:
+            self.is_on_cooldown = True
+            return True
+
     def cast_skill(self):
-        self.is_on_cooldown = True
+        self.is_clicked = True
+
+    def set_boost_damage(self):
+        self.has_gained_damage = True
+
+    def unset_boost_damage(self):
+        self.has_gained_damage = False
 
     def level_up(self):
         self.damage_boost += self.DAMAGE_BOOST_PER_LEVEL
