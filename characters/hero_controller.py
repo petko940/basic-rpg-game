@@ -132,12 +132,7 @@ class HeroController:
         if not skill:
             return
 
-        if skill.is_animating:
-            self.skill_to_use = None
-            hero.is_attacking = False
-            return
-
-        if not hero.check_enough_mana_to_cast(skill.skill_cost) or skill.is_on_cooldown:
+        if skill.is_animating or not hero.check_enough_mana_to_cast(skill.skill_cost) or skill.is_on_cooldown:
             self.skill_to_use = None
             hero.is_attacking = False
             return
@@ -173,12 +168,7 @@ class HeroController:
         if not skill:
             return
 
-        if skill.is_animating:
-            self.skill_to_use = None
-            hero.is_attacking = False
-            return
-
-        if not hero.check_enough_mana_to_cast(skill.skill_cost) or skill.is_on_cooldown:
+        if skill.is_animating or not hero.check_enough_mana_to_cast(skill.skill_cost) or skill.is_on_cooldown:
             self.skill_to_use = None
             hero.is_attacking = False
             return
