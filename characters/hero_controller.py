@@ -115,14 +115,15 @@ class HeroController:
     def use_warrior_skills(self, hero: Warrior):
         skill = hero.skills.get(self.skill_to_use, False)
 
+        passive = hero.skills.get(4)
+
         if not skill:
             return
 
         if hero.is_attacking or skill.is_on_cooldown:
-            return
-
-        if not hero.is_attacking:
             self.skill_to_use = None
+            hero.is_attacking = False
+            return
 
         if type(skill).__name__ == "Heal":
             hero.increase_health_bar_width(skill.heal())
@@ -131,8 +132,15 @@ class HeroController:
         elif type(skill).__name__ == "AxeBasicAttack":
             skill.cast_skill()
 
+            if passive.check_for_critical_strike():
+                skill.damage *= passive.get_critical_multiplier()
+
             # TO DO
             # MUST CHECK FOR COLLISION HERE
+
+            if passive.is_critical:
+                skill.damage = int(skill.damage / passive.get_critical_multiplier())
+                passive.switch_is_critical_state()
 
             damage_boost_skill = hero.skills[3]
             if damage_boost_skill.check_if_consumed():
@@ -149,6 +157,8 @@ class HeroController:
 
                 axe_attack_skill = hero.skills[1]
                 axe_attack_skill.gain_damage(skill.damage_boost)
+
+        self.skill_to_use = None
 
     def use_mage_skills(self, hero: Mage, screen):
         for c_skill in hero.skills.values():
