@@ -85,38 +85,40 @@ class HeroController:
     def use_warrior_skills(self, hero: Warrior):
         skill = hero.skills.get(self.skill_to_use, False)
 
-        if skill:
+        if not skill:
+            return
 
-            if not hero.is_attacking or skill.is_on_cooldown:
-                self.skill_to_use = None
+        if hero.is_attacking or skill.is_on_cooldown:
+            return
 
-            if not skill.is_on_cooldown:
+        if not hero.is_attacking:
+            self.skill_to_use = None
 
-                if type(skill).__name__ == "Heal":
-                    hero.increase_health_bar_width(skill.heal())
-                    hero.receive_healing(skill.heal())
+        if type(skill).__name__ == "Heal":
+            hero.increase_health_bar_width(skill.heal())
+            hero.receive_healing(skill.heal())
 
-                if type(skill).__name__ == "AxeBasicAttack":
-                    skill.cast_skill()
+        elif type(skill).__name__ == "AxeBasicAttack":
+            skill.cast_skill()
 
-                    # TO DO
-                    # MUST CHECK FOR COLLISION HERE
+            # TO DO
+            # MUST CHECK FOR COLLISION HERE
 
-                    damage_boost_skill = hero.skills[3]
-                    if damage_boost_skill.check_if_consumed():
-                        damage_boost_skill.unset_boost_damage()
-                        skill.drop_damage(damage_boost_skill.damage_boost)
+            damage_boost_skill = hero.skills[3]
+            if damage_boost_skill.check_if_consumed():
+                damage_boost_skill.unset_boost_damage()
+                skill.drop_damage(damage_boost_skill.damage_boost)
 
-                    hero.is_attacking = True
+            hero.is_attacking = True
 
-                if type(skill).__name__ == "DamageBoost":
-                    skill.cast_skill()
+        elif type(skill).__name__ == "DamageBoost":
+            skill.cast_skill()
 
-                    if not skill.has_gained_damage:
-                        skill.set_boost_damage()
+            if not skill.has_gained_damage:
+                skill.set_boost_damage()
 
-                        axe_attack_skill = hero.skills[1]
-                        axe_attack_skill.gain_damage(skill.damage_boost)
+                axe_attack_skill = hero.skills[1]
+                axe_attack_skill.gain_damage(skill.damage_boost)
 
     def use_mage_skills(self, hero: Mage, screen):
         for c_skill in hero.skills.values():
@@ -127,32 +129,37 @@ class HeroController:
 
         skill = hero.skills.get(self.skill_to_use, False)
 
-        if skill:
+        if not skill:
+            return
 
-            if skill.is_animating or not hero.check_enough_mana_to_cast(skill.skill_cost) or skill.is_on_cooldown:
-                self.skill_to_use = None
-                hero.is_attacking = False
+        if skill.is_animating:
+            self.skill_to_use = None
+            hero.is_attacking = False
+            return
 
-            if not skill.is_on_cooldown and hero.check_enough_mana_to_cast(skill.skill_cost):
+        if not hero.check_enough_mana_to_cast(skill.skill_cost) or skill.is_on_cooldown:
+            self.skill_to_use = None
+            hero.is_attacking = False
+            return
 
-                if type(skill).__name__ == "HealAndMana":
-                    hero.increase_health_bar_width(skill.heal())
-                    hero.increase_mana_bar_width(skill.heal())
+        if type(skill).__name__ == "HealAndMana":
+            hero.increase_health_bar_width(skill.heal())
+            hero.increase_mana_bar_width(skill.heal())
 
-                    hero.receive_mana(skill.heal())
-                    hero.receive_healing(skill.heal())
+            hero.receive_mana(skill.heal())
+            hero.receive_healing(skill.heal())
 
-                if not skill.is_animating and type(skill).__name__ != "HealAndMana":
-                    skill.right_direction = hero.is_right_direction
+        if type(skill).__name__ != "HealAndMana":
+            skill.right_direction = hero.is_right_direction
 
-                    skill.set_skill_pos(hero.x)
-                    skill.cast_skill()
-                    hero.is_attacking = True
+            skill.set_skill_pos(hero.x)
+            skill.cast_skill()
+            hero.is_attacking = True
 
-                    hero.decrease_mana_bar_width(skill.skill_cost)
-                    hero.consume_mana_on_skill(skill.skill_cost)
+            hero.decrease_mana_bar_width(skill.skill_cost)
+            hero.consume_mana_on_skill(skill.skill_cost)
 
-                self.skill_to_use = None
+        self.skill_to_use = None
 
     def use_hunter_skills(self, hero: Hunter, screen):
         for c_skill in hero.skills.values():
@@ -163,32 +170,37 @@ class HeroController:
 
         skill = hero.skills.get(self.skill_to_use, False)
 
-        if skill:
+        if not skill:
+            return
 
-            if skill.is_animating or not hero.check_enough_mana_to_cast(skill.skill_cost) or skill.is_on_cooldown:
-                self.skill_to_use = None
-                hero.is_attacking = False
+        if skill.is_animating:
+            self.skill_to_use = None
+            hero.is_attacking = False
+            return
 
-            if not skill.is_on_cooldown and hero.check_enough_mana_to_cast(skill.skill_cost):
+        if not hero.check_enough_mana_to_cast(skill.skill_cost) or skill.is_on_cooldown:
+            self.skill_to_use = None
+            hero.is_attacking = False
+            return
 
-                if type(skill).__name__ == "HealAndMana":
-                    hero.increase_health_bar_width(skill.heal())
-                    hero.increase_mana_bar_width(skill.heal())
+        if type(skill).__name__ == "HealAndMana":
+            hero.increase_health_bar_width(skill.heal())
+            hero.increase_mana_bar_width(skill.heal())
 
-                    hero.receive_mana(skill.heal())
-                    hero.receive_healing(skill.heal())
+            hero.receive_mana(skill.heal())
+            hero.receive_healing(skill.heal())
 
-                if not skill.is_animating and type(skill).__name__ != "HealAndMana":
-                    skill.right_direction = hero.is_right_direction
+        if type(skill).__name__ != "HealAndMana":
+            skill.right_direction = hero.is_right_direction
 
-                    skill.set_skill_pos(hero.x)
-                    skill.cast_skill()
-                    hero.is_attacking = True
+            skill.set_skill_pos(hero.x)
+            skill.cast_skill()
+            hero.is_attacking = True
 
-                    hero.decrease_mana_bar_width(skill.skill_cost)
-                    hero.consume_mana_on_skill(skill.skill_cost)
+            hero.decrease_mana_bar_width(skill.skill_cost)
+            hero.consume_mana_on_skill(skill.skill_cost)
 
-                self.skill_to_use = None
+        self.skill_to_use = None
 
     @staticmethod
     def take_damage(hero: (Warrior, Hunter, Mage), monster: object) -> None:
