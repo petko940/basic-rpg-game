@@ -37,6 +37,8 @@ hero_controller.create_hero("Warrior", 20, 200)
 hero_controller.create_hero("Mage", 20, 200)
 hero_controller.create_hero("Hunter", 20, 200)
 
+hero_controller.gather_caster_skills()
+
 warrior = hero_controller.get_hero_object("Warrior")
 mage = hero_controller.get_hero_object("Mage")
 hunter = hero_controller.get_hero_object("Hunter")
