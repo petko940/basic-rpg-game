@@ -104,6 +104,7 @@ class HeroController:
 
                     damage_boost_skill = hero.skills[3]
                     if damage_boost_skill.check_if_consumed():
+                        damage_boost_skill.unset_boost_damage()
                         skill.drop_damage(damage_boost_skill.damage_boost)
 
                     hero.is_attacking = True
@@ -111,8 +112,11 @@ class HeroController:
                 if type(skill).__name__ == "DamageBoost":
                     skill.cast_skill()
 
-                    axe_attack_skill = hero.skills[1]
-                    axe_attack_skill.gain_damage(skill.damage_boost)
+                    if not skill.has_gained_damage:
+                        skill.set_boost_damage()
+
+                        axe_attack_skill = hero.skills[1]
+                        axe_attack_skill.gain_damage(skill.damage_boost)
 
     def use_mage_skills(self, hero: Mage, screen):
         for c_skill in hero.skills.values():
