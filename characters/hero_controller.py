@@ -35,6 +35,7 @@ class HeroController:
     def __init__(self):
         self.heroes: Dict[str: object] = {}
         self.skill_to_use = None
+        self.caster_skills = {}
 
     @property
     def valid_heroes(self):
@@ -44,6 +45,18 @@ class HeroController:
     def get_load_funcs(self):
         return {"Warrior": self.load_warrior_images, "Mage": self.load_mage_images, "Hunter": self.load_hunter_images}
 
+    def gather_caster_skills(self):
+        for hero_name, hero_obj in self.heroes.items():
+            if hero_name == "Warrior":
+                continue
+
+            for skill in hero_obj.skills.values():
+                if type(skill).__name__.startswith("Heal"):
+                    self.caster_skills[type(skill).__name__] = self.execute_heal_and_mana_skill
+                    continue
+
+                self.caster_skills[type(skill).__name__] = self.execute_mage_hunter_non_healing_skills
+
     def create_hero(self, hero_type: str, x_pos: int, y_pos: int):
         if hero_type in self.valid_heroes:
             loaded_images = self.get_load_funcs[hero_type.capitalize()]()
@@ -51,8 +64,6 @@ class HeroController:
             new_hero = self.valid_heroes[hero_type.capitalize()](x_pos, y_pos, *loaded_images)
 
             self.heroes[hero_type.capitalize()] = self.heroes.get(hero_type.capitalize(), new_hero)
-
-            print(f"hero of type {type(new_hero)} has been added")
 
     def get_hero_object(self, hero_name: str):
         """
@@ -71,6 +82,25 @@ class HeroController:
         for skill in hero.skills.values():
             skill.lower_icon_height(amount)  # it is very important that this is executed first
             skill.lower_cooldown(amount)
+
+    @staticmethod
+    def execute_heal_and_mana_skill(hero: (Mage, Hunter), skill):
+        hero.increase_health_bar_width(skill.heal())
+        hero.increase_mana_bar_width(skill.heal())
+
+        hero.receive_mana(skill.heal())
+        hero.receive_healing(skill.heal())
+
+    @staticmethod
+    def execute_mage_hunter_non_healing_skills(hero: (Mage, Hunter), skill):
+        skill.right_direction = hero.is_right_direction
+
+        skill.set_skill_pos(hero.x)
+        skill.cast_skill()
+        hero.is_attacking = True
+
+        hero.decrease_mana_bar_width(skill.skill_cost)
+        hero.consume_mana_on_skill(skill.skill_cost)
 
     def use_skill(self, hero: (Warrior, Hunter, Mage), screen):
         if type(hero).__name__ in "Mage":
@@ -137,22 +167,7 @@ class HeroController:
             hero.is_attacking = False
             return
 
-        if type(skill).__name__ == "HealAndMana":
-            hero.increase_health_bar_width(skill.heal())
-            hero.increase_mana_bar_width(skill.heal())
-
-            hero.receive_mana(skill.heal())
-            hero.receive_healing(skill.heal())
-
-        if type(skill).__name__ != "HealAndMana":
-            skill.right_direction = hero.is_right_direction
-
-            skill.set_skill_pos(hero.x)
-            skill.cast_skill()
-            hero.is_attacking = True
-
-            hero.decrease_mana_bar_width(skill.skill_cost)
-            hero.consume_mana_on_skill(skill.skill_cost)
+        self.caster_skills[type(skill).__name__](hero, skill)
 
         self.skill_to_use = None
 
@@ -173,22 +188,7 @@ class HeroController:
             hero.is_attacking = False
             return
 
-        if type(skill).__name__ == "HealAndMana":
-            hero.increase_health_bar_width(skill.heal())
-            hero.increase_mana_bar_width(skill.heal())
-
-            hero.receive_mana(skill.heal())
-            hero.receive_healing(skill.heal())
-
-        if type(skill).__name__ != "HealAndMana":
-            skill.right_direction = hero.is_right_direction
-
-            skill.set_skill_pos(hero.x)
-            skill.cast_skill()
-            hero.is_attacking = True
-
-            hero.decrease_mana_bar_width(skill.skill_cost)
-            hero.consume_mana_on_skill(skill.skill_cost)
+        self.caster_skills[type(skill).__name__](hero, skill)
 
         self.skill_to_use = None
 
