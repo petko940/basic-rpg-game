@@ -105,7 +105,8 @@ class BlueBall(Skill):
     def get_description(self):
         return ["Blue Ball",
                 f"Cost: {self.skill_cost} mana",
-                f"Damage: {self.damage}"
+                f"Damage: {self.damage}",
+                f"Cooldown: {self.LOCKED_COOLDOWN} secs"
                 ]
 
 
@@ -148,7 +149,8 @@ class HealAndMana(Skill):
         return ["Heal and Mana",
                 f"Cost: {self.skill_cost} mana",
                 f"Heal power: {self.healing}",
-                f"Mana gain: {self.healing}"
+                f"Mana gain: {self.healing}",
+                f"Cooldown: {self.LOCKED_COOLDOWN} secs"
                 ]
 
 
@@ -226,7 +228,8 @@ class Lightning(Skill):
     def get_description(self):
         return ["Lightning",
                 f"Cost: {self.skill_cost} mana",
-                f"Damage: {self.damage}"
+                f"Damage: {self.damage}",
+                f"Cooldown: {self.LOCKED_COOLDOWN} secs"
                 ]
 
 
@@ -340,7 +343,8 @@ class MeteorStrike(Skill):
     def get_description(self):
         return ["Meteor Strike",
                 f"Cost: {self.skill_cost} mana",
-                f"Damage: {self.damage}"
+                f"Damage: {self.damage}",
+                f"Cooldown: {self.LOCKED_COOLDOWN} secs"
                 ]
 
 
@@ -388,7 +392,9 @@ class AxeBasicAttack(Skill):
     def get_description(self):
         return ["Axe Attack",
                 f"Cost: {self.skill_cost}",
-                f"Damage: {self.damage}"]
+                f"Damage: {self.damage}",
+                f"Cooldown: {self.LOCKED_COOLDOWN} secs"
+                ]
 
 
 class Heal(Skill):
@@ -429,7 +435,8 @@ class Heal(Skill):
     def get_description(self):
         return ["Heal",
                 f"Cost: {self.skill_cost}",
-                f"Heal power: {self.healing}"
+                f"Heal power: {self.healing}",
+                f"Cooldown: {self.LOCKED_COOLDOWN} secs"
                 ]
 
 
@@ -488,6 +495,7 @@ class DamageBoost(Skill):
         return ["Damage Boost",
                 f"Cost: {self.skill_cost}",
                 f"Damage boost: {self.damage_boost}",
+                f"Cooldown: {self.LOCKED_COOLDOWN} secs"
                 ]
 
 
@@ -528,7 +536,8 @@ class PassiveCrit(Skill):
 
     def get_description(self):
         return ["Passive",
-                f"Chance to crit: {self.crit_chance}%"
+                f"Chance to crit: {self.crit_chance}%",
+                f"Cooldown: {self.LOCKED_COOLDOWN} secs"
                 ]
 
 
@@ -612,7 +621,8 @@ class ArrowShot(Skill):
     def get_description(self):
         return [f"Arrow Shot",
                 f"Cost: {self.skill_cost} mana",
-                f"Damage: {self.damage}"
+                f"Damage: {self.damage}",
+                f"Cooldown: {self.LOCKED_COOLDOWN} secs"
                 ]
 
     def level_up(self):
@@ -704,7 +714,8 @@ class RapidShot(Skill):
     def get_description(self):
         return ["Rapid Shot",
                 f"Cost: {self.skill_cost} mana",
-                f"Damage: {self.damage}"
+                f"Damage: {self.damage}",
+                f"Cooldown: {self.LOCKED_COOLDOWN} secs"
                 ]
 
 
@@ -815,5 +826,6 @@ class ArrowRain(Skill):
     def get_description(self):
         return ["Arrow Rain",
                 f"Cost: {self.skill_cost} mana",
-                f"Damage per hit: {self.damage}"
+                f"Damage per hit: {self.damage}",
+                f"Cooldown: {self.LOCKED_COOLDOWN} secs"
                 ]
