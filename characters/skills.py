@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from pygame import transform, image
+from random import randint
 
 
 class Skill(ABC):
@@ -501,6 +502,7 @@ class DamageBoost(Skill):
 
 class PassiveCrit(Skill):
     PASSIVE_CRIT_INCREASE_PER_LEVEL = 5
+    CRITICAL_DAMAGE_MULTIPLIER = 1.5
     MAX_CRIT_CHANCE = 100
 
     LEVEL_REQUIRED = 4
@@ -513,9 +515,10 @@ class PassiveCrit(Skill):
         self.skill_icon = image.load('characters/war/skill_icons/passive_crit.png')
         self.rect_icon = self.skill_icon.get_rect()
         self.cooldown_rect = self.skill_icon.get_rect()
-        self.crit_chance = 5  # must work with random method like this - if self.crit_chance >= random.randint(0, 100)
+        self.crit_chance = 50
 
         self.cooldown_left = self.LOCKED_COOLDOWN
+        self.is_critical = False
 
     def lower_icon_height(self, extract_value: int or float):
         if self.is_on_cooldown:
@@ -529,6 +532,21 @@ class PassiveCrit(Skill):
                 self.is_on_cooldown = False
                 self.cooldown_rect.height = self.HEIGHT_OF_SKILL_ICON
                 self.cooldown_left = self.LOCKED_COOLDOWN
+
+    def check_for_critical_strike(self):
+        if self.crit_chance >= randint(0, self.MAX_CRIT_CHANCE):
+            self.switch_is_critical_state()
+            return True
+        return False
+
+    def switch_is_critical_state(self):
+        if self.is_critical:
+            self.is_critical = False
+        else:
+            self.is_critical = True
+
+    def get_critical_multiplier(self):
+        return self.CRITICAL_DAMAGE_MULTIPLIER
 
     def level_up(self):
         if self.crit_chance + self.PASSIVE_CRIT_INCREASE_PER_LEVEL <= self.MAX_CRIT_CHANCE:
