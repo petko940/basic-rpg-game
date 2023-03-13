@@ -16,17 +16,21 @@ class MapController:
             new_map = self.__valid_maps[map_name](map_name, images)
             self.maps.append(new_map)
 
-            print(f"map {map_name} with length of {len(images)} images was added")
-
     def get_current_map(self):
         return self.maps[self.current_map]
 
     def show_current_map(self):
         return self.maps[self.current_map].get_current_image()
 
-    def check_for_traverse(self, hero: object):
+    def check_if_on_last_map(self):
+        return self.maps[self.current_map].get_image_index() == len(self.maps[self.current_map].images) - 1
+
+    def first_map_go_outside_left_side(self):
+        return self.maps[self.current_map].get_image_index() == 0
+
+    def check_for_traverse(self, hero: object, monster):
         if hero.x >= self.get_current_map().MAP_WIDTH - 150:
-            if self.maps[self.current_map].get_image_index() == len(self.maps[self.current_map].images) - 1:
+            if monster.monsters_on_screen or self.check_if_on_last_map():
                 hero.x = self.get_current_map().MAP_WIDTH - 150
 
             else:
@@ -34,7 +38,7 @@ class MapController:
                 hero.x = -30
 
         elif hero.x <= -100:
-            if self.maps[self.current_map].get_image_index() == 0:
+            if monster.monsters_on_screen or self.first_map_go_outside_left_side():
                 hero.x = -100
 
             else:
