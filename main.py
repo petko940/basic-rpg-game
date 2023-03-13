@@ -4,6 +4,8 @@ from characters.hero_controller import HeroController
 from menu_class import Menu
 from class_maps.map_controller import MapController
 from default_properties import load_data, save_on_close
+from monsters.demon import Demon
+from monsters.monster_controller import MonsterController
 
 # timer 83 , 151
 from timer import timer
@@ -61,26 +63,10 @@ background_rect = map_controller.show_current_map().get_rect()
 # loading_game_screen(screen, map_controller, current_hero, background_rect)  # for faster loading screen
 
 
-################################################################
-"""
-testing to see if the methods Tamer wrote are working
-you can keep this class for now to test health bars in the future
-"""
+demon = Demon(1000, 210)
 
+monster_controller = MonsterController(demon)
 
-class Monster:
-
-    def __init__(self):
-        self.damage = 5
-
-
-monster = Monster()
-
-# print(current_hero.health_bar)
-# hero_controller.take_damage(current_hero, monster)
-# print(current_hero.health_bar)
-# print(hero_controller.check_if_hero_died(current_hero))
-################################################################
 
 # start_time = time.time()
 
@@ -101,9 +87,6 @@ while game_running:
 
             if current_hero.is_attacking:
                 continue
-
-            elif event.key == pygame.K_5:
-                hero_controller.take_damage(current_hero, monster)
 
             elif event.key == pygame.K_1:
                 hero_controller.skill_to_use = 1
