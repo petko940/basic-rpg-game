@@ -63,7 +63,7 @@ background_rect = map_controller.show_current_map().get_rect()
 # loading_game_screen(screen, map_controller, current_hero, background_rect)  # for faster loading screen
 
 
-demon = Demon(1000, 210)
+demon = Demon(100, 1450, 210)   # [health, x_pos, y_pos]
 
 monster_controller = MonsterController(demon)
 
@@ -115,11 +115,7 @@ while game_running:
     hero_controller.display_hero_frame_and_level(screen, current_hero)
 
     screen.blit(action_bar_image, (action_bar_x_pos, action_bar_y_pos))
-
-    # must fix isinstance, when we add all the skill icons
     hero_controller.display_skill_icons(screen, current_hero, action_bar_x_pos, action_bar_y_pos)
-
-    # shows skill description if you hover on a skill icon
     hero_controller.show_skill_description(screen, current_hero, pygame.mouse.get_pos())
 
     if current_hero.is_attacking:
@@ -129,23 +125,32 @@ while game_running:
         if not current_hero.is_right_direction:
             current_hero.change_direction()
 
+        if not monster_controller.first_spawn:
+            monster_controller.spawn_monster()
+
         current_hero.walk()
         screen.blit(current_hero.walk_images(), current_hero.get_hero_pos())
 
-        map_controller.check_for_traverse(current_hero)
+        map_controller.check_for_traverse(current_hero, monster_controller.current_monster)
 
     elif pygame.key.get_pressed()[pygame.K_a]:
         if current_hero.is_right_direction:
             current_hero.change_direction()
 
+        if not monster_controller.first_spawn:
+            monster_controller.spawn_monster()
+
         current_hero.walk()
         screen.blit(current_hero.walk_images(), current_hero.get_hero_pos())
 
-        map_controller.check_for_traverse(current_hero)
+        map_controller.check_for_traverse(current_hero, monster_controller.current_monster)
 
     else:
         if not current_hero.is_attacking:
             screen.blit(current_hero.idle_animation(), current_hero.get_hero_pos())
+
+    if monster_controller.first_spawn:
+        monster_controller.chase_player(screen, current_hero)
 
     # calling the skills animations on button press
     hero_controller.use_skill(current_hero, screen)
