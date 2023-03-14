@@ -47,7 +47,7 @@ hunter = hero_controller.get_hero_object("Hunter")
 
 collected_game_info = load_data()
 
-map_controller.current_map = collected_game_info["Map"]['current_map']
+map_controller.current_map_index = collected_game_info["Map"]['current_map']
 warrior.level = collected_game_info["Warrior"]['level']
 mage.level = collected_game_info["Mage"]['level']
 hunter.level = collected_game_info["Hunter"]['level']
@@ -168,7 +168,7 @@ while game_running:
 pygame.quit()
 
 progress_of_game = {
-    "Map": {'current_map': map_controller.current_map},
+    "Map": {'current_map': map_controller.current_map_index},
     "Hunter": {'level': hunter.level, 'health': hunter.health, 'mana': hunter.mana},
     "Mage": {'level': mage.level, 'health': mage.health, 'mana': mage.mana},
     "Warrior": {'level': warrior.level, 'health': warrior.health},
