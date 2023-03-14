@@ -150,7 +150,14 @@ while game_running:
             screen.blit(current_hero.idle_animation(), current_hero.get_hero_pos())
 
     if monster_controller.first_spawn:
-        monster_controller.chase_player(screen, current_hero)
+        if not monster_controller.target_reached:
+            monster_controller.chase_player(screen, current_hero)
+
+        elif monster_controller.target_reached:  # and not attacking   -> should do the attack
+            ...
+
+        else:                                    # if target reached and attacking is on cooldown -> should stay idle
+            ...
 
     # calling the skills animations on button press
     hero_controller.use_skill(current_hero, screen)
