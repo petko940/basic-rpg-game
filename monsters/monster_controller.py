@@ -13,6 +13,10 @@ class MonsterController:
     def current_monster(self):
         return self.monsters[0]
 
+    @property
+    def target_reached(self):
+        return self.current_monster.target_reached
+
     def spawn_monster(self):
         monster = self.current_monster
 
