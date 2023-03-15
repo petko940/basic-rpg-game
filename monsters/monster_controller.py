@@ -29,8 +29,19 @@ class MonsterController:
     def chase_player(self, screen, player):
         monster = self.current_monster
 
-        if monster.is_dead:
+        if self.target_reached or monster.is_dead or monster.is_attacking:
             return
 
         image = monster.walk(player.x)
         screen.blit(image, monster.monster_position())
+
+    def stay_idle(self, screen):
+        monster = self.current_monster
+
+        if self.target_reached and not monster.is_attacking and not monster.is_dead:
+            image = monster.idle()
+            screen.blit(image, monster.monster_position())
+
+    def actions(self, screen, player):
+        self.chase_player(screen, player)
+        self.stay_idle(screen)
