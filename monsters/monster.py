@@ -18,6 +18,7 @@ class Monster(ABC):
 
         self.left_direction = True
         self.target_reached = False
+        self.is_attacking = False
 
     @abstractmethod
     def idle(self):
@@ -33,6 +34,10 @@ class Monster(ABC):
 
     @abstractmethod
     def attack(self):
+        pass
+
+    @abstractmethod
+    def check_target_reached(self, hero_x_pos: int):
         pass
 
     @property
