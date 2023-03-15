@@ -4,7 +4,7 @@ from pygame import image, transform
 
 class Demon(Monster):
     IMAGE_LOOP_SPEED = 0.12
-    MOVE_SPEED = 1.5
+    MOVE_SPEED = 2
 
     def __init__(self, health: int, x_pos: int, y_pos: int):
         super().__init__(health, x_pos, y_pos)
@@ -24,6 +24,15 @@ class Demon(Monster):
     def attack(self):
         pass
 
+    def check_target_reached(self, hero_x_pos: int):
+        difference_left = abs((self.x_pos - 120) - hero_x_pos)
+        difference_right = abs((self.x_pos + 120) - hero_x_pos)
+
+        if difference_left < 5 or difference_right < 5:
+            self.target_reached = True
+        else:
+            self.target_reached = False
+
     def walk(self, hero_x_pos: int):
         """
         the number 120 are the empty pixels between the hero and the end of the image
@@ -32,10 +41,7 @@ class Demon(Monster):
 
         image_index = int(self.walk_and_idle_index) % len(self.walk_left)
 
-        if self.x_pos - 120 == hero_x_pos:
-            self.target_reached = True
-        else:
-            self.target_reached = False
+        self.check_target_reached(hero_x_pos)
 
         if not self.target_reached:
             if self.x_pos - 120 > hero_x_pos:
@@ -46,17 +52,19 @@ class Demon(Monster):
                 self.x_pos += Demon.MOVE_SPEED
                 self.left_direction = False
 
-        if not self.left_direction:
-            return self.walk_right[image_index]
-        return self.walk_left[image_index]
+        return self.get_image(image_index, self.walk_left, self.walk_right)
 
     def idle(self):
         self.walk_and_idle_index += Demon.IMAGE_LOOP_SPEED
 
         image_index = int(self.walk_and_idle_index) % len(self.idle_left)
-        if self.left_direction:
-            return self.idle_left[image_index]
-        return self.idle_right[image_index]
+
+        return self.get_image(image_index, self.idle_left, self.idle_right)
 
     def death(self):
         pass
+
+    def get_image(self, index: int, images_left: list, images_right: list):
+        if self.left_direction:
+            return images_left[index]
+        return images_right[index]
