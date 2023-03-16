@@ -151,8 +151,7 @@ while game_running:
 
     if monster_controller.first_spawn:
         monster_controller.actions(screen, current_hero)
-
-        monster_controller.current_monster.check_target_reached(current_hero.x)
+        monster_controller.display_health_bar(screen)
 
     # calling the skills animations on button press
     hero_controller.use_skill(current_hero, screen)
