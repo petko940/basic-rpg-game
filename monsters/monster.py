@@ -1,10 +1,17 @@
 from abc import ABC, abstractmethod
+from pygame import Rect
 
 
 class Monster(ABC):
     MONSTERS_ON_SCREEN_LIMIT = 1
 
     HEALTH_GAIN_AFTER_DEATH = 50
+
+    HEALTH_BAR_LENGTH = 125
+    HEALTH_BAR_HEIGHT = 20
+
+    HEALTH_BAR_COLOR = (178, 247, 125)
+    HEALTH_BAR_PAD_COLOR = (105, 105, 105)
 
     def __init__(self, health: int, x_pos: int, y_pos: int):
         self.monsters_on_screen = 0
@@ -17,8 +24,14 @@ class Monster(ABC):
         self.walk_and_idle_index = 0
 
         self.left_direction = True
-        self.target_reached = False
         self.is_attacking = False
+
+        self.health_bar = Rect(self.x_pos, self.y_pos, self.HEALTH_BAR_LENGTH, self.HEALTH_BAR_HEIGHT)
+        self.background_health_bar = Rect(self.x_pos, self.y_pos, self.HEALTH_BAR_LENGTH, self.HEALTH_BAR_HEIGHT)
+
+    @abstractmethod
+    def rect_hit_box(self):
+        pass
 
     @abstractmethod
     def idle(self):
@@ -65,3 +78,12 @@ class Monster(ABC):
         self.max_health += Monster.HEALTH_GAIN_AFTER_DEATH
         self.health = self.max_health
         self.left_direction = True
+
+    def lower_health_bar(self, damage_received: int or float):
+        self.health_bar.width = self.HEALTH_BAR_LENGTH * ((self.health - damage_received) / self.max_health)
+
+    def take_damage(self, damage_received: int or float):
+        self.health -= damage_received
+
+        if self.health <= 0:
+            self.health = 0
