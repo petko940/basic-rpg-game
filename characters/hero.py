@@ -74,6 +74,14 @@ class Hero:
         self.health += amount
         self.check_health_limit()
 
+    def take_damage(self, damage: int):
+        self.health_bar.width = self.lower_bar_width(self.health, self.max_health, damage)
+
+        if self.health - damage > 0:
+            self.health -= damage
+        else:
+            self.health = 0
+
     def idle_animation(self):
         self.idle_index += self.__IMAGE_LOOP_SPEED
         if self.is_right_direction:
