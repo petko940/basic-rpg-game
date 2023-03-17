@@ -333,7 +333,7 @@ class MeteorStrike(Skill):
 
     def set_skill_pos(self, new_x_pos: int):
         if self.has_target:
-            self.x_pos = new_x_pos
+            self.x_pos = new_x_pos - 400
         else:
             self.x_pos = 600
 
@@ -515,7 +515,7 @@ class PassiveCrit(Skill):
         self.skill_icon = image.load('characters/war/skill_icons/passive_crit.png')
         self.rect_icon = self.skill_icon.get_rect()
         self.cooldown_rect = self.skill_icon.get_rect()
-        self.crit_chance = 50
+        self.crit_chance = 5
 
         self.cooldown_left = self.LOCKED_COOLDOWN
         self.is_critical = False
