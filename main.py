@@ -63,7 +63,7 @@ background_rect = map_controller.show_current_map().get_rect()
 # loading_game_screen(screen, map_controller, current_hero, background_rect)  # for faster loading screen
 
 
-demon = Demon(100, 1450, 210)   # [health, x_pos, y_pos]
+demon = Demon(100, 15, 1400, 210)   # [health, damage, x_pos, y_pos]
 
 monster_controller = MonsterController(demon)
 
@@ -107,6 +107,7 @@ while game_running:
 
         if event.type == SKILL_COOLDOWN:
             hero_controller.lower_skill_cooldown(current_hero, 0.100)
+            monster_controller.lower_attack_cooldown(0.100)
 
     screen.blit(map_controller.show_current_map(), (0, 0))
 
@@ -150,6 +151,8 @@ while game_running:
             screen.blit(current_hero.idle_animation(), current_hero.get_hero_pos())
 
     if monster_controller.first_spawn:
+        hero_controller.add_enemy(monster_controller.current_monster)
+
         monster_controller.actions(screen, current_hero)
         monster_controller.display_health_bar(screen)
 
