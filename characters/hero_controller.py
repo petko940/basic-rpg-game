@@ -36,6 +36,7 @@ class HeroController:
         self.heroes: Dict[str: object] = {}
         self.skill_to_use = None
         self.caster_skills = {}
+        self.enemy = None
 
     @property
     def valid_heroes(self):
@@ -65,6 +66,10 @@ class HeroController:
 
             self.heroes[hero_type.capitalize()] = self.heroes.get(hero_type.capitalize(), new_hero)
 
+    def add_enemy(self, monster):
+        if self.enemy is None:
+            self.enemy = monster
+
     def get_hero_object(self, hero_name: str):
         """
         returns hero as object and if not found, returns "Not Found"
@@ -91,11 +96,22 @@ class HeroController:
         hero.receive_mana(skill.heal())
         hero.receive_healing(skill.heal())
 
-    @staticmethod
-    def execute_mage_hunter_non_healing_skills(hero: (Mage, Hunter), skill):
+    def execute_mage_hunter_non_healing_skills(self, hero: (Mage, Hunter), skill):
+        flying_skills = ("BlueBall", "ArrowShot", "RapidShot")
+
         skill.right_direction = hero.is_right_direction
 
-        skill.set_skill_pos(hero.x)
+        if type(skill).__name__ in flying_skills:
+            skill.set_skill_pos(hero.x)
+
+        if type(skill).__name__ not in flying_skills:
+            if self.enemy and not self.enemy.is_dead:
+                skill.has_target = True
+                skill.set_skill_pos(self.enemy.rect_hit_box.x)
+
+            elif not self.enemy or self.enemy.is_dead:
+                skill.set_skill_pos(hero.x)
+
         skill.cast_skill()
         hero.is_attacking = True
 
@@ -135,8 +151,9 @@ class HeroController:
             if passive.check_for_critical_strike():
                 skill.damage *= passive.get_critical_multiplier()
 
-            # TO DO
-            # MUST CHECK FOR COLLISION HERE
+            if self.enemy.check_target_reached(hero.x):
+                self.enemy.lower_health_bar(skill.damage)
+                self.enemy.take_damage(skill.damage)
 
             if passive.is_critical:
                 skill.damage = int(skill.damage / passive.get_critical_multiplier())
@@ -161,8 +178,36 @@ class HeroController:
         self.skill_to_use = None
 
     def use_mage_skills(self, hero: Mage, screen):
+        def check_blue_ball_collision():
+            if type(c_skill).__name__ == "BlueBall" and self.enemy:
+                skill_rect = c_skill.images_right[0].get_rect()
+                skill_rect.x, skill_rect.y = c_skill.x_pos, c_skill.y_pos
+
+                if skill_rect.colliderect(self.enemy.rect_hit_box):
+                    c_skill.reset_skill_position()
+                    return True
+
+        def check_meteor_strike_floor():
+            if type(c_skill).__name__ == "MeteorStrike" and self.enemy:
+                if c_skill.img_index == 0 and c_skill.check_if_explosion_reached():
+                    return True
+
+        def check_end_of_lightning():
+            if type(c_skill).__name__ == "Lightning" and self.enemy:
+                if 0 <= c_skill.img_index < c_skill.IMAGE_LOOP_SPEED:
+                    return True
+
         for c_skill in hero.skills.values():
             if c_skill.is_animating and type(c_skill).__name__ != "HealAndMana":
+                if check_blue_ball_collision():
+                    self.enemy.lower_health_bar(c_skill.damage)
+                    self.enemy.take_damage(c_skill.damage)
+                    continue
+
+                if check_meteor_strike_floor() or check_end_of_lightning():
+                    self.enemy.lower_health_bar(c_skill.damage)
+                    self.enemy.take_damage(c_skill.damage)
+
                 screen.blit(c_skill.show_image(), (c_skill.x_pos, c_skill.y_pos))
 
                 c_skill.animate()
@@ -182,8 +227,36 @@ class HeroController:
         self.skill_to_use = None
 
     def use_hunter_skills(self, hero: Hunter, screen):
+        def check_arrow_shot_collision():
+            if type(c_skill).__name__ in ("ArrowShot", "RapidShot") and self.enemy:
+                skill_rect = c_skill.images_right[0].get_rect()
+                skill_rect.x, skill_rect.y = c_skill.x_pos, c_skill.y_pos
+
+                if skill_rect.colliderect(self.enemy.rect_hit_box):
+                    c_skill.reset_skill_position()
+                    return True
+
+        def check_arrow_rain_drop():
+            if type(c_skill).__name__ == "ArrowRain" and self.enemy:
+                if c_skill.check_if_arrows_dropped():
+                    if not self.enemy.is_dead:
+                        c_skill.set_skill_pos(self.enemy.rect_hit_box.x)
+
+                    else:
+                        c_skill.set_skill_pos(hero.x)
+                    return True
+
         for c_skill in hero.skills.values():
             if c_skill.is_animating and type(c_skill).__name__ != "HealAndMana":
+                if check_arrow_shot_collision():
+                    self.enemy.lower_health_bar(c_skill.damage)
+                    self.enemy.take_damage(c_skill.damage)
+                    continue
+
+                if check_arrow_rain_drop():
+                    self.enemy.lower_health_bar(c_skill.damage)
+                    self.enemy.take_damage(c_skill.damage)
+
                 screen.blit(c_skill.show_image(), (c_skill.x_pos, c_skill.y_pos))
 
                 c_skill.animate()
@@ -201,20 +274,6 @@ class HeroController:
         self.caster_skills[type(skill).__name__](hero, skill)
 
         self.skill_to_use = None
-
-    @staticmethod
-    def take_damage(hero: (Warrior, Hunter, Mage), monster: object) -> None:
-        # this method is not working since there are still NO monster objects
-        """
-        Gets the hero health_bar and goes into the method (lower bar width) which is inside the Hero class.
-        lower_bar_width returns the new health_bar width and take_damage method applies the changes
-        THIS METHOD must be used hand by hand with check_if_hero_died
-        """
-        hero.health_bar.width = hero.lower_bar_width(hero.health, hero.max_health, monster.damage)
-        if hero.health - monster.damage > 0:
-            hero.health -= monster.damage
-        else:
-            hero.health = 0
 
     def display_skill_icons(self, screen, hero: (Warrior, Hunter, Mage), x_pos: int, y_pos: int):
         """
