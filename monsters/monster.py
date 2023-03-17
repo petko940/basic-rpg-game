@@ -3,6 +3,8 @@ from pygame import Rect
 
 
 class Monster(ABC):
+    X_POS_SPAWN_AFTER_DEATH = 1400
+
     MONSTERS_ON_SCREEN_LIMIT = 1
 
     HEALTH_GAIN_AFTER_DEATH = 50
@@ -13,15 +15,18 @@ class Monster(ABC):
     HEALTH_BAR_COLOR = (178, 247, 125)
     HEALTH_BAR_PAD_COLOR = (105, 105, 105)
 
-    def __init__(self, health: int, x_pos: int, y_pos: int):
+    def __init__(self, health: int, damage: int, x_pos: int, y_pos: int):
         self.monsters_on_screen = 0
 
         self.x_pos = x_pos
         self.y_pos = y_pos
         self.health = health
         self.max_health = health
+        self.damage = damage
+        self.attack_cooldown = 0
 
         self.walk_and_idle_index = 0
+        self.non_looped_index = 0
 
         self.left_direction = True
         self.is_attacking = False
@@ -50,12 +55,21 @@ class Monster(ABC):
         pass
 
     @abstractmethod
+    def increase_index_attack_animation(self):
+        pass
+
+    @abstractmethod
     def check_target_reached(self, hero_x_pos: int):
         pass
 
     @property
     def is_dead(self):
         return self.health <= 0
+
+    @staticmethod
+    def check_valid_index(index: float, collection: list):
+        if 0 <= index < len(collection):
+            return True
 
     def monster_position(self):
         return self.x_pos, self.y_pos
@@ -74,10 +88,17 @@ class Monster(ABC):
         if self.can_spawn_monster():
             self.monsters_on_screen += 1
 
+    def set_default_values_after_death(self):
+        self.left_direction = True
+        self.background_health_bar.x = self.x_pos
+        self.health_bar.x = self.x_pos
+        self.health_bar.width = self.HEALTH_BAR_LENGTH
+        self.monsters_on_screen -= 1
+        self.x_pos = Monster.X_POS_SPAWN_AFTER_DEATH
+
     def power_up_after_death(self):
         self.max_health += Monster.HEALTH_GAIN_AFTER_DEATH
         self.health = self.max_health
-        self.left_direction = True
 
     def lower_health_bar(self, damage_received: int or float):
         self.health_bar.width = self.HEALTH_BAR_LENGTH * ((self.health - damage_received) / self.max_health)
