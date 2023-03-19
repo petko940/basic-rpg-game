@@ -28,6 +28,8 @@ class HeroController:
 
     BLACK_COLOR = (0, 0, 0)
 
+    PURPLE_COLOR = (175, 143, 233)
+
     LOCKED_SKILL_COLOR_AND_TRANSPARENCY = (150, 150, 150, 150)   # last value is transparency
 
     COOLDOWN_SECONDS_COLOR = (220, 0, 0)
@@ -136,6 +138,9 @@ class HeroController:
         if not skill:
             return
 
+        if hero.level < skill.LEVEL_REQUIRED:
+            return
+
         if hero.is_attacking or skill.is_on_cooldown:
             self.skill_to_use = None
             hero.is_attacking = False
@@ -151,7 +156,7 @@ class HeroController:
             if passive.check_for_critical_strike():
                 skill.damage *= passive.get_critical_multiplier()
 
-            if self.enemy.check_target_reached(hero.x):
+            if self.enemy and self.enemy.check_target_reached(hero.x):
                 self.enemy.lower_health_bar(skill.damage)
                 self.enemy.take_damage(skill.damage)
 
@@ -217,6 +222,9 @@ class HeroController:
         if not skill:
             return
 
+        if hero.level < skill.LEVEL_REQUIRED:
+            return
+
         if skill.is_animating or not hero.check_enough_mana_to_cast(skill.skill_cost) or skill.is_on_cooldown:
             self.skill_to_use = None
             hero.is_attacking = False
@@ -266,6 +274,9 @@ class HeroController:
         if not skill:
             return
 
+        if hero.level < skill.LEVEL_REQUIRED:
+            return
+
         if skill.is_animating or not hero.check_enough_mana_to_cast(skill.skill_cost) or skill.is_on_cooldown:
             self.skill_to_use = None
             hero.is_attacking = False
@@ -312,8 +323,8 @@ class HeroController:
                 skill.rect_icon.x, skill.rect_icon.y = x_pos + x_y_offset, y_pos + x_y_offset
                 skill.cooldown_rect.x, skill.cooldown_rect.y = x_pos + x_y_offset, y_pos + x_y_offset
 
-            # if hero.level < skill.LEVEL_REQUIRED:
-            #     draw_rect_alpha(self.LOCKED_SKILL_COLOR_AND_TRANSPARENCY, skill.rect_icon)
+            if hero.level < skill.LEVEL_REQUIRED:
+                draw_rect_alpha(self.LOCKED_SKILL_COLOR_AND_TRANSPARENCY, skill.rect_icon)
 
             if type(skill).__name__ == "DamageBoost" and skill.is_clicked:
                 draw_rect_alpha(self.LOCKED_SKILL_COLOR_AND_TRANSPARENCY, skill.cooldown_rect)
@@ -360,6 +371,15 @@ class HeroController:
             pygame.draw.rect(screen, self.BACKGROUND_BAR_COLOR, hero.background_rect_mana_bar)
             # drawing the actual mana bar above the base mana bar
             pygame.draw.rect(screen, self.MANA_BAR_COLOR, hero.mana_bar)
+
+    def display_experience_bar(self, screen, hero: (Warrior, Hunter, Mage)):
+        pygame.draw.rect(screen, self.BACKGROUND_BAR_COLOR, hero.experience_bar_pad)
+        pygame.draw.rect(screen, self.PURPLE_COLOR, hero.experience_bar)
+
+        percentage_exp_surface = font.render(f"{hero.exp_until_next_level_percentage()}", True, self.FONT_COLOR)
+        middle_of_exp_bar = (hero.EXP_BAR_LENGTH // 2) - (percentage_exp_surface.get_width() // 2) + hero.experience_bar_pad.x
+
+        screen.blit(percentage_exp_surface, (middle_of_exp_bar, hero.experience_bar_pad.y + 4))
 
     @staticmethod
     def check_if_hero_died(hero: (Warrior, Hunter, Mage)) -> bool:
