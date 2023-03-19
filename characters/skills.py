@@ -112,7 +112,7 @@ class BlueBall(Skill):
 
 
 class HealAndMana(Skill):
-    LEVEL_REQUIRED = 2
+    LEVEL_REQUIRED = 1
     HEAL_MANA_INCREASE_PER_LEVEL = 10
 
     LOCKED_COOLDOWN = 5
@@ -555,7 +555,6 @@ class PassiveCrit(Skill):
     def get_description(self):
         return ["Passive",
                 f"Chance to crit: {self.crit_chance}%",
-                f"Cooldown: {self.LOCKED_COOLDOWN} secs"
                 ]
 
 
