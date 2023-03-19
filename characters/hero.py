@@ -7,6 +7,9 @@ class Hero:
     __MOVE_SPEED = 5
     BAR_LENGTH = 275
 
+    EXP_BAR_LENGTH = 250
+    MAX_LEVEL = 30
+
     def __init__(self, x: int, y: int, health: int, max_health: int, attack_images: list, die_image: Surface, idle_images: list,
                  jump_images: list, walk_images: list, profile_pic: object):
         self.x = x
@@ -40,10 +43,24 @@ class Hero:
 
         self.frame = self.make_bar(0, 0, 70, 70)
 
+        self.experience_gained = 0
+
+        self.experience_bar = self.make_bar(558, 630, 0, 35)
+        self.experience_bar_pad = self.make_bar(558, 630, self.EXP_BAR_LENGTH, 35)
+
         self.health_bar = self.make_bar(self.frame.width, 0, self.BAR_LENGTH, 35)
 
         self.background_rect_health_bar = self.make_bar(self.frame.width, 0, self.BAR_LENGTH, 35)
         self.background_rect_mana_bar = self.make_bar(self.frame.width, 35, self.BAR_LENGTH, 35)
+
+    @property
+    def experience_per_level(self):
+        level_exp = {}
+        experience = 100
+        for level in range(2, self.MAX_LEVEL + 1):
+            level_exp[level] = experience
+            experience += 200
+        return level_exp
 
     @staticmethod
     def make_bar(x, y, width, height):
@@ -56,15 +73,16 @@ class Hero:
             return 0
         return bar_width
 
-    def increase_bar_width(self, current_value: int or float, max_value: int or float, add_value: int or float):
-        bar_width = self.BAR_LENGTH * ((current_value + add_value) / max_value)
+    @staticmethod
+    def increase_bar_width(current_value: int or float, max_value: int or float, add_value: int or float, BAR_LENGTH: int):
+        bar_width = BAR_LENGTH * ((current_value + add_value) / max_value)
 
-        if bar_width > self.BAR_LENGTH:
-            return self.BAR_LENGTH
+        if bar_width > BAR_LENGTH:
+            return BAR_LENGTH
         return bar_width
 
     def increase_health_bar_width(self, heal_power: int or float):
-        self.health_bar.width = self.increase_bar_width(self.health, self.max_health, heal_power)
+        self.health_bar.width = self.increase_bar_width(self.health, self.max_health, heal_power, self.BAR_LENGTH)
 
     def check_health_limit(self):
         if self.health > self.max_health:
@@ -123,3 +141,27 @@ class Hero:
             self.is_right_direction = False
         else:
             self.is_right_direction = True
+
+    def increase_experience_bar(self):
+        width = self.EXP_BAR_LENGTH * (self.experience_gained / self.experience_per_level[self.level + 1])
+
+        if width >= self.EXP_BAR_LENGTH:
+            diff = abs(width - self.EXP_BAR_LENGTH)
+            self.experience_bar.width = diff
+
+        elif width < self.EXP_BAR_LENGTH:
+            self.experience_bar.width = width
+
+    def gain_experience(self, amount: int):
+        if self.level + 1 not in self.experience_per_level:
+            return
+
+        self.experience_gained += amount
+
+        if self.experience_gained >= self.experience_per_level[self.level + 1]:
+            self.level += 1
+
+        self.increase_experience_bar()
+
+    def exp_until_next_level_percentage(self):
+        return f"{(self.experience_gained / self.experience_per_level[self.level + 1]) * 100:.1f}%"
