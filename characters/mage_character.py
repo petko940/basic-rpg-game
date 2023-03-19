@@ -43,7 +43,7 @@ class Mage(Hero):
         return self.mana >= amount
 
     def increase_mana_bar_width(self, heal_power: int or float):
-        self.mana_bar.width = self.increase_bar_width(self.mana, self.max_mana, heal_power)
+        self.mana_bar.width = self.increase_bar_width(self.mana, self.max_mana, heal_power, self.BAR_LENGTH)
 
     def decrease_mana_bar_width(self, skill_cost: int or float):
         self.mana_bar.width = self.lower_bar_width(self.mana, self.max_mana, skill_cost)
