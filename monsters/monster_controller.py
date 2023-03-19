@@ -26,14 +26,9 @@ class MonsterController:
             if monster.attack_cooldown <= 0:
                 monster.attack_cooldown = 0
 
-    def spawn_monster(self):
-        monster = self.current_monster
-
+    def set_first_spawn(self):
         if not self.first_spawn:
             self.first_spawn = True
-
-        if monster.can_spawn_monster():
-            monster.increase_monsters_on_screen()
 
     def chase_player(self, screen, player):
         monster = self.current_monster
@@ -48,10 +43,13 @@ class MonsterController:
     def stay_idle(self, screen, player):
         monster = self.current_monster
 
+        if monster.is_dead:
+            return
+
         if not self.current_monster.check_target_reached(player.x):
             return
 
-        if not monster.is_attacking and not monster.is_dead:
+        if not monster.is_attacking:
             image = monster.idle()
             screen.blit(image, monster.monster_position())
 
@@ -70,7 +68,9 @@ class MonsterController:
 
         if monster.check_valid_index(monster.non_looped_index, monster.attack_left):
             index_and_animation = int(monster.non_looped_index), monster.attack_left, monster.attack_right
-            screen.blit(monster.get_image(*index_and_animation), monster.monster_position())
+
+            if not monster.is_dead:
+                screen.blit(monster.get_image(*index_and_animation), monster.monster_position())
 
             monster.increase_index_attack_animation()
 
@@ -87,7 +87,10 @@ class MonsterController:
         if not monster.check_valid_index(int(monster.non_looped_index), monster.die_left):
             monster.set_default_values_after_death()
             monster.remove_monster_from_screen()
+
             player.gain_experience(monster.experience_reward)
+
+            monster.power_up_after_death()
             return
 
         image = monster.death()
