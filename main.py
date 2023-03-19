@@ -48,9 +48,9 @@ hunter = hero_controller.get_hero_object("Hunter")
 collected_game_info = load_data()
 
 map_controller.current_map_index = collected_game_info["Map"]['current_map']
-warrior.level = collected_game_info["Warrior"]['level']
-mage.level = collected_game_info["Mage"]['level']
-hunter.level = collected_game_info["Hunter"]['level']
+warrior.level = 1      # collected_game_info["Warrior"]['level']  DO NOT DELETE THIS LINE
+mage.level = 1         # collected_game_info["Mage"]['level']     DO NOT DELETE THIS LINE
+hunter.level = 1       # collected_game_info["Hunter"]['level']   DO NOT DELETE THIS LINE
 
 menu = Menu(warrior, mage, hunter)
 
@@ -114,6 +114,7 @@ while game_running:
     hero_controller.display_health_and_mana_bars(screen, current_hero)
     hero_controller.display_health_and_mana_stats(screen, current_hero)
     hero_controller.display_hero_frame_and_level(screen, current_hero)
+    hero_controller.display_experience_bar(screen, current_hero)
 
     screen.blit(action_bar_image, (action_bar_x_pos, action_bar_y_pos))
     hero_controller.display_skill_icons(screen, current_hero, action_bar_x_pos, action_bar_y_pos)
@@ -151,6 +152,8 @@ while game_running:
             screen.blit(current_hero.idle_animation(), current_hero.get_hero_pos())
 
     if monster_controller.first_spawn:
+        map_controller.spawn_monster_on_non_cleared_stage(monster_controller.current_monster)
+
         hero_controller.add_enemy(monster_controller.current_monster)
 
         monster_controller.actions(screen, current_hero)
