@@ -39,6 +39,7 @@ class HeroController:
         self.skill_to_use = None
         self.caster_skills = {}
         self.enemy = None
+        self.exp_info_box = pygame.transform.scale(pygame.image.load('characters/skill_info_box/info_text_box.png'), (250, 30))
 
     @property
     def valid_heroes(self):
@@ -380,6 +381,21 @@ class HeroController:
         middle_of_exp_bar = (hero.EXP_BAR_LENGTH // 2) - (percentage_exp_surface.get_width() // 2) + hero.experience_bar_pad.x
 
         screen.blit(percentage_exp_surface, (middle_of_exp_bar, hero.experience_bar_pad.y + 4))
+
+    def display_exp_bar_box_info(self, screen, hero: (Warrior, Hunter, Mage), mouse_pos: tuple):
+        if hero.experience_bar_pad.collidepoint(mouse_pos):
+            screen.blit(self.exp_info_box, (mouse_pos[0] + 20, mouse_pos[1] - 30))
+
+            curr_exp = hero.experience_gained
+            exp_until_next_level = 0
+            if hero.level + 1 in hero.experience_per_level:
+                exp_until_next_level = hero.experience_per_level[hero.level + 1]
+
+            create_exp_surface = level_font.render(f"Exp {curr_exp} / {exp_until_next_level}", True, self.FONT_COLOR)
+
+            middle_of_box_info = (self.exp_info_box.get_width() // 2) - (create_exp_surface.get_width() // 2) + mouse_pos[0] + 20
+
+            screen.blit(create_exp_surface, (middle_of_box_info, mouse_pos[1] - 22))
 
     @staticmethod
     def check_if_hero_died(hero: (Warrior, Hunter, Mage)) -> bool:
