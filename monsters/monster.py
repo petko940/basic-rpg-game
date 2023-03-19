@@ -3,7 +3,7 @@ from pygame import Rect
 
 
 class Monster(ABC):
-    X_POS_SPAWN_AFTER_DEATH = 1400
+    X_POS_SPAWN_AFTER_DEATH = 1300
 
     MONSTERS_ON_SCREEN_LIMIT = 1
 
