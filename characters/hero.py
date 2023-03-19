@@ -153,15 +153,19 @@ class Hero:
             self.experience_bar.width = width
 
     def gain_experience(self, amount: int):
+        self.experience_gained += amount
+
         if self.level + 1 not in self.experience_per_level:
             return
 
-        self.experience_gained += amount
-
-        if self.experience_gained >= self.experience_per_level[self.level + 1]:
-            self.level += 1
-
         self.increase_experience_bar()
 
+        if self.experience_gained >= self.experience_per_level[self.level + 1]:
+            self.experience_gained = abs(self.experience_per_level[self.level + 1] - self.experience_gained)
+            self.level += 1
+
     def exp_until_next_level_percentage(self):
+        if self.level + 1 not in self.experience_per_level:
+            self.experience_bar.width = self.EXP_BAR_LENGTH
+            return "100%"
         return f"{(self.experience_gained / self.experience_per_level[self.level + 1]) * 100:.1f}%"
