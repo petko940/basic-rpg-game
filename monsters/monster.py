@@ -16,6 +16,8 @@ class Monster(ABC):
     HEALTH_BAR_PAD_COLOR = (105, 105, 105)
 
     def __init__(self, health: int, damage: int, x_pos: int, y_pos: int):
+        self.experience_reward = 50
+
         self.monsters_on_screen = 0
 
         self.x_pos = x_pos
@@ -90,15 +92,18 @@ class Monster(ABC):
 
     def set_default_values_after_death(self):
         self.left_direction = True
-        self.background_health_bar.x = self.x_pos
-        self.health_bar.x = self.x_pos
+        self.background_health_bar.x = Monster.X_POS_SPAWN_AFTER_DEATH
+        self.health_bar.x = Monster.X_POS_SPAWN_AFTER_DEATH
         self.health_bar.width = self.HEALTH_BAR_LENGTH
-        self.monsters_on_screen -= 1
         self.x_pos = Monster.X_POS_SPAWN_AFTER_DEATH
+
+    def remove_monster_from_screen(self):
+        self.monsters_on_screen -= 1
 
     def power_up_after_death(self):
         self.max_health += Monster.HEALTH_GAIN_AFTER_DEATH
         self.health = self.max_health
+        self.experience_reward += 15
 
     def lower_health_bar(self, damage_received: int or float):
         self.health_bar.width = self.HEALTH_BAR_LENGTH * ((self.health - damage_received) / self.max_health)
@@ -108,3 +113,6 @@ class Monster(ABC):
 
         if self.health <= 0:
             self.health = 0
+
+    def take_experience_reward_on_kill(self):
+        return self.experience_reward
