@@ -79,13 +79,15 @@ class MonsterController:
         if monster.attack_cooldown:
             player.take_damage(monster.damage)
 
-    def die(self, screen):
+    def die(self, screen, player):
         monster = self.current_monster
         if not monster.is_dead:
             return
 
         if not monster.check_valid_index(int(monster.non_looped_index), monster.die_left):
             monster.set_default_values_after_death()
+            monster.remove_monster_from_screen()
+            player.gain_experience(monster.experience_reward)
             return
 
         image = monster.death()
@@ -102,7 +104,4 @@ class MonsterController:
 
         self.attack_target(screen, player)
 
-        self.die(screen)
-
-        # must power_up_after_death after the hero changes the map
-        # must spawn() the next monster after the hero changes the map
+        self.die(screen, player)
