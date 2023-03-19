@@ -355,7 +355,6 @@ class AxeBasicAttack(Skill):
 
     LOCKED_COOLDOWN = 1
 
-    # should add the basic attack of warrior images here
     def __init__(self):
         super().__init__(0, self.LEVEL_REQUIRED)
         self.skill_icon = image.load('characters/war/skill_icons/axe_basic_attack.png')
