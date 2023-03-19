@@ -22,6 +22,16 @@ def loading_game_screen(window, current_map: MapController, hero: object, rect_o
         pygame.display.update()
 
 
+def load_maps(map_controller_obj):
+    maps = (
+        ([pygame.transform.scale(pygame.image.load(f'images/maps/map1/({i}).png').convert_alpha(), (1366, 768)) for i in range(1, 5 + 1)], "Forest"),
+        ([pygame.image.load(f'images/maps/map2/{i}.png').convert_alpha() for i in range(5)], "NarrowForest"),
+        )
+
+    for images, map_name in maps:
+        map_controller_obj.create_map(images, map_name)
+
+
 WIDTH, HEIGHT = (1366, 768)
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 resized = 1.4
@@ -30,9 +40,8 @@ action_bar_image = pygame.image.load('images/action_bar.png')
 action_bar_x_pos, action_bar_y_pos = (WIDTH // 2) - (action_bar_image.get_rect().width // 2), 675
 
 map_controller = MapController()
-map_controller.create_map(
-    [pygame.transform.scale(pygame.image.load(f'images/maps/map1/({i}).png'), (1920 / resized, 1080 / resized)) for i in
-     range(1, 5 + 1)], "Forest")
+load_maps(map_controller)
+
 
 hero_controller = HeroController()
 hero_controller.create_hero("Warrior", 20, 200)
@@ -47,10 +56,10 @@ hunter = hero_controller.get_hero_object("Hunter")
 
 collected_game_info = load_data()
 
-map_controller.current_map_index = collected_game_info["Map"]['current_map']
-warrior.level = 1      # collected_game_info["Warrior"]['level']  DO NOT DELETE THIS LINE
-mage.level = 1         # collected_game_info["Mage"]['level']     DO NOT DELETE THIS LINE
-hunter.level = 1       # collected_game_info["Hunter"]['level']   DO NOT DELETE THIS LINE
+map_controller.current_map_index = 0  # collected_game_info["Map"]['current_map']
+warrior.level = 1  # collected_game_info["Warrior"]['level']  DO NOT DELETE THIS LINE
+mage.level = 1  # collected_game_info["Mage"]['level']     DO NOT DELETE THIS LINE
+hunter.level = 1  # collected_game_info["Hunter"]['level']   DO NOT DELETE THIS LINE
 
 menu = Menu(warrior, mage, hunter)
 
@@ -63,10 +72,9 @@ background_rect = map_controller.show_current_map().get_rect()
 # loading_game_screen(screen, map_controller, current_hero, background_rect)  # for faster loading screen
 
 
-demon = Demon(100, 15, 1400, 210)   # [health, damage, x_pos, y_pos]
+demon = Demon(100, 15, 1300, 210)  # [health, damage, x_pos, y_pos]
 
 monster_controller = MonsterController(demon)
-
 
 # start_time = time.time()
 
@@ -115,6 +123,7 @@ while game_running:
     hero_controller.display_health_and_mana_stats(screen, current_hero)
     hero_controller.display_hero_frame_and_level(screen, current_hero)
     hero_controller.display_experience_bar(screen, current_hero)
+    hero_controller.display_exp_bar_box_info(screen, current_hero, pygame.mouse.get_pos())
 
     screen.blit(action_bar_image, (action_bar_x_pos, action_bar_y_pos))
     hero_controller.display_skill_icons(screen, current_hero, action_bar_x_pos, action_bar_y_pos)
@@ -128,7 +137,7 @@ while game_running:
             current_hero.change_direction()
 
         if not monster_controller.first_spawn:
-            monster_controller.spawn_monster()
+            monster_controller.set_first_spawn()
 
         current_hero.walk()
         screen.blit(current_hero.walk_images(), current_hero.get_hero_pos())
@@ -140,7 +149,7 @@ while game_running:
             current_hero.change_direction()
 
         if not monster_controller.first_spawn:
-            monster_controller.spawn_monster()
+            monster_controller.set_first_spawn()
 
         current_hero.walk()
         screen.blit(current_hero.walk_images(), current_hero.get_hero_pos())
