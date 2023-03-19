@@ -8,6 +8,7 @@ class Map(ABC):
         self.name = name
         self.images = images
         self.index = index
+        self.cleared_stages = {stage: False if stage != 0 else True for stage in range(len(self.images))}
 
     @property
     def index(self):
@@ -18,6 +19,12 @@ class Map(ABC):
         if not 0 <= value < len(self.images):
             raise Exception(f"{value} index of the image must be in the list range")
         self.__index = value
+
+    def check_stage_cleared(self):
+        return self.cleared_stages[self.index]
+
+    def clear_stage(self):
+        self.cleared_stages[self.index] = True
 
     def get_current_image(self):
         return self.images[self.index]
