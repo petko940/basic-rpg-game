@@ -24,7 +24,7 @@ class MapController:
         return self.current_map.get_current_image()
 
     def check_if_on_last_map(self):
-        return self.current_map.get_image_index() == len(self.current_map.images) - 1
+        return self.maps[-1].get_image_index() == len(self.current_map.images) - 1
 
     def first_map_go_outside_left_side(self):
         return self.current_map.get_image_index() == 0
@@ -45,3 +45,19 @@ class MapController:
             else:
                 self.current_map.previous_image()
                 hero.x = self.current_map.MAP_WIDTH - 200
+
+    def spawn_monster_on_non_cleared_stage(self, monster):
+        stage = self.current_map
+
+        if stage.check_stage_cleared():
+            return
+
+        if not monster.is_dead:
+            return
+
+        stage.clear_stage()
+        monster.power_up_after_death()
+
+        if monster.can_spawn_monster():
+            monster.increase_monsters_on_screen()
+
