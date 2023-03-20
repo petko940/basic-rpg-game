@@ -26,6 +26,7 @@ def load_maps(map_controller_obj):
     maps = (
         ([pygame.transform.scale(pygame.image.load(f'images/maps/map1/({i}).png').convert_alpha(), (1366, 768)) for i in range(1, 5 + 1)], "Forest"),
         ([pygame.image.load(f'images/maps/map2/{i}.png').convert_alpha() for i in range(5)], "NarrowForest"),
+        ([pygame.image.load(f'images/maps/map3/{i}.png').convert_alpha() for i in range(5)], "BigTreeForest"),
         )
 
     for images, map_name in maps:
