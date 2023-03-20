@@ -1,3 +1,4 @@
+from class_maps.all_maps.big_tree_forest import BigTreeForest
 from class_maps.all_maps.forest import Forest
 from class_maps.all_maps.narrow_forest import NarrowForest
 
@@ -10,7 +11,7 @@ class MapController:
 
     @property
     def __valid_maps(self):
-        return {"Forest": Forest, "NarrowForest": NarrowForest}
+        return {"Forest": Forest, "NarrowForest": NarrowForest, "BigTreeForest": BigTreeForest}
 
     @property
     def current_map(self):
