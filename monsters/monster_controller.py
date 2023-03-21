@@ -56,6 +56,9 @@ class MonsterController:
     def attack_target(self, screen, player):
         monster = self.current_monster
 
+        if player.is_dead:
+            return
+
         if not monster.is_attacking:
 
             if monster.attack_cooldown or monster.is_dead:
