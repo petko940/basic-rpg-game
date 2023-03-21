@@ -94,7 +94,8 @@ while game_running:
             if event.key == pygame.K_ESCAPE:
                 game_running = False
 
-            if current_hero.is_attacking:
+            if current_hero.is_attacking or current_hero.is_dead:
+
                 continue
 
             elif event.key == pygame.K_1:
@@ -140,10 +141,11 @@ while game_running:
         if not monster_controller.first_spawn:
             monster_controller.set_first_spawn()
 
-        current_hero.walk()
-        screen.blit(current_hero.walk_images(), current_hero.get_hero_pos())
+        if not current_hero.is_dead:
+            current_hero.walk()
+            screen.blit(current_hero.walk_images(), current_hero.get_hero_pos())
 
-        map_controller.check_for_traverse(current_hero, monster_controller.current_monster)
+            map_controller.check_for_traverse(current_hero, monster_controller.current_monster)
 
     elif pygame.key.get_pressed()[pygame.K_a]:
         if current_hero.is_right_direction:
@@ -152,13 +154,14 @@ while game_running:
         if not monster_controller.first_spawn:
             monster_controller.set_first_spawn()
 
-        current_hero.walk()
-        screen.blit(current_hero.walk_images(), current_hero.get_hero_pos())
+        if not current_hero.is_dead:
+            current_hero.walk()
+            screen.blit(current_hero.walk_images(), current_hero.get_hero_pos())
 
-        map_controller.check_for_traverse(current_hero, monster_controller.current_monster)
+            map_controller.check_for_traverse(current_hero, monster_controller.current_monster)
 
     else:
-        if not current_hero.is_attacking:
+        if not current_hero.is_attacking and not current_hero.is_dead:
             screen.blit(current_hero.idle_animation(), current_hero.get_hero_pos())
 
     if monster_controller.first_spawn:
@@ -171,6 +174,9 @@ while game_running:
 
     # calling the skills animations on button press
     hero_controller.use_skill(current_hero, screen)
+
+    if current_hero.is_dead:
+        hero_controller.display_death_image(screen, current_hero)
 
     # timer(start_time, screen)
     pygame.display.update()
