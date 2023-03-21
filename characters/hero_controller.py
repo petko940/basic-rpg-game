@@ -81,7 +81,7 @@ class HeroController:
 
     @staticmethod
     def mana_regen(hero: (Warrior, Mage, Hunter)):
-        if type(hero).__name__ != "Warrior":
+        if type(hero).__name__ != "Warrior" and not hero.is_dead:
             hero.receive_mana(hero.MANA_REGEN_PER_SECOND)
             hero.increase_mana_bar_width(hero.MANA_REGEN_PER_SECOND)
 
@@ -287,6 +287,10 @@ class HeroController:
 
         self.skill_to_use = None
 
+    @staticmethod
+    def display_death_image(screen, hero):
+        screen.blit(hero.die_image, hero.get_hero_pos())
+
     def display_skill_icons(self, screen, hero: (Warrior, Hunter, Mage), x_pos: int, y_pos: int):
         """
         x_y_offset is the pixels fixation to perfectly fit inside the action bar
@@ -396,13 +400,6 @@ class HeroController:
             middle_of_box_info = (self.exp_info_box.get_width() // 2) - (create_exp_surface.get_width() // 2) + mouse_pos[0] + 20
 
             screen.blit(create_exp_surface, (middle_of_box_info, mouse_pos[1] - 22))
-
-    @staticmethod
-    def check_if_hero_died(hero: (Warrior, Hunter, Mage)) -> bool:
-        """
-        returns True if the health is less than or equal to zero, otherwise returns False
-        """
-        return hero.health <= 0
 
     def display_health_and_mana_stats(self, screen, hero: (Warrior, Hunter, Mage)):
         # creating health surface
