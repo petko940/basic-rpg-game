@@ -14,6 +14,7 @@ class Skill(ABC):
         self.text_box = image.load('characters/skill_info_box/info_text_box.png')
         self.is_animating = False
         self.is_on_cooldown = False
+        self.skill_level = 1
 
     @abstractmethod
     def get_description(self):
@@ -26,8 +27,8 @@ class Skill(ABC):
 
 class BlueBall(Skill):
     BALL_SPEED = 9
-    DAMAGE_INCREASE_PER_LEVEL = 5
-    MANA_COST_INCREASE_PER_LEVEL = 5
+    DAMAGE_INCREASE_PER_LEVEL = 15
+    MANA_COST_INCREASE_PER_LEVEL = 3
     LEVEL_REQUIRED = 1
 
     RIGHT_X_POS_FIXATION = 200
@@ -100,6 +101,7 @@ class BlueBall(Skill):
             self.x_pos = new_x_pos
 
     def level_up(self):
+        self.skill_level += 1
         self.damage += self.DAMAGE_INCREASE_PER_LEVEL
         self.skill_cost += self.MANA_COST_INCREASE_PER_LEVEL
 
@@ -113,7 +115,7 @@ class BlueBall(Skill):
 
 class HealAndMana(Skill):
     LEVEL_REQUIRED = 1
-    HEAL_MANA_INCREASE_PER_LEVEL = 10
+    HEAL_MANA_INCREASE_PER_LEVEL = 5
 
     LOCKED_COOLDOWN = 5
 
@@ -123,7 +125,7 @@ class HealAndMana(Skill):
         self.skill_icon = image.load('characters/mage/skill_icons/hp_mp_gain.png')
         self.rect_icon = self.skill_icon.get_rect()
         self.cooldown_rect = self.skill_icon.get_rect()
-        self.healing = 25
+        self.healing = 20
         self.cooldown_left = self.LOCKED_COOLDOWN
 
     def lower_icon_height(self, extract_value: int or float):
@@ -144,6 +146,7 @@ class HealAndMana(Skill):
         return self.healing
 
     def level_up(self):
+        self.skill_level += 1
         self.healing += self.HEAL_MANA_INCREASE_PER_LEVEL
 
     def get_description(self):
@@ -223,6 +226,7 @@ class Lightning(Skill):
             self.x_pos = 1000
 
     def level_up(self):
+        self.skill_level += 1
         self.damage += self.DAMAGE_INCREASE_PER_LEVEL
         self.skill_cost += self.MANA_COST_INCREASE_PER_LEVEL
 
@@ -236,8 +240,8 @@ class Lightning(Skill):
 
 class MeteorStrike(Skill):
     LEVEL_REQUIRED = 4
-    DAMAGE_INCREASE_PER_LEVEL = 10
-    MANA_COST_INCREASE_PER_LEVEL = 5
+    DAMAGE_INCREASE_PER_LEVEL = 25
+    MANA_COST_INCREASE_PER_LEVEL = 10
 
     METEOR_Y_START_LOCATION = -700
     METEOR_DROP_SPEED = 10
@@ -338,6 +342,7 @@ class MeteorStrike(Skill):
             self.x_pos = 600
 
     def level_up(self):
+        self.skill_level += 1
         self.damage += self.DAMAGE_INCREASE_PER_LEVEL
         self.skill_cost += self.MANA_COST_INCREASE_PER_LEVEL
 
@@ -350,7 +355,7 @@ class MeteorStrike(Skill):
 
 
 class AxeBasicAttack(Skill):
-    DAMAGE_PER_LEVEL_INCREASE = 5
+    DAMAGE_PER_LEVEL_INCREASE = 20
     LEVEL_REQUIRED = 1
 
     LOCKED_COOLDOWN = 1
@@ -387,6 +392,7 @@ class AxeBasicAttack(Skill):
         self.is_on_cooldown = True
 
     def level_up(self):
+        self.skill_level += 1
         self.damage += self.DAMAGE_PER_LEVEL_INCREASE
 
     def get_description(self):
@@ -398,7 +404,7 @@ class AxeBasicAttack(Skill):
 
 
 class Heal(Skill):
-    HEAL_INCREASE_PER_LEVEL = 5
+    HEAL_INCREASE_PER_LEVEL = 20
     LEVEL_REQUIRED = 1
 
     LOCKED_COOLDOWN = 5
@@ -430,6 +436,7 @@ class Heal(Skill):
         return self.healing
 
     def level_up(self):
+        self.skill_level += 1
         self.healing += self.HEAL_INCREASE_PER_LEVEL
 
     def get_description(self):
@@ -441,7 +448,7 @@ class Heal(Skill):
 
 
 class DamageBoost(Skill):
-    DAMAGE_BOOST_PER_LEVEL = 5
+    DAMAGE_BOOST_PER_LEVEL = 15
     LEVEL_REQUIRED = 3
 
     LOCKED_COOLDOWN = 5
@@ -489,6 +496,7 @@ class DamageBoost(Skill):
         self.has_gained_damage = False
 
     def level_up(self):
+        self.skill_level += 1
         self.damage_boost += self.DAMAGE_BOOST_PER_LEVEL
 
     def get_description(self):
@@ -550,6 +558,7 @@ class PassiveCrit(Skill):
     def level_up(self):
         if self.crit_chance + self.PASSIVE_CRIT_INCREASE_PER_LEVEL <= self.MAX_CRIT_CHANCE:
             self.crit_chance += self.PASSIVE_CRIT_INCREASE_PER_LEVEL
+            self.skill_level += 1
 
     def get_description(self):
         return ["Passive",
@@ -559,8 +568,8 @@ class PassiveCrit(Skill):
 
 class ArrowShot(Skill):
     ARROW_SPEED = 9
-    DAMAGE_INCREASE_PER_LEVEL = 5
-    MANA_INCREASE_PER_LEVEL = 5
+    DAMAGE_INCREASE_PER_LEVEL = 10
+    MANA_INCREASE_PER_LEVEL = 3
     LEVEL_REQUIRED = 1
 
     RIGHT_ARROW_X_POS_FIXATION = 225
@@ -642,6 +651,7 @@ class ArrowShot(Skill):
                 ]
 
     def level_up(self):
+        self.skill_level += 1
         self.damage += self.DAMAGE_INCREASE_PER_LEVEL
         self.skill_cost += self.MANA_INCREASE_PER_LEVEL
 
@@ -649,8 +659,8 @@ class ArrowShot(Skill):
 class RapidShot(Skill):
     ARROW_SPEED = 9
     LEVEL_REQUIRED = 3
-    DAMAGE_INCREASE_PER_LEVEL = 5
-    MANA_COST_INCREASE_PER_LEVEL = 5
+    DAMAGE_INCREASE_PER_LEVEL = 20
+    MANA_COST_INCREASE_PER_LEVEL = 3
 
     RIGHT_ARROW_X_POS_FIXATION = 225
     ARROW_Y_POS = 400
@@ -724,6 +734,7 @@ class RapidShot(Skill):
             self.x_pos = new_x_pos
 
     def level_up(self):
+        self.skill_level += 1
         self.damage += self.DAMAGE_INCREASE_PER_LEVEL
         self.skill_cost += self.MANA_COST_INCREASE_PER_LEVEL
 
@@ -738,8 +749,8 @@ class RapidShot(Skill):
 class ArrowRain(Skill):
     ARROWS_FALL_SPEED = 10
     LEVEL_REQUIRED = 4
-    DAMAGE_INCREASE_PER_LEVEL = 5
-    MANA_COST_INCREASE_PER_LEVEL = 5
+    DAMAGE_INCREASE_PER_LEVEL = 30
+    MANA_COST_INCREASE_PER_LEVEL = 10
 
     IMAGE_LOOP_SPEED = 0.2
 
@@ -836,6 +847,7 @@ class ArrowRain(Skill):
             self.x_pos = 950
 
     def level_up(self):
+        self.skill_level += 1
         self.damage += self.DAMAGE_INCREASE_PER_LEVEL
         self.skill_cost += self.MANA_COST_INCREASE_PER_LEVEL
 
