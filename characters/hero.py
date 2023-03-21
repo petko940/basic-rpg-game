@@ -1,7 +1,9 @@
+from abc import abstractmethod, ABC
+
 from pygame import transform, Rect, Surface
 
 
-class Hero:
+class Hero(ABC):
     __IMAGE_LOOP_SPEED = 0.25
     __ATK_SPEED = 0.2
     __MOVE_SPEED = 5
@@ -52,6 +54,14 @@ class Hero:
 
         self.background_rect_health_bar = self.make_bar(self.frame.width, 0, self.BAR_LENGTH, 35)
         self.background_rect_mana_bar = self.make_bar(self.frame.width, 35, self.BAR_LENGTH, 35)
+
+    @property
+    def is_dead(self):
+        return self.health <= 0
+
+    @abstractmethod
+    def get_stronger_after_level_up(self):
+        pass
 
     @property
     def experience_per_level(self):
@@ -163,6 +173,7 @@ class Hero:
         if self.experience_gained >= self.experience_per_level[self.level + 1]:
             self.experience_gained = abs(self.experience_per_level[self.level + 1] - self.experience_gained)
             self.level += 1
+            self.get_stronger_after_level_up()
 
     def exp_until_next_level_percentage(self):
         if self.level + 1 not in self.experience_per_level:
