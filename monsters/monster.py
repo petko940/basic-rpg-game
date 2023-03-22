@@ -8,6 +8,7 @@ class Monster(ABC):
     MONSTERS_ON_SCREEN_LIMIT = 1
 
     HEALTH_GAIN_AFTER_DEATH = 50
+    DAMAGE_INCREASE_AFTER_DEATH = 7
 
     HEALTH_BAR_LENGTH = 125
     HEALTH_BAR_HEIGHT = 20
@@ -105,6 +106,7 @@ class Monster(ABC):
         self.max_health += Monster.HEALTH_GAIN_AFTER_DEATH
         self.health = self.max_health
         self.experience_reward += 15
+        self.damage += self.DAMAGE_INCREASE_AFTER_DEATH
 
     def lower_health_bar(self, damage_received: int or float):
         self.health_bar.width = self.HEALTH_BAR_LENGTH * ((self.health - damage_received) / self.max_health)
