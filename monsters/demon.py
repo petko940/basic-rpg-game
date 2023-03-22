@@ -47,9 +47,9 @@ class Demon(Monster):
             self.attack_cooldown = Demon.ATTACK_COOLDOWN
             self.non_looped_index = 0
 
-    def check_target_reached(self, hero_x_pos: int):
-        difference_left = abs((self.x_pos - Demon.LOWER_HIT_BOX) - hero_x_pos)
-        difference_right = abs((self.x_pos + Demon.LOWER_HIT_BOX) - hero_x_pos)
+    def check_target_reached(self, hero):
+        difference_left = abs((self.x_pos - Demon.LOWER_HIT_BOX) - hero.x)
+        difference_right = abs((self.x_pos + Demon.LOWER_HIT_BOX) - hero.x)
 
         if difference_left < 5 or difference_right < 5 or difference_left + difference_right == Demon.LOWER_HIT_BOX * 2:
             return True
