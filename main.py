@@ -5,19 +5,16 @@ from menu_class import Menu
 from class_maps.map_controller import MapController
 from default_properties import load_data, save_on_close
 from monsters.demon import Demon
+from monsters.jinn import Jinn
 from monsters.monster_controller import MonsterController
-
-# timer 83 , 151
-from timer import timer
-import time
 
 pygame.init()
 
 
-def loading_game_screen(window, current_map: MapController, hero: object, rect_of_background: pygame.Rect):
+def loading_game_screen(window, current_map: MapController, hero, rect_of_background: pygame.Rect):
     for i in range(510, 0, -1):
         window.blit(current_map.show_current_map(), (0, 0))
-        window.blit(hero.idle_animation("right"), hero.idle())  # NOQA
+        window.blit(hero.idle_animation(), hero.get_hero_pos())
         pygame.draw.rect(window, (50, (255 - i // 2), 0), rect_of_background, int(i * 1.1))
         pygame.display.update()
 
@@ -40,44 +37,45 @@ resized = 1.4
 action_bar_image = pygame.image.load('images/action_bar.png')
 action_bar_x_pos, action_bar_y_pos = (WIDTH // 2) - (action_bar_image.get_rect().width // 2), 675
 
-map_controller = MapController()
-load_maps(map_controller)
-
 
 hero_controller = HeroController()
 hero_controller.create_hero("Warrior", 20, 200)
 hero_controller.create_hero("Mage", 20, 200)
 hero_controller.create_hero("Hunter", 20, 200)
-
 hero_controller.gather_caster_skills()
 
 warrior = hero_controller.get_hero_object("Warrior")
 mage = hero_controller.get_hero_object("Mage")
 hunter = hero_controller.get_hero_object("Hunter")
 
-collected_game_info = load_data()
-
-map_controller.current_map_index = 0  # collected_game_info["Map"]['current_map']
-warrior.level = 1  # collected_game_info["Warrior"]['level']  DO NOT DELETE THIS LINE
-mage.level = 1  # collected_game_info["Mage"]['level']     DO NOT DELETE THIS LINE
-hunter.level = 1  # collected_game_info["Hunter"]['level']   DO NOT DELETE THIS LINE
 
 menu = Menu(warrior, mage, hunter)
 
-# menu.display_beginning_image() skipping the beginning image
+
+map_controller = MapController(menu.arrow)
+load_maps(map_controller)
+
+
+collected_game_info = load_data()
+map_controller.current_map_index = 0  # collected_game_info["Map"]['current_map']
+warrior.level = 1  # collected_game_info["Warrior"]['level']  DO NOT DELETE THIS LINE
+mage.level = 1  # collected_game_info["Mage"]['level']        DO NOT DELETE THIS LINE
+hunter.level = 1  # collected_game_info["Hunter"]['level']    DO NOT DELETE THIS LINE
+
+
+# menu.display_beginning_image() # skipping the beginning image
 menu.menu()
 current_hero = menu.chosen_hero
 
-background_rect = map_controller.show_current_map().get_rect()
-
-# loading_game_screen(screen, map_controller, current_hero, background_rect)  # for faster loading screen
-
 
 demon = Demon(100, 15, 1300, 210)  # [health, damage, x_pos, y_pos]
+jinn = Jinn(100, 15, 1300, 210)
+monster_controller = MonsterController(jinn, demon)
 
-monster_controller = MonsterController(demon)
 
-# start_time = time.time()
+background_rect = map_controller.show_current_map().get_rect()
+# loading_game_screen(screen, map_controller, current_hero, background_rect)  # for faster loading screen
+
 
 MANA_REGEN = pygame.USEREVENT  # next event must be +1 ,because the events have ID's
 pygame.time.set_timer(MANA_REGEN, 1000)
@@ -95,7 +93,6 @@ while game_running:
                 game_running = False
 
             if current_hero.is_attacking or current_hero.is_dead:
-
                 continue
 
             elif event.key == pygame.K_1:
@@ -126,10 +123,13 @@ while game_running:
     hero_controller.display_hero_frame_and_level(screen, current_hero)
     hero_controller.display_experience_bar(screen, current_hero)
     hero_controller.display_exp_bar_box_info(screen, current_hero, pygame.mouse.get_pos())
+    hero_controller.display_keyboard_keys_below_skill_icons(screen, current_hero)
 
     screen.blit(action_bar_image, (action_bar_x_pos, action_bar_y_pos))
     hero_controller.display_skill_icons(screen, current_hero, action_bar_x_pos, action_bar_y_pos)
     hero_controller.show_skill_description(screen, current_hero, pygame.mouse.get_pos())
+
+    map_controller.display_leading_arrow_on_cleared_stage(screen)
 
     if current_hero.is_attacking:
         screen.blit(current_hero.attack_animation(), current_hero.get_hero_pos())
@@ -178,7 +178,6 @@ while game_running:
     if current_hero.is_dead:
         hero_controller.display_death_image(screen, current_hero)
 
-    # timer(start_time, screen)
     pygame.display.update()
 
 pygame.quit()
