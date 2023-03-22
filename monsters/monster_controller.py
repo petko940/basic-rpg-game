@@ -12,6 +12,9 @@ class MonsterController:
     def current_monster(self):
         return self.monsters[0]
 
+    def switch_to_next_monster(self):
+        self.monsters.append(self.monsters.pop(0))
+
     def display_health_bar(self, screen):
         if not self.current_monster.is_dead:
             draw.rect(screen, self.current_monster.HEALTH_BAR_PAD_COLOR, self.current_monster.health_bar_pad_position())
@@ -36,9 +39,11 @@ class MonsterController:
         if monster.is_dead or monster.is_attacking:
             return
 
-        if not self.current_monster.check_target_reached(player.x):
-            image = monster.walk(player.x)
-            screen.blit(image, monster.monster_position())
+        if self.current_monster.check_target_reached(player):
+            return
+
+        image = monster.walk(player.x)
+        screen.blit(image, monster.monster_position())
 
     def stay_idle(self, screen, player):
         monster = self.current_monster
@@ -46,7 +51,7 @@ class MonsterController:
         if monster.is_dead:
             return
 
-        if not self.current_monster.check_target_reached(player.x):
+        if not self.current_monster.check_target_reached(player):
             return
 
         if not monster.is_attacking:
@@ -64,7 +69,7 @@ class MonsterController:
             if monster.attack_cooldown or monster.is_dead:
                 return
 
-            if not self.current_monster.check_target_reached(player.x):
+            if not self.current_monster.check_target_reached(player):
                 return
 
         monster.attack()
@@ -94,6 +99,7 @@ class MonsterController:
             player.gain_experience(monster.experience_reward)
 
             monster.power_up_after_death()
+            self.switch_to_next_monster()
             return
 
         image = monster.death()
