@@ -155,10 +155,10 @@ class HeroController:
         elif type(skill).__name__ == "AxeBasicAttack":
             skill.cast_skill()
 
-            if passive.check_for_critical_strike():
+            if hero.level >= passive.LEVEL_REQUIRED and passive.check_for_critical_strike():
                 skill.damage *= passive.get_critical_multiplier()
 
-            if self.enemy and self.enemy.check_target_reached(hero.x):
+            if self.enemy and self.enemy.check_target_reached(hero):
                 self.enemy.lower_health_bar(skill.damage)
                 self.enemy.take_damage(skill.damage)
 
