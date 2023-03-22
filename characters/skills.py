@@ -256,7 +256,7 @@ class MeteorStrike(Skill):
         self.skill_icon = image.load('characters/mage/skill_icons/meteor_strike.jpg')
         self.rect_icon = self.skill_icon.get_rect()
         self.cooldown_rect = self.skill_icon.get_rect()
-        self.images = [transform.scale(image.load(f'characters/mage/skill_animations/explosion_sprites/{x}.png'), (930, 630)) for x in range(13)]
+        self.images = [transform.scale(image.load(f'characters/mage/skill_animations/explosion_sprites/{x}.png').convert_alpha(), (930, 630)) for x in range(13)]
         self.img_index = 0
         self.damage = 40
 
