@@ -1,13 +1,21 @@
 from class_maps.all_maps.big_tree_forest import BigTreeForest
 from class_maps.all_maps.forest import Forest
 from class_maps.all_maps.narrow_forest import NarrowForest
+from pygame import transform, image
 
 
 class MapController:
 
-    def __init__(self):
+    def __init__(self, arrows):
         self.maps = []
         self.current_map_index = 0
+
+        self.arrow = [transform.rotate(arrows[i], 90) for i in range(len(arrows))]
+        self.arrow_index = 0
+
+    @property
+    def leading_arrow_speed(self):
+        return 0.25
 
     @property
     def __valid_maps(self):
@@ -65,6 +73,15 @@ class MapController:
 
             self.current_map.previous_image()
             hero.x = self.current_map.MAP_WIDTH - 200
+
+    def display_leading_arrow_on_cleared_stage(self, screen):
+        stage = self.current_map
+
+        if stage.check_stage_cleared():
+            show_img = self.arrow[int(self.arrow_index) % len(self.arrow)]
+            screen.blit(show_img, (1250, 100))
+
+            self.arrow_index += self.leading_arrow_speed
 
     def spawn_monster_on_non_cleared_stage(self, monster):
         stage = self.current_map
