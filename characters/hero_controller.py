@@ -34,6 +34,8 @@ class HeroController:
 
     COOLDOWN_SECONDS_COLOR = (220, 0, 0)
 
+    KEYBOARD_NUMBERS = [font.render(str(i), True, (255, 255, 255)) for i in range(1, 4 + 1)]
+
     def __init__(self):
         self.heroes: Dict[str: object] = {}
         self.skill_to_use = None
@@ -70,8 +72,7 @@ class HeroController:
             self.heroes[hero_type.capitalize()] = self.heroes.get(hero_type.capitalize(), new_hero)
 
     def add_enemy(self, monster):
-        if self.enemy is None:
-            self.enemy = monster
+        self.enemy = monster
 
     def get_hero_object(self, hero_name: str):
         """
@@ -339,6 +340,12 @@ class HeroController:
                 cooldown_seconds_counter(skill.cooldown_left, skill.rect_icon)
 
             x_pos += icon_width + space_between_icons
+
+    def display_keyboard_keys_below_skill_icons(self, screen, hero: (Warrior, Mage, Hunter)):
+        for i, skill_icon in enumerate(hero.skills.values()):
+            x_pos, y_pos = skill_icon.rect_icon.x + 20, skill_icon.rect_icon.y + 65
+
+            screen.blit(self.KEYBOARD_NUMBERS[i], (x_pos, y_pos))
 
     def show_skill_description(self, screen, hero: (Warrior, Hunter, Mage), mouse_pos: tuple):
         space_between_lines = 15
