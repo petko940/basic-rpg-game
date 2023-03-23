@@ -3,7 +3,7 @@ from pygame import Rect
 
 
 class Monster(ABC):
-    X_POS_SPAWN_AFTER_DEATH = 1300
+    X_POS_SPAWN_AFTER_DEATH = 1400
 
     MONSTERS_ON_SCREEN_LIMIT = 1
 
@@ -37,6 +37,11 @@ class Monster(ABC):
         self.health_bar = Rect(self.x_pos, self.y_pos, self.HEALTH_BAR_LENGTH, self.HEALTH_BAR_HEIGHT)
         self.background_health_bar = Rect(self.x_pos, self.y_pos, self.HEALTH_BAR_LENGTH, self.HEALTH_BAR_HEIGHT)
 
+    @property
+    def is_dead(self):
+        return self.health <= 0
+
+    @property
     @abstractmethod
     def rect_hit_box(self):
         pass
@@ -53,9 +58,9 @@ class Monster(ABC):
     def walk(self, hero_x_pos: int):
         pass
 
-    @abstractmethod
     def attack(self):
-        pass
+        if not self.attack_cooldown and not self.is_attacking:
+            self.is_attacking = True
 
     @abstractmethod
     def increase_index_attack_animation(self):
@@ -64,10 +69,6 @@ class Monster(ABC):
     @abstractmethod
     def check_target_reached(self, hero_x_pos: int):
         pass
-
-    @property
-    def is_dead(self):
-        return self.health <= 0
 
     @staticmethod
     def check_valid_index(index: float, collection: list):
@@ -119,3 +120,8 @@ class Monster(ABC):
 
     def take_experience_reward_on_kill(self):
         return self.experience_reward
+
+    def get_image(self, index: int, images_left: list, images_right: list):
+        if self.left_direction:
+            return images_left[index]
+        return images_right[index]
