@@ -6,6 +6,8 @@ from class_maps.map_controller import MapController
 from default_properties import load_data, save_on_close
 from monsters.demon import Demon
 from monsters.jinn import Jinn
+from monsters.lizard import Lizard
+from monsters.mini_dragon import MiniDragon
 from monsters.monster_controller import MonsterController
 
 pygame.init()
@@ -24,6 +26,8 @@ def load_maps(map_controller_obj):
         ([pygame.transform.scale(pygame.image.load(f'images/maps/map1/({i}).png').convert_alpha(), (1366, 768)) for i in range(1, 5 + 1)], "Forest"),
         ([pygame.image.load(f'images/maps/map2/{i}.png').convert_alpha() for i in range(5)], "NarrowForest"),
         ([pygame.image.load(f'images/maps/map3/{i}.png').convert_alpha() for i in range(5)], "BigTreeForest"),
+        ([pygame.image.load(f'images/maps/map4/{i}.png').convert_alpha() for i in range(5)], "Bridge"),
+        ([pygame.image.load(f'images/maps/map5/{i}.png').convert_alpha() for i in range(5)], "GreenBigForest"),
         )
 
     for images, map_name in maps:
@@ -68,9 +72,11 @@ menu.menu()
 current_hero = menu.chosen_hero
 
 
-demon = Demon(100, 15, 1300, 210)  # [health, damage, x_pos, y_pos]
-jinn = Jinn(100, 15, 1300, 210)
-monster_controller = MonsterController(jinn, demon)
+demon = Demon(100, 15, 1400, 210)  # [health, damage, x_pos, y_pos]
+jinn = Jinn(100, 15, 1400, 210)
+mini_dragon = MiniDragon(100, 15, 1400, 310)
+lizard = Lizard(100, 15, 1400, 250)
+monster_controller = MonsterController(lizard, mini_dragon, jinn, demon)
 
 
 background_rect = map_controller.show_current_map().get_rect()
