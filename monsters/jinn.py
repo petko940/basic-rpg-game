@@ -3,7 +3,6 @@ from pygame import Rect, transform, image
 
 
 class Jinn(Monster):
-
     IMAGE_LOOP_SPEED = 0.12
     MOVE_SPEED = 2
     ATK_SPEED = 0.12
@@ -34,10 +33,6 @@ class Jinn(Monster):
         if self.left_direction:
             return Rect(self.x_pos + Jinn.LOWER_HIT_BOX, self.y_pos + 30, self.rect_image.width - Jinn.LOWER_HIT_BOX, self.rect_image.height)
         return Rect(self.x_pos, self.y_pos + 30, self.rect_image.width - Jinn.LOWER_HIT_BOX, self.rect_image.height)
-
-    def attack(self):
-        if not self.attack_cooldown and not self.is_attacking:
-            self.is_attacking = True
 
     def increase_index_attack_animation(self):
         self.non_looped_index += Jinn.ATK_SPEED
@@ -87,11 +82,6 @@ class Jinn(Monster):
 
     def death(self):
         return self.get_image(int(self.non_looped_index), self.die_left, self.die_right)
-
-    def get_image(self, index: int, images_left: list, images_right: list):
-        if self.left_direction:
-            return images_left[index]
-        return images_right[index]
 
     def health_bar_position(self):
         if self.left_direction:
