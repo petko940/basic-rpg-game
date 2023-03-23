@@ -109,11 +109,11 @@ class HeroController:
             skill.set_skill_pos(hero.x)
 
         if type(skill).__name__ not in flying_skills:
-            if self.enemy and not self.enemy.is_dead:
+            if self.enemy and not self.enemy.is_dead and self.enemy.rect_hit_box.x < 1366:
                 skill.has_target = True
                 skill.set_skill_pos(self.enemy.rect_hit_box.x)
 
-            elif not self.enemy or self.enemy.is_dead:
+            elif not self.enemy or self.enemy.is_dead or self.enemy.rect_hit_box.x >= 1366:
                 skill.set_skill_pos(hero.x)
 
         skill.cast_skill()
@@ -131,6 +131,10 @@ class HeroController:
 
         elif type(hero).__name__ == "Hunter":
             self.use_hunter_skills(hero, screen)
+
+    @staticmethod
+    def map_range(monster_rect_x_pos: int):
+        return 0 <= monster_rect_x_pos < 1366
 
     def use_warrior_skills(self, hero: Warrior):
         skill = hero.skills.get(self.skill_to_use, False)
@@ -158,7 +162,7 @@ class HeroController:
             if hero.level >= passive.LEVEL_REQUIRED and passive.check_for_critical_strike():
                 skill.damage *= passive.get_critical_multiplier()
 
-            if self.enemy and self.enemy.check_target_reached(hero):
+            if self.enemy and self.enemy.check_target_reached(hero) and self.map_range(self.enemy.rect_hit_box.x):
                 self.enemy.lower_health_bar(skill.damage)
                 self.enemy.take_damage(skill.damage)
 
@@ -190,23 +194,23 @@ class HeroController:
                 skill_rect = c_skill.images_right[0].get_rect()
                 skill_rect.x, skill_rect.y = c_skill.x_pos, c_skill.y_pos
 
-                if skill_rect.colliderect(self.enemy.rect_hit_box):
+                if skill_rect.colliderect(self.enemy.rect_hit_box) and self.map_range(self.enemy.rect_hit_box.x):
                     c_skill.reset_skill_position()
                     return True
 
         def check_meteor_strike_floor():
             if type(c_skill).__name__ == "MeteorStrike" and self.enemy:
-                if c_skill.img_index == 0 and c_skill.check_if_explosion_reached():
+                if c_skill.img_index == 0 and c_skill.check_if_explosion_reached() and self.map_range(self.enemy.rect_hit_box.x):
                     return True
 
         def check_end_of_lightning():
             if type(c_skill).__name__ == "Lightning" and self.enemy:
-                if 0 <= c_skill.img_index < c_skill.IMAGE_LOOP_SPEED:
+                if 0 <= c_skill.img_index < c_skill.IMAGE_LOOP_SPEED and self.map_range(self.enemy.rect_hit_box.x):
                     return True
 
         for c_skill in hero.skills.values():
             if c_skill.is_animating and type(c_skill).__name__ != "HealAndMana":
-                if check_blue_ball_collision():
+                if check_blue_ball_collision() and self.map_range(self.enemy.rect_hit_box.x):
                     self.enemy.lower_health_bar(c_skill.damage)
                     self.enemy.take_damage(c_skill.damage)
                     continue
@@ -242,19 +246,19 @@ class HeroController:
                 skill_rect = c_skill.images_right[0].get_rect()
                 skill_rect.x, skill_rect.y = c_skill.x_pos, c_skill.y_pos
 
-                if skill_rect.colliderect(self.enemy.rect_hit_box):
+                if skill_rect.colliderect(self.enemy.rect_hit_box) and self.map_range(self.enemy.rect_hit_box.x):
                     c_skill.reset_skill_position()
                     return True
 
         def check_arrow_rain_drop():
             if type(c_skill).__name__ == "ArrowRain" and self.enemy:
                 if c_skill.check_if_arrows_dropped():
-                    if not self.enemy.is_dead:
+                    if not self.enemy.is_dead and self.map_range(self.enemy.rect_hit_box.x):
                         c_skill.set_skill_pos(self.enemy.rect_hit_box.x)
+                        return True
 
                     else:
                         c_skill.set_skill_pos(hero.x)
-                    return True
 
         for c_skill in hero.skills.values():
             if c_skill.is_animating and type(c_skill).__name__ != "HealAndMana":
