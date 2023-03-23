@@ -76,6 +76,8 @@ class Menu:
 
     is_ready_to_start = False
 
+    level_font = pygame.font.SysFont('Cosmic Sans bold', 60)
+
     def __init__(self, warrior: object, mage: object, hunter: object):
         self.main_menu = True
         self.warrior = warrior
@@ -86,6 +88,19 @@ class Menu:
     @property
     def get_current_hero(self):
         return {"Warrior": self.warrior, "Mage": self.mage, "Hunter": self.hunter}
+
+    @property
+    def hero_positions(self):
+        return {self.warrior: {'x': self.warrior_rect.x + 100, 'y': self.warrior_rect.y + 380},
+                self.mage: {'x': self.mage_rect.x + 110, 'y': self.mage_rect.y + 380},
+                self.hunter: {'x': self.hunter_rect.x + 120, 'y': self.hunter_rect.y + 380},
+                }
+
+    def display_hero_levels(self):
+        for hero, pos in self.hero_positions.items():
+            level_surface = self.level_font.render(f"Lv {hero.level}", True, (255, 255, 255))
+
+            screen.blit(level_surface, (pos['x'], pos['y']))
 
     def menu(self, ):
         while self.main_menu:
@@ -162,6 +177,8 @@ class Menu:
                     self.chosen_hero = self.get_current_hero[key]
 
                 i += 1
+
+            self.display_hero_levels()
 
             pygame.display.update()
 
