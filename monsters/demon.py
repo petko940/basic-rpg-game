@@ -34,10 +34,6 @@ class Demon(Monster):
             return Rect(self.x_pos + Demon.LOWER_HIT_BOX, self.y_pos + 30, self.rect_image.width - Demon.LOWER_HIT_BOX, self.rect_image.height)
         return Rect(self.x_pos, self.y_pos + 30, self.rect_image.width - Demon.LOWER_HIT_BOX, self.rect_image.height)
 
-    def attack(self):
-        if not self.attack_cooldown and not self.is_attacking:
-            self.is_attacking = True
-
     def increase_index_attack_animation(self):
         self.non_looped_index += Demon.ATK_SPEED
 
@@ -86,11 +82,6 @@ class Demon(Monster):
 
     def death(self):
         return self.get_image(int(self.non_looped_index), self.die_left, self.die_right)
-
-    def get_image(self, index: int, images_left: list, images_right: list):
-        if self.left_direction:
-            return images_left[index]
-        return images_right[index]
 
     def health_bar_position(self):
         if self.left_direction:
