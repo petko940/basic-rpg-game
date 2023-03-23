@@ -1,7 +1,9 @@
 from class_maps.all_maps.big_tree_forest import BigTreeForest
+from class_maps.all_maps.bridge import Bridge
 from class_maps.all_maps.forest import Forest
+from class_maps.all_maps.green_big_forest import GreenBigForest
 from class_maps.all_maps.narrow_forest import NarrowForest
-from pygame import transform, image
+from pygame import transform
 
 
 class MapController:
@@ -19,7 +21,8 @@ class MapController:
 
     @property
     def __valid_maps(self):
-        return {"Forest": Forest, "NarrowForest": NarrowForest, "BigTreeForest": BigTreeForest}
+        return {"Forest": Forest, "NarrowForest": NarrowForest, "BigTreeForest": BigTreeForest, "Bridge": Bridge,
+                "GreenBigForest": GreenBigForest}
 
     @property
     def current_map(self):
@@ -77,6 +80,9 @@ class MapController:
     def display_leading_arrow_on_cleared_stage(self, screen):
         stage = self.current_map
 
+        if self.maps[-1].last_image():
+            return
+
         if stage.check_stage_cleared():
             show_img = self.arrow[int(self.arrow_index) % len(self.arrow)]
             screen.blit(show_img, (1250, 100))
@@ -86,9 +92,8 @@ class MapController:
     def spawn_monster_on_non_cleared_stage(self, monster):
         stage = self.current_map
 
-        if not monster.monsters_on_screen and not stage.check_stage_cleared():
+        if not stage.check_stage_cleared():
             monster.increase_monsters_on_screen()
-            return
 
         # stage can't be cleared if the monster is alive
         if not monster.is_dead:
