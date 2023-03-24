@@ -70,7 +70,7 @@ hunter.level = 1  # collected_game_info["Hunter"]['level']    DO NOT DELETE THIS
 # menu.display_beginning_image() # skipping the beginning image
 menu.menu()
 current_hero = menu.chosen_hero
-
+menu.before_game_start()
 
 demon = Demon(100, 15, 1400, 210)  # [health, damage, x_pos, y_pos]
 jinn = Jinn(100, 15, 1400, 210)

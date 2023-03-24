@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from pygame import transform, image
+from pygame import transform, image, mixer
 from random import randint
 
 
@@ -71,6 +71,7 @@ class BlueBall(Skill):
     def cast_skill(self):
         self.is_on_cooldown = True
         self.is_animating = True
+        mixer.Sound('characters/sound_effects/mage_blueball.mp3').play().set_volume(0.1)
 
     def show_image(self):
         if self.right_direction:
@@ -142,6 +143,7 @@ class HealAndMana(Skill):
                 self.cooldown_left = self.LOCKED_COOLDOWN
 
     def heal(self):
+        mixer.Sound('characters/sound_effects/heal.mp3').play().set_volume(0.1)
         self.is_on_cooldown = True
         return self.healing
 
@@ -160,7 +162,7 @@ class HealAndMana(Skill):
 
 class Lightning(Skill):
     IMAGE_LOOP_SPEED = 0.2
-    LEVEL_REQUIRED = 3
+    LEVEL_REQUIRED = 1
     DAMAGE_INCREASE_PER_LEVEL = 10
     MANA_COST_INCREASE_PER_LEVEL = 5
 
@@ -201,6 +203,7 @@ class Lightning(Skill):
             self.check_for_end_point()
 
     def cast_skill(self):
+        mixer.Sound('characters/sound_effects/mage_light.mp3').play().set_volume(0.1)
         self.is_on_cooldown = True
         self.is_animating = True
 
@@ -239,7 +242,7 @@ class Lightning(Skill):
 
 
 class MeteorStrike(Skill):
-    LEVEL_REQUIRED = 4
+    LEVEL_REQUIRED = 1
     DAMAGE_INCREASE_PER_LEVEL = 25
     MANA_COST_INCREASE_PER_LEVEL = 10
 
@@ -297,6 +300,7 @@ class MeteorStrike(Skill):
                 self.check_for_end_of_reversed_explosion()
 
     def cast_skill(self):
+        mixer.Sound('characters/sound_effects/mage_bomba.mp3').play().set_volume(0.1)
         self.is_on_cooldown = True
         self.is_animating = True
 
@@ -432,6 +436,7 @@ class Heal(Skill):
                 self.cooldown_left = self.LOCKED_COOLDOWN
 
     def heal(self):
+        mixer.Sound('characters/sound_effects/heal.mp3').play().set_volume(0.1)
         self.is_on_cooldown = True
         return self.healing
 
@@ -612,6 +617,7 @@ class ArrowShot(Skill):
             self.check_for_end_point()
 
     def cast_skill(self):
+        mixer.Sound('characters/sound_effects/hunter_first.mp3').play().set_volume(0.1)
         self.is_on_cooldown = True
         self.is_animating = True
 
@@ -658,7 +664,7 @@ class ArrowShot(Skill):
 
 class RapidShot(Skill):
     ARROW_SPEED = 9
-    LEVEL_REQUIRED = 3
+    LEVEL_REQUIRED = 1
     DAMAGE_INCREASE_PER_LEVEL = 20
     MANA_COST_INCREASE_PER_LEVEL = 3
 
@@ -702,6 +708,7 @@ class RapidShot(Skill):
             self.check_for_end_point()
 
     def cast_skill(self):
+        mixer.Sound('characters/sound_effects/hunter_double_arrow.mp3').play().set_volume(0.1)
         self.is_on_cooldown = True
         self.is_animating = True
 
@@ -748,7 +755,7 @@ class RapidShot(Skill):
 
 class ArrowRain(Skill):
     ARROWS_FALL_SPEED = 10
-    LEVEL_REQUIRED = 4
+    LEVEL_REQUIRED = 1
     DAMAGE_INCREASE_PER_LEVEL = 30
     MANA_COST_INCREASE_PER_LEVEL = 10
 
@@ -809,6 +816,7 @@ class ArrowRain(Skill):
             self.reset_skill_position()
 
     def cast_skill(self):
+        mixer.Sound('characters/sound_effects/hunter_rain.mp3').play().set_volume(0.1)
         self.is_on_cooldown = True
         self.is_animating = True
 

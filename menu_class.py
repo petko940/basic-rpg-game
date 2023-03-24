@@ -13,7 +13,9 @@ class Menu:
              for i in range(1, 9)]
     arrow_pos = ((225 / resized, 80 / resized), (925 / resized, 80 / resized), (1580 / resized, 80 / resized))
 
-    # music('images/menu/music.mp3')
+    music('images/menu/music.mp3')
+    pygame.mixer.Sound('images/menu/music.mp3').play(-1).set_volume(0.1)
+
     start_image = pygame.image.load("images/menu/start_image.png")
 
     buttons_x, buttons_y = (1920 / 2 - 100) / resized, (1080 / 1.01 - 210) / resized
@@ -48,7 +50,7 @@ class Menu:
     button_windowed_rect.y = buttons_y - 600
 
     platform = pygame.transform.scale(pygame.image.load('images/menu/platform.png'), (500 / resized, 320 / resized))
-    new_platform = pygame.transform.scale(pygame.image.load('images/menu/new_platform.png'), (500 / resized, 430 ))
+    new_platform = pygame.transform.scale(pygame.image.load('images/menu/new_platform.png'), (500 / resized, 430))
     heroes_x_y = [(120 / resized, 240 / resized), (790 / resized, 240 / resized),
                   ((790 + 630) / resized, 240 / resized)]
 
@@ -140,7 +142,7 @@ class Menu:
                     elif self.button_quit_rect.collidepoint(mouse_pos):
                         quit()
 
-                    elif self.button_play_rect.collidepoint(mouse_pos)\
+                    elif self.button_play_rect.collidepoint(mouse_pos) \
                             and any(value for value in self.selected.values() if value):
                         self.main_menu = False
                         # self.before_game_start()  # for faster loading screen
@@ -186,7 +188,8 @@ class Menu:
         mouse_pos = pygame.mouse.get_pos()
         chosen_hero = self.chosen_hero
         if self.button_play_rect.collidepoint(mouse_pos):
-            # music('images/maps/map1/map1_song.mp3')
+            pygame.mixer.stop()
+            pygame.mixer.Sound('images/maps/map1/map1_song.mp3').play().set_volume(0.1)
             for i in range(510):
                 screen.blit(self.menu_image, (0, 0))
                 screen.blit(chosen_hero.jump_animation(), (650 / resized, 200 / resized))
