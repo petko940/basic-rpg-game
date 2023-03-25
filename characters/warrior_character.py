@@ -23,6 +23,10 @@ class Warrior(Hero):
             4: passive_crit
         }
 
+    def set_stats_for_current_level(self):
+        self.health = self.max_health
+        self.health_bar.width = self.BAR_LENGTH
+
     def get_stronger_after_level_up(self):
         self.max_health += self.HEALTH_INCREASE_PER_LEVEL
         self.health = self.max_health
