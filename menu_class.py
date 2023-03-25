@@ -104,6 +104,9 @@ class Menu:
 
             screen.blit(level_surface, (pos['x'], pos['y']))
 
+    def open_menu(self):
+        self.main_menu = True
+
     def menu(self, ):
         while self.main_menu:
             screen.blit(self.menu_image, (0, 0))
@@ -145,7 +148,7 @@ class Menu:
                     elif self.button_play_rect.collidepoint(mouse_pos) \
                             and any(value for value in self.selected.values() if value):
                         self.main_menu = False
-                        # self.before_game_start()  # for faster loading screen
+                        self.before_game_start()
 
             if self.is_full_screen:
                 screen.blit(self.button_windowed, self.button_windowed_rect)
@@ -196,6 +199,12 @@ class Menu:
                 pygame.draw.rect(screen, (50, (255 - i // 2), 0), self.menu_image_rect, int(i * 1.1))
                 pygame.display.update()
 
+    def enter_menu_from_game_world(self, image: pygame.Surface):
+        for i in range(510):
+            screen.blit(image, (0, 0))
+            pygame.draw.rect(screen, (50, (255 - i // 2), 0), self.menu_image_rect, int(i * 1.1))
+            pygame.display.update()
+
     def display_beginning_image(self):
         font = pygame.font.SysFont(None, 48)
         press_to_continue = font.render("press any key to continue...", True, (255, 255, 255))
@@ -210,6 +219,3 @@ class Menu:
                 if event.type == pygame.KEYDOWN or event.type == pygame.MOUSEBUTTONDOWN:
                     show_screen = False
             pygame.display.update()
-
-# menu = Menu()
-# menu.menu()
