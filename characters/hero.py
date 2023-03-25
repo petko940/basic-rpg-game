@@ -14,6 +14,7 @@ class Hero(ABC):
 
     def __init__(self, x: int, y: int, health: int, max_health: int, attack_images: list, die_image: Surface, idle_images: list,
                  jump_images: list, walk_images: list, profile_pic: object):
+        self.start_x_pos = x
         self.x = x
         self.y = y
         self.level = 1
@@ -59,10 +60,6 @@ class Hero(ABC):
     def is_dead(self):
         return self.health <= 0
 
-    @abstractmethod
-    def get_stronger_after_level_up(self):
-        pass
-
     @property
     def experience_per_level(self):
         level_exp = {}
@@ -71,6 +68,14 @@ class Hero(ABC):
             level_exp[level] = experience
             experience += 200
         return level_exp
+
+    @abstractmethod
+    def get_stronger_after_level_up(self):
+        pass
+
+    @abstractmethod
+    def set_stats_for_current_level(self):
+        pass
 
     @staticmethod
     def make_bar(x, y, width, height):
