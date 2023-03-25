@@ -20,6 +20,9 @@ class Map(ABC):
             raise Exception(f"{value} index of the image must be in the list range")
         self.__index = value
 
+    def reset_all_stages(self):
+        self.cleared_stages = {stage: False for stage in range(len(self.images))}
+
     def check_stage_cleared(self):
         return self.cleared_stages[self.index]
 
