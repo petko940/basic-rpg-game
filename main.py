@@ -3,12 +3,13 @@ import pygame
 from characters.hero_controller import HeroController
 from menu_class import Menu
 from class_maps.map_controller import MapController
-from default_properties import load_data, save_on_close
 from monsters.demon import Demon
 from monsters.jinn import Jinn
 from monsters.lizard import Lizard
+from monsters.medusa import Medusa
 from monsters.mini_dragon import MiniDragon
 from monsters.monster_controller import MonsterController
+from data_processor import DataProcessor
 
 pygame.init()
 
@@ -60,27 +61,25 @@ map_controller = MapController(menu.arrow)
 load_maps(map_controller)
 
 
-collected_game_info = load_data()
-map_controller.current_map_index = 0  # collected_game_info["Map"]['current_map']
-warrior.level = 1  # collected_game_info["Warrior"]['level']  DO NOT DELETE THIS LINE
-mage.level = 1  # collected_game_info["Mage"]['level']        DO NOT DELETE THIS LINE
-hunter.level = 1  # collected_game_info["Hunter"]['level']    DO NOT DELETE THIS LINE
-
-
-# menu.display_beginning_image() # skipping the beginning image
-menu.menu()
-current_hero = menu.chosen_hero
-menu.before_game_start()
-
 demon = Demon(100, 15, 1400, 210)  # [health, damage, x_pos, y_pos]
 jinn = Jinn(100, 15, 1400, 210)
 mini_dragon = MiniDragon(100, 15, 1400, 310)
 lizard = Lizard(100, 15, 1400, 250)
-monster_controller = MonsterController(lizard, mini_dragon, jinn, demon)
+medusa = Medusa(100, 15, 1400, 250)
+monster_controller = MonsterController(medusa, lizard, mini_dragon, jinn, demon)
+
+
+set_hero_data = DataProcessor([warrior, mage, hunter])
+set_hero_data.set_loaded_hero_data()
+
+
+menu.display_beginning_image()
+menu.menu()
+current_hero = menu.chosen_hero
 
 
 background_rect = map_controller.show_current_map().get_rect()
-# loading_game_screen(screen, map_controller, current_hero, background_rect)  # for faster loading screen
+loading_game_screen(screen, map_controller, current_hero, background_rect)
 
 
 MANA_REGEN = pygame.USEREVENT  # next event must be +1 ,because the events have ID's
@@ -89,9 +88,12 @@ pygame.time.set_timer(MANA_REGEN, 1000)
 SKILL_COOLDOWN = pygame.USEREVENT + 1
 pygame.time.set_timer(SKILL_COOLDOWN, 100)
 
+death_timer = 0
+clock = pygame.time.Clock()
+
 game_running = True
 while game_running:
-    pygame.time.Clock().tick(100)
+    clock.tick(60)
 
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
@@ -182,16 +184,31 @@ while game_running:
     hero_controller.use_skill(current_hero, screen)
 
     if current_hero.is_dead:
-        hero_controller.display_death_image(screen, current_hero)
+        death_timer += clock.tick(60) / 1000
+
+        if death_timer < 2.5:
+            hero_controller.display_death_image(screen, current_hero)
+
+        else:
+            death_timer = 0
+
+            menu.enter_menu_from_game_world(map_controller.show_current_map())
+
+            menu.open_menu()
+            menu.menu()
+
+            current_hero.set_stats_for_current_level()
+            current_hero = menu.chosen_hero
+            current_hero.x = current_hero.start_x_pos
+
+            monster_controller.current_monster.set_default_values_after_death()
+            monster_controller.current_monster.set_max_stats_for_current_level()
+            monster_controller.first_spawn = False
+
+            map_controller.reset_cleared_stages_progress()
 
     pygame.display.update()
 
 pygame.quit()
 
-progress_of_game = {
-    "Map": {'current_map': map_controller.current_map_index},
-    "Hunter": {'level': hunter.level, 'health': hunter.health, 'mana': hunter.mana},
-    "Mage": {'level': mage.level, 'health': mage.health, 'mana': mage.mana},
-    "Warrior": {'level': warrior.level, 'health': warrior.health},
-}
-save_on_close(progress_of_game)
+set_hero_data.save_progress_of_game()
