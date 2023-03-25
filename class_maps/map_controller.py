@@ -100,3 +100,8 @@ class MapController:
             return
 
         stage.clear_stage()
+
+    def reset_cleared_stages_progress(self):
+        for i in range(self.current_map_index + 1):
+            stage = self.maps[i]
+            stage.reset_all_stages()
