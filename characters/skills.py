@@ -162,7 +162,7 @@ class HealAndMana(Skill):
 
 class Lightning(Skill):
     IMAGE_LOOP_SPEED = 0.2
-    LEVEL_REQUIRED = 1
+    LEVEL_REQUIRED = 3
     DAMAGE_INCREASE_PER_LEVEL = 10
     MANA_COST_INCREASE_PER_LEVEL = 5
 
@@ -242,7 +242,7 @@ class Lightning(Skill):
 
 
 class MeteorStrike(Skill):
-    LEVEL_REQUIRED = 1
+    LEVEL_REQUIRED = 4
     DAMAGE_INCREASE_PER_LEVEL = 25
     MANA_COST_INCREASE_PER_LEVEL = 10
 
@@ -664,7 +664,7 @@ class ArrowShot(Skill):
 
 class RapidShot(Skill):
     ARROW_SPEED = 9
-    LEVEL_REQUIRED = 1
+    LEVEL_REQUIRED = 3
     DAMAGE_INCREASE_PER_LEVEL = 20
     MANA_COST_INCREASE_PER_LEVEL = 3
 
@@ -755,7 +755,7 @@ class RapidShot(Skill):
 
 class ArrowRain(Skill):
     ARROWS_FALL_SPEED = 10
-    LEVEL_REQUIRED = 1
+    LEVEL_REQUIRED = 4
     DAMAGE_INCREASE_PER_LEVEL = 30
     MANA_COST_INCREASE_PER_LEVEL = 10
 
