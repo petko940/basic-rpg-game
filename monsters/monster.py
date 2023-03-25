@@ -100,6 +100,9 @@ class Monster(ABC):
         self.x_pos = Monster.X_POS_SPAWN_AFTER_DEATH
         self.non_looped_index = 0
 
+    def set_max_stats_for_current_level(self):
+        self.health = self.max_health
+
     def remove_monster_from_screen(self):
         self.monsters_on_screen -= 1
 
