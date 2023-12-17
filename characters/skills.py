@@ -393,6 +393,7 @@ class AxeBasicAttack(Skill):
         self.damage -= amount
 
     def cast_skill(self):
+        mixer.Sound('characters/sound_effects/warr_first.mp3').play().set_volume(0.1)
         self.is_on_cooldown = True
 
     def level_up(self):
