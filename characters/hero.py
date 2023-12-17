@@ -1,6 +1,7 @@
 from abc import abstractmethod, ABC
 
 from pygame import transform, Rect, Surface
+from utils import get_screen_size
 
 
 class Hero(ABC):
@@ -48,13 +49,20 @@ class Hero(ABC):
 
         self.experience_gained = 0
 
-        self.experience_bar = self.make_bar(558, 630, 0, 35)
-        self.experience_bar_pad = self.make_bar(558, 630, self.EXP_BAR_LENGTH, 35)
+        self.experience_bar = self.make_bar(self.get_middle_of_screen_for_exp_bar, 630, 0, 35)
+        self.experience_bar_pad = self.make_bar(self.get_middle_of_screen_for_exp_bar, 630, self.EXP_BAR_LENGTH, 35)
 
         self.health_bar = self.make_bar(self.frame.width, 0, self.BAR_LENGTH, 35)
 
         self.background_rect_health_bar = self.make_bar(self.frame.width, 0, self.BAR_LENGTH, 35)
         self.background_rect_mana_bar = self.make_bar(self.frame.width, 35, self.BAR_LENGTH, 35)
+
+    @property
+    def get_middle_of_screen_for_exp_bar(self):
+        game_width, game_height = get_screen_size()
+        game_width //= 2
+        center_the_bar_x = game_width - self.EXP_BAR_LENGTH // 2
+        return center_the_bar_x
 
     @property
     def is_dead(self):
