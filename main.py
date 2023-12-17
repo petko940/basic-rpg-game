@@ -10,6 +10,7 @@ from monsters.medusa import Medusa
 from monsters.mini_dragon import MiniDragon
 from monsters.monster_controller import MonsterController
 from data_processor import DataProcessor
+from utils import get_screen_size
 
 pygame.init()
 
@@ -35,7 +36,7 @@ def load_maps(map_controller_obj):
         map_controller_obj.create_map(images, map_name)
 
 
-WIDTH, HEIGHT = (1366, 768)
+WIDTH, HEIGHT = get_screen_size()
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 resized = 1.4
 
