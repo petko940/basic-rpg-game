@@ -2,6 +2,7 @@ from abc import abstractmethod, ABC
 
 from pygame import transform, Rect, Surface
 from utils import get_screen_size
+from monsters.floating_damage import FloatingDamage
 
 
 class Hero(ABC):
@@ -56,6 +57,8 @@ class Hero(ABC):
 
         self.background_rect_health_bar = self.make_bar(self.frame.width, 0, self.BAR_LENGTH, 35)
         self.background_rect_mana_bar = self.make_bar(self.frame.width, 35, self.BAR_LENGTH, 35)
+
+        self.floating_damage = []
 
     @property
     def get_middle_of_screen_for_exp_bar(self):
@@ -112,16 +115,35 @@ class Hero(ABC):
             self.health = self.max_health
 
     def receive_healing(self, amount: int or float):
+        center_of_hero = (self.walk_images_right[0].get_width() // 2) + self.x
+        self.floating_damage.append(FloatingDamage(amount, center_of_hero, self.y, heal=True))
+
         self.health += amount
         self.check_health_limit()
 
     def take_damage(self, damage: int):
         self.health_bar.width = self.lower_bar_width(self.health, self.max_health, damage)
 
+        center_of_hero = (self.walk_images_right[0].get_width() // 2) + self.x
+        self.floating_damage.append(FloatingDamage(damage, center_of_hero, self.y))
+
         if self.health - damage > 0:
             self.health -= damage
         else:
             self.health = 0
+
+    def render_received_damage(self, screen):
+        if not self.floating_damage:
+            return
+
+        not_faded_damage = []
+        for damage in self.floating_damage:
+            damage.render(screen)
+
+            if not damage.is_faded:
+                not_faded_damage.append(damage)
+
+        self.floating_damage = not_faded_damage
 
     def idle_animation(self):
         self.idle_index += self.__IMAGE_LOOP_SPEED
