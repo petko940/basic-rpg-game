@@ -452,6 +452,12 @@ class HeroController:
         # displaying the level surface inside the frame of the circle
         screen.blit(level_surface, (middle_of_circle, 4))
 
+    def render_monster_damage_received(self, screen):
+        if not self.enemy:
+            return
+
+        self.enemy.render_received_damage(screen)
+
     @staticmethod
     def load_warrior_images():
         attack_images = [pygame.transform.scale(pygame.image.load(f'characters/war/attack/{i}.png'),
