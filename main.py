@@ -183,6 +183,8 @@ while game_running:
 
     # calling the skills animations on button press
     hero_controller.use_skill(current_hero, screen)
+    hero_controller.render_monster_damage_received(screen)
+    current_hero.render_received_damage(screen)
 
     if current_hero.is_dead:
         death_timer += clock.tick(60) / 1000
