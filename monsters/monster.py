@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from pygame import Rect
+from monsters.floating_damage import FloatingDamage
 
 
 class Monster(ABC):
@@ -36,6 +37,8 @@ class Monster(ABC):
 
         self.health_bar = Rect(self.x_pos, self.y_pos, self.HEALTH_BAR_LENGTH, self.HEALTH_BAR_HEIGHT)
         self.background_health_bar = Rect(self.x_pos, self.y_pos, self.HEALTH_BAR_LENGTH, self.HEALTH_BAR_HEIGHT)
+
+        self.floating_damage = []
 
     @property
     def is_dead(self):
@@ -118,8 +121,24 @@ class Monster(ABC):
     def take_damage(self, damage_received: int or float):
         self.health -= damage_received
 
+        center_of_monster = (self.rect_hit_box.width // 2) + self.x_pos
+        self.floating_damage.append(FloatingDamage(damage_received, center_of_monster, self.y_pos))
+
         if self.health <= 0:
             self.health = 0
+
+    def render_received_damage(self, screen):
+        if not self.floating_damage:
+            return
+
+        not_faded_damage = []
+        for damage in self.floating_damage:
+            damage.render(screen)
+
+            if not damage.is_faded:
+                not_faded_damage.append(damage)
+
+        self.floating_damage = not_faded_damage
 
     def take_experience_reward_on_kill(self):
         return self.experience_reward
